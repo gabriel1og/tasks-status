@@ -196,7 +196,7 @@ function SettingsPanel({ user }: { user: User }) {
             <div className="space-y-2">
               <Label>Coluna</Label>
               <select
-                className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                className="h-10 w-full rounded-md border border-input bg-secondary px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={tagForm.tipo}
                 onChange={(event) =>
                   setTagForm((currentForm) => ({
@@ -269,7 +269,7 @@ function TagList({
   onDelete: (tagId: string) => void;
 }) {
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border bg-secondary/30">
       <div className="border-b px-4 py-3 text-sm font-semibold">{title}</div>
       <div className="divide-y">
         {tags.map((tag) => (
