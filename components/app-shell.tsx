@@ -29,7 +29,7 @@ export function AppShell({ children, title }: AppShellProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      <aside className="fixed inset-y-0 left-0 hidden w-64 border-r bg-card p-4 md:block">
+      <aside className="fixed inset-y-0 left-0 hidden w-64 border-r bg-card/95 p-4 md:block">
         <div className="mb-8">
           <p className="text-sm text-muted-foreground">SEIDOR</p>
           <h1 className="text-lg font-semibold">Gerenciamento de Status</h1>
@@ -66,7 +66,7 @@ export function AppShell({ children, title }: AppShellProps) {
         </Button>
       </aside>
       <main className="md:pl-64">
-        <header className="sticky top-0 z-10 border-b bg-background/95 px-4 py-4 backdrop-blur md:px-8">
+        <header className="sticky top-0 z-10 border-b bg-background/90 px-4 py-4 backdrop-blur md:px-8">
           <div className="flex items-center justify-between gap-4">
             <h2 className="text-xl font-semibold">{title}</h2>
             <div className="flex gap-2 md:hidden">

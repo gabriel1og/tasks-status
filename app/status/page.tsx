@@ -244,7 +244,7 @@ function SelectField({
   return (
     <Field label={label}>
       <select
-        className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+        className="h-10 w-full rounded-md border border-input bg-secondary px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         value={value}
         onChange={(event) => onChange(event.target.value)}
       >

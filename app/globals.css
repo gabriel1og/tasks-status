@@ -1,27 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 224 22% 12%;
-    --card: 0 0% 100%;
-    --card-foreground: 224 22% 12%;
-    --primary: 194 78% 28%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 16% 93%;
-    --secondary-foreground: 224 22% 12%;
-    --muted: 210 16% 94%;
-    --muted-foreground: 215 14% 42%;
-    --accent: 28 92% 92%;
-    --accent-foreground: 28 88% 24%;
-    --destructive: 0 72% 51%;
+    color-scheme: dark;
+    --background: 222 29% 7%;
+    --foreground: 210 30% 96%;
+    --card: 222 25% 10%;
+    --card-foreground: 210 30% 96%;
+    --primary: 190 86% 42%;
+    --primary-foreground: 222 47% 8%;
+    --secondary: 217 22% 16%;
+    --secondary-foreground: 210 30% 96%;
+    --muted: 218 20% 14%;
+    --muted-foreground: 215 15% 68%;
+    --accent: 173 56% 18%;
+    --accent-foreground: 172 76% 84%;
+    --destructive: 0 72% 56%;
     --destructive-foreground: 0 0% 100%;
-    --border: 214 18% 86%;
-    --input: 214 18% 86%;
-    --ring: 194 78% 28%;
+    --border: 217 19% 22%;
+    --input: 217 19% 24%;
+    --ring: 190 86% 48%;
     --radius: 0.5rem;
+  }
+
+  .dark {
+    color-scheme: dark;
   }
 
   * {
@@ -30,9 +36,6 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family:
-      Arial,
-      Helvetica,
-      sans-serif;
+    font-family: "Inter", sans-serif;
   }
 }
