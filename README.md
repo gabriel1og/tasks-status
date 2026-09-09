@@ -1,6 +1,6 @@
 # Gerenciamento de Status
 
-Aplicação Next.js, React, TypeScript, shadcn-ui e Supabase para acompanhar status de tarefas por nome, Azure, sprint, status e ambiente.
+Aplicação Next.js, React, TypeScript, shadcn-ui e Supabase para acompanhar tarefas atuais, futuras e organizadas por sprint.
 
 ## Como rodar
 
@@ -36,8 +36,10 @@ O acesso e compartilhado pela equipe e usa um login local mockado:
 
 - `/login`: login unico por usuario e senha.
 - `/status`: cadastro e tabela de acompanhamento das tarefas.
-- `/settings`: edição das tags de Status e Ambiente.
+- `/sprints`: tarefas da sprint atual ou da sprint selecionada.
+- `/future-tasks`: cadastro e acompanhamento de tarefas ainda sem planejamento definido.
+- `/settings`: edição das tags de Status e Ambiente e gerenciamento de sprints.
 
 ## Supabase
 
-Execute o SQL de `supabase/schema.sql`. As tabelas usam um `user_id` fixo para centralizar os dados da equipe no acesso compartilhado.
+Execute o SQL de `supabase/schema.sql`. As tabelas usam um `user_id` fixo para centralizar os dados da equipe no acesso compartilhado. O schema inclui as tabelas `task_statuses`, `sprints`, `tag_options` e `user_settings`.
