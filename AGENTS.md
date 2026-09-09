@@ -1,0 +1,143 @@
+# AGENTS.md
+
+Guia para agentes trabalhando neste projeto. Leia este arquivo antes de editar codigo, schema ou documentacao.
+
+## Contexto do projeto
+
+Este projeto e uma central interna da equipe de desenvolvimento Inbound para acompanhar o andamento de tasks. Ele foi criado como uma aplicacao simples em Next.js, React, TypeScript, Tailwind/shadcn-ui e Supabase.
+
+O fluxo principal fica em:
+
+- `/login`: login unico mockado.
+- `/status`: cadastro, listagem, edicao e remocao de tarefas.
+- `/settings`: cadastro, edicao e remocao das tags usadas nas colunas de Status e Ambiente.
+
+As tarefas possuem as colunas principais:
+
+- `nome`
+- `azure`
+- `sprint`
+- `status`
+- `ambiente`
+
+## Decisoes ja tomadas
+
+- O app nao usa login pessoal por Supabase Auth. A equipe usa um acesso unico mockado.
+- O usuario e senha padrao sao `inbound` / `inbound`.
+- A identidade compartilhada fica em `lib/mock-auth.ts`.
+- O `user_id` fixo da central e `00000000-0000-4000-8000-000000000001`.
+- As queries do frontend devem sempre filtrar pelo `user_id` fixo, mesmo que o RLS do Supabase tambem esteja configurado.
+- A rota antiga `/configuracoes` foi substituida por `/settings`.
+- O card de informacoes do usuario foi removido da tela de configuracoes.
+- O projeto deve manter suporte real a light mode, dark mode e system mode pelo seletor no header.
+- Os selects usam seta customizada global em `app/globals.css`; ao adicionar novos selects, reaproveite as classes existentes e nao reintroduza seta nativa grudada no canto.
+- Tarefas armazenam `status` e `ambiente` como texto. Ao renomear uma tag mantendo o mesmo tipo, atualize tambem as tarefas que usavam o nome antigo.
+
+## Estrutura importante
+
+- `app/status/page.tsx`: dashboard de tarefas, formulario de nova tarefa, tabela e edicao inline.
+- `app/settings/page.tsx`: gerenciamento das tags de Status e Ambiente.
+- `app/login/page.tsx`: tela de login mockado.
+- `components/app-shell.tsx`: layout autenticado, menu lateral, header e logout.
+- `components/auth-guard.tsx`: protecao client-side baseada na sessao mockada.
+- `components/theme-mode-menu.tsx`: menu de tema Claro, Escuro e Sistema.
+- `components/ui/*`: componentes base no estilo shadcn-ui.
+- `lib/mock-auth.ts`: usuario compartilhado e controle de sessao via `localStorage`.
+- `lib/default-tags.ts`: tags iniciais criadas quando ainda nao ha tags no Supabase.
+- `lib/supabase.ts`: cliente Supabase.
+- `types/database.ts`: tipos TypeScript das tabelas usadas pela UI.
+- `supabase/schema.sql`: schema, RLS e policies do banco.
+
+## Banco de dados e Supabase
+
+Execute `supabase/schema.sql` no projeto Supabase para criar ou atualizar as tabelas.
+
+Tabelas atuais:
+
+- `user_settings`: existe no schema, mas a UI atual nao usa card de perfil.
+- `tag_options`: tags de `status` e `ambiente`, com nome e cor.
+- `task_statuses`: tarefas acompanhadas pela equipe.
+
+Cuidados ao alterar o schema:
+
+- Mantenha as policies alinhadas com o `user_id` fixo do login compartilhado.
+- Se a UI criar, editar ou remover registros, garanta policies correspondentes de `insert`, `update`, `delete` e `select`.
+- Nao recrie dependencia em `auth.users` ou `auth.uid()` sem uma decisao explicita do usuario.
+- Preserve os `drop policy if exists` antes de recriar policies, pois isso facilita reaplicar o SQL durante ajustes.
+
+## Padroes de UI
+
+- Preserve o estilo operacional e compacto do app. Ele e uma ferramenta interna, nao uma landing page.
+- Use componentes em `components/ui` sempre que possivel.
+- Use icones de `lucide-react` em botoes de acao.
+- Para acoes compactas, prefira botoes de icone com `aria-label`.
+- Mantenha textos visiveis em portugues.
+- Evite criar cards dentro de cards. Cards devem enquadrar blocos principais ou itens repetidos.
+- Ao mexer em tema, altere tokens em `app/globals.css` e valide light/dark.
+- A fonte Inter esta importada via CSS global. Se o build falhar por rede ao buscar fontes, registre isso no fechamento antes de mudar a estrategia.
+
+## Comandos
+
+Instalar dependencias:
+
+```powershell
+npm install
+```
+
+Rodar desenvolvimento:
+
+```powershell
+npm run dev
+```
+
+Validar TypeScript:
+
+```powershell
+node_modules\.bin\tsc.cmd --noEmit
+```
+
+Validar build:
+
+```powershell
+npm.cmd run build
+```
+
+Fallback de build quando o `npm` simples falhar:
+
+```powershell
+node_modules\.bin\next.cmd build
+```
+
+## Armadilhas conhecidas neste workspace
+
+- No Windows deste ambiente, `npm run ...` pode cair em um shim quebrado com erro de `npm-cli.js` ausente. Tente `npm.cmd run ...` ou os binarios locais em `node_modules\.bin`.
+- `npm run lint` / ESLint direto pode falhar porque o projeto usa ESLint 9 mas ainda nao possui `eslint.config.*`. Nao trate isso automaticamente como erro da feature.
+- Builds podem gerar `tsconfig.tsbuildinfo`; se aparecer como arquivo nao versionado depois da validacao, limpe-o com cuidado.
+- Evite deixar servidor local rodando ao final, a menos que o usuario tenha pedido explicitamente para testar no navegador.
+- O projeto pode ter mudancas locais do usuario. Antes de editar, confira `git status --short --branch` e nao reverta arquivos fora do escopo.
+
+## Fluxo recomendado para proximas alteracoes
+
+1. Rode `git status --short --branch`.
+2. Leia os arquivos diretamente relacionados antes de editar.
+3. Mantenha mudancas pequenas e no padrao do app.
+4. Se alterar comportamento de tarefa/tag, revise tambem `supabase/schema.sql` e `types/database.ts`.
+5. Valide com `node_modules\.bin\tsc.cmd --noEmit`.
+6. Valide build com `npm.cmd run build` ou `node_modules\.bin\next.cmd build`.
+7. Informe claramente qualquer validacao que nao foi possivel rodar e o motivo.
+   OBS: Nunca crie um servidor local (https://localhost:3000), a não ser que eu peça explicitamente.
+
+## Resumo das features implementadas nos chats
+
+- Projeto base Next.js/React/TypeScript com Tailwind/shadcn-ui e Supabase.
+- Tela de login, menu autenticado, tabela de tarefas e tela de configuracoes.
+- Login unico mockado para a equipe Inbound.
+- Rota `/settings` no lugar de `/configuracoes`.
+- Remocao do perfil de usuario da tela de configuracoes.
+- Light/dark/system mode no header com persistencia em `localStorage`.
+- Ajustes globais de dark/light tokens.
+- Correcao global da seta dos selects.
+- Criacao, edicao e remocao de tarefas.
+- Criacao, edicao e remocao de tags de Status e Ambiente.
+- Propagacao de renome de status/ambiente para tarefas existentes.
+- Policies de update no Supabase para tags e tarefas.
