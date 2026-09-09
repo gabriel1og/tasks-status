@@ -6,6 +6,8 @@ export type TaskStatusRow = {
   azure_url: string;
   liveops_url: string;
   sprint: string;
+  sprint_id: string | null;
+  is_future: boolean;
   status: string;
   ambiente: string;
   created_at: string;
@@ -32,3 +34,14 @@ export type TagOptionRow = {
 };
 
 export type TagOptionInsert = Omit<TagOptionRow, "id" | "created_at">;
+
+export type SprintRow = {
+  id: string;
+  user_id: string;
+  nome: string;
+  data_inicio: string;
+  data_fim: string;
+  created_at: string;
+};
+
+export type SprintInsert = Omit<SprintRow, "id" | "created_at">;

@@ -4,12 +4,12 @@ import { AppShell } from "@/components/app-shell";
 import { AuthGuard } from "@/components/auth-guard";
 import { TaskWorkspace } from "@/components/tasks/task-workspace";
 
-export default function StatusPage() {
+export default function FutureTasksPage() {
   return (
     <AuthGuard>
       {(user) => (
-        <AppShell title="Status das tarefas">
-          <TaskWorkspace user={user} mode="status" />
+        <AppShell title="Tarefas Futuras">
+          <TaskWorkspace user={user} mode="future" />
         </AppShell>
       )}
     </AuthGuard>

@@ -5,7 +5,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  CalendarRange,
   ListChecks,
+  ListTodo,
   type LucideIcon,
   LogOut,
   PanelLeftClose,
@@ -25,6 +27,8 @@ type AppShellProps = {
 
 const navigationItems = [
   { href: "/status", label: "Status", icon: ListChecks },
+  { href: "/sprints", label: "Sprints", icon: CalendarRange },
+  { href: "/future-tasks", label: "Tarefas Futuras", icon: ListTodo },
   { href: "/settings", label: "Configurações", icon: Settings },
 ];
 
@@ -85,7 +89,7 @@ export function AppShell({ children, title }: AppShellProps) {
       </aside>
       <main className={cn(isSidebarCollapsed ? "md:pl-20" : "md:pl-64")}>
         <header className="sticky top-0 z-10 border-b bg-background/90 px-4 py-4 backdrop-blur md:px-8">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <h2 className="text-xl font-semibold">{title}</h2>
             <div className="flex items-center gap-2">
               <ThemeModeMenu />

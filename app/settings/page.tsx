@@ -5,6 +5,7 @@ import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { AuthGuard } from "@/components/auth-guard";
+import { SprintSettings } from "@/components/sprints/sprint-settings";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -167,6 +168,7 @@ function SettingsPanel({ user }: { user: MockUser }) {
 
   return (
     <div className="space-y-6">
+      <SprintSettings user={user} />
       <Card>
         <CardHeader>
           <CardTitle>Tags de Status e Ambiente</CardTitle>
