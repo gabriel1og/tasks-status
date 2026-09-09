@@ -41,9 +41,11 @@ drop policy if exists "Usuarios salvam o proprio perfil" on public.user_settings
 drop policy if exists "Usuarios atualizam o proprio perfil" on public.user_settings;
 drop policy if exists "Usuarios leem as proprias tags" on public.tag_options;
 drop policy if exists "Usuarios criam as proprias tags" on public.tag_options;
+drop policy if exists "Usuarios atualizam as proprias tags" on public.tag_options;
 drop policy if exists "Usuarios removem as proprias tags" on public.tag_options;
 drop policy if exists "Usuarios leem as proprias tarefas" on public.task_statuses;
 drop policy if exists "Usuarios criam as proprias tarefas" on public.task_statuses;
+drop policy if exists "Usuarios atualizam as proprias tarefas" on public.task_statuses;
 drop policy if exists "Usuarios removem as proprias tarefas" on public.task_statuses;
 
 create policy "Usuarios leem o proprio perfil"
@@ -67,6 +69,11 @@ create policy "Usuarios criam as proprias tags"
   on public.tag_options for insert
   with check (user_id = '00000000-0000-4000-8000-000000000001');
 
+create policy "Usuarios atualizam as proprias tags"
+  on public.tag_options for update
+  using (user_id = '00000000-0000-4000-8000-000000000001')
+  with check (user_id = '00000000-0000-4000-8000-000000000001');
+
 create policy "Usuarios removem as proprias tags"
   on public.tag_options for delete
   using (user_id = '00000000-0000-4000-8000-000000000001');
@@ -77,6 +84,11 @@ create policy "Usuarios leem as proprias tarefas"
 
 create policy "Usuarios criam as proprias tarefas"
   on public.task_statuses for insert
+  with check (user_id = '00000000-0000-4000-8000-000000000001');
+
+create policy "Usuarios atualizam as proprias tarefas"
+  on public.task_statuses for update
+  using (user_id = '00000000-0000-4000-8000-000000000001')
   with check (user_id = '00000000-0000-4000-8000-000000000001');
 
 create policy "Usuarios removem as proprias tarefas"
