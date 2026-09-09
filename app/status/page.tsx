@@ -6,6 +6,7 @@ import {
   ArrowUp,
   ArrowUpDown,
   Check,
+  Link,
   Pencil,
   Plus,
   RotateCcw,
@@ -38,10 +39,21 @@ import type {
 
 type TaskFormState = Pick<
   TaskStatusInsert,
-  "nome" | "azure" | "sprint" | "status" | "ambiente"
+  | "nome"
+  | "azure"
+  | "azure_url"
+  | "liveops_url"
+  | "sprint"
+  | "status"
+  | "ambiente"
 >;
 
-type TaskFilterState = TaskFormState & {
+type FilterableTaskField = Exclude<
+  keyof TaskFormState,
+  "azure_url" | "liveops_url"
+>;
+
+type TaskFilterState = Pick<TaskFormState, FilterableTaskField> & {
   query: string;
 };
 
@@ -57,17 +69,23 @@ type SortState = {
 const emptyTaskForm: TaskFormState = {
   nome: "",
   azure: "",
+  azure_url: "",
+  liveops_url: "",
   sprint: "",
   status: "",
   ambiente: "",
 };
 
 const emptyTaskFilters: TaskFilterState = {
-  ...emptyTaskForm,
+  nome: "",
+  azure: "",
+  sprint: "",
+  status: "",
+  ambiente: "",
   query: "",
 };
 
-const taskFieldLabels: Record<keyof TaskFormState, string> = {
+const taskFieldLabels: Record<FilterableTaskField, string> = {
   nome: "Nome",
   azure: "Azure",
   sprint: "Sprint",
@@ -470,6 +488,24 @@ function CreateTaskModal({
                 placeholder="#12345"
               />
             </Field>
+            <Field label="Link Azure">
+              <Input
+                value={taskForm.azure_url}
+                onChange={(event) =>
+                  onFieldChange("azure_url", event.target.value)
+                }
+                placeholder="https://dev.azure.com/..."
+              />
+            </Field>
+            <Field label="LiveOps">
+              <Input
+                value={taskForm.liveops_url}
+                onChange={(event) =>
+                  onFieldChange("liveops_url", event.target.value)
+                }
+                placeholder="https://..."
+              />
+            </Field>
             <Field label="Sprint">
               <Input
                 value={taskForm.sprint}
@@ -550,7 +586,7 @@ function TaskTable({
     const normalizedQuery = normalizeFilterValue(filters.query);
     const filteredTasks = tasks.filter((task) => {
       const matchesFields = (
-        Object.keys(taskFieldLabels) as Array<keyof TaskFormState>
+        Object.keys(taskFieldLabels) as FilterableTaskField[]
       ).every((field) => {
         const filterValue = normalizeFilterValue(filters[field]);
 
@@ -569,7 +605,7 @@ function TaskTable({
         return true;
       }
 
-      return (Object.keys(taskFieldLabels) as Array<keyof TaskFormState>).some(
+      return (Object.keys(taskFieldLabels) as FilterableTaskField[]).some(
         (field) => normalizeFilterValue(task[field]).includes(normalizedQuery),
       );
     });
@@ -670,6 +706,7 @@ function TaskTable({
           <TableRow>
             <TableHead>Nome</TableHead>
             <TableHead>Azure</TableHead>
+            <TableHead>LiveOps</TableHead>
             <SortableTableHead field="sprint" sort={sort} onSort={toggleSort} />
             <SortableTableHead field="status" sort={sort} onSort={toggleSort} />
             <SortableTableHead
@@ -708,7 +745,7 @@ function TaskTable({
           ) : (
             <TableRow>
               <TableCell
-                colSpan={6}
+                colSpan={7}
                 className="h-24 text-center text-muted-foreground"
               >
                 Nenhuma tarefa encontrada com os filtros atuais.
@@ -814,10 +851,24 @@ function EditableTaskRow({
         />
       </TableCell>
       <TableCell>
+        <div className="space-y-2">
+          <Input
+            value={editTaskForm.azure}
+            onChange={(event) => onEditField("azure", event.target.value)}
+            placeholder="#12345"
+          />
+          <Input
+            value={editTaskForm.azure_url}
+            onChange={(event) => onEditField("azure_url", event.target.value)}
+            placeholder="Link Azure"
+          />
+        </div>
+      </TableCell>
+      <TableCell>
         <Input
-          value={editTaskForm.azure}
-          onChange={(event) => onEditField("azure", event.target.value)}
-          placeholder="#12345"
+          value={editTaskForm.liveops_url}
+          onChange={(event) => onEditField("liveops_url", event.target.value)}
+          placeholder="Link LiveOps"
         />
       </TableCell>
       <TableCell>
@@ -879,7 +930,15 @@ function ReadonlyTaskRow({
   return (
     <TableRow>
       <TableCell className="font-medium">{task.nome}</TableCell>
-      <TableCell>{task.azure || "-"}</TableCell>
+      <TableCell>
+        <TaskTextLink text={task.azure} url={task.azure_url} />
+      </TableCell>
+      <TableCell>
+        <TaskIconLink
+          label={`Abrir LiveOps de ${task.nome}`}
+          url={task.liveops_url}
+        />
+      </TableCell>
       <TableCell>{task.sprint || "-"}</TableCell>
       <TableCell>
         <TagBadge name={task.status} tags={tags} />
@@ -908,6 +967,56 @@ function ReadonlyTaskRow({
         </div>
       </TableCell>
     </TableRow>
+  );
+}
+
+function TaskTextLink({ text, url }: { text: string; url: string }) {
+  const href = getExternalHref(url);
+
+  if (!text) {
+    return <span>-</span>;
+  }
+
+  if (!href) {
+    return <span>{text}</span>;
+  }
+
+  return (
+    <a
+      className="font-medium text-primary underline-offset-4 hover:underline"
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+    >
+      {text}
+    </a>
+  );
+}
+
+function TaskIconLink({ label, url }: { label: string; url: string }) {
+  const href = getExternalHref(url);
+
+  if (!href) {
+    return (
+      <span
+        className="inline-flex h-10 w-10 items-center justify-center rounded-md text-muted-foreground opacity-50"
+        aria-label="LiveOps sem link"
+      >
+        <Link className="h-4 w-4" />
+      </span>
+    );
+  }
+
+  return (
+    <a
+      className="inline-flex h-10 w-10 items-center justify-center rounded-md text-primary transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={label}
+    >
+      <Link className="h-4 w-4" />
+    </a>
   );
 }
 
@@ -953,12 +1062,28 @@ function getTaskFormState(task: TaskStatusRow): TaskFormState {
   return {
     nome: task.nome,
     azure: task.azure,
+    azure_url: task.azure_url || "",
+    liveops_url: task.liveops_url || "",
     sprint: task.sprint,
     status: task.status,
     ambiente: task.ambiente,
   };
 }
 
-function normalizeFilterValue(value: string) {
-  return value.trim().toLocaleLowerCase("pt-BR");
+function normalizeFilterValue(value: string | null | undefined) {
+  return (value ?? "").trim().toLocaleLowerCase("pt-BR");
+}
+
+function getExternalHref(url: string | null | undefined) {
+  const trimmedUrl = (url ?? "").trim();
+
+  if (!trimmedUrl) {
+    return "";
+  }
+
+  if (/^https?:\/\//i.test(trimmedUrl)) {
+    return trimmedUrl;
+  }
+
+  return `https://${trimmedUrl}`;
 }

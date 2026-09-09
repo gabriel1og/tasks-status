@@ -22,11 +22,17 @@ create table if not exists public.task_statuses (
   user_id uuid not null,
   nome text not null,
   azure text not null default '',
+  azure_url text not null default '',
+  liveops_url text not null default '',
   sprint text not null default '',
   status text not null,
   ambiente text not null,
   created_at timestamptz not null default now()
 );
+
+alter table public.task_statuses
+  add column if not exists azure_url text not null default '',
+  add column if not exists liveops_url text not null default '';
 
 alter table public.user_settings drop constraint if exists user_settings_user_id_fkey;
 alter table public.tag_options drop constraint if exists tag_options_user_id_fkey;

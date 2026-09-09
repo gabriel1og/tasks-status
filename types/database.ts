@@ -3,6 +3,8 @@ export type TaskStatusRow = {
   user_id: string;
   nome: string;
   azure: string;
+  azure_url: string;
+  liveops_url: string;
   sprint: string;
   status: string;
   ambiente: string;
