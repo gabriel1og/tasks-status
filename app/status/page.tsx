@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
-import type { User } from "@supabase/supabase-js";
 
 import { AppShell } from "@/components/app-shell";
 import { AuthGuard } from "@/components/auth-guard";
@@ -19,8 +18,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { buildDefaultTags } from "@/lib/default-tags";
+import type { MockUser } from "@/lib/mock-auth";
 import { supabase } from "@/lib/supabase";
-import type { TagOptionRow, TaskStatusInsert, TaskStatusRow } from "@/types/database";
+import type {
+  TagOptionRow,
+  TaskStatusInsert,
+  TaskStatusRow,
+} from "@/types/database";
 
 type TaskFormState = Pick<
   TaskStatusInsert,
@@ -47,7 +51,7 @@ export default function StatusPage() {
   );
 }
 
-function StatusDashboard({ user }: { user: User }) {
+function StatusDashboard({ user }: { user: MockUser }) {
   const [tasks, setTasks] = useState<TaskStatusRow[]>([]);
   const [tags, setTags] = useState<TagOptionRow[]>([]);
   const [taskForm, setTaskForm] = useState<TaskFormState>(emptyTaskForm);
@@ -75,6 +79,7 @@ function StatusDashboard({ user }: { user: User }) {
     const { data: taskRows, error: tasksError } = await supabase
       .from("task_statuses")
       .select("*")
+      .eq("user_id", userId)
       .order("created_at", { ascending: false });
 
     if (tasksError) {
@@ -90,6 +95,7 @@ function StatusDashboard({ user }: { user: User }) {
     const { data: tagRows, error: tagsError } = await supabase
       .from("tag_options")
       .select("*")
+      .eq("user_id", userId)
       .order("tipo")
       .order("nome");
 
@@ -140,14 +146,20 @@ function StatusDashboard({ user }: { user: User }) {
   }
 
   async function deleteTask(taskId: string) {
-    const { error } = await supabase.from("task_statuses").delete().eq("id", taskId);
+    const { error } = await supabase
+      .from("task_statuses")
+      .delete()
+      .eq("id", taskId)
+      .eq("user_id", user.id);
 
     if (error) {
       setFeedback(error.message);
       return;
     }
 
-    setTasks((currentTasks) => currentTasks.filter((task) => task.id !== taskId));
+    setTasks((currentTasks) =>
+      currentTasks.filter((task) => task.id !== taskId),
+    );
   }
 
   return (
@@ -169,7 +181,7 @@ function StatusDashboard({ user }: { user: User }) {
               <Input
                 value={taskForm.azure}
                 onChange={(event) => setTaskField("azure", event.target.value)}
-                placeholder="AB#12345"
+                placeholder="#12345"
               />
             </Field>
             <Field label="Sprint">
@@ -197,7 +209,9 @@ function StatusDashboard({ user }: { user: User }) {
               </Button>
             </div>
           </form>
-          {feedback ? <p className="mt-4 text-sm text-destructive">{feedback}</p> : null}
+          {feedback ? (
+            <p className="mt-4 text-sm text-destructive">{feedback}</p>
+          ) : null}
         </CardContent>
       </Card>
 
@@ -207,7 +221,9 @@ function StatusDashboard({ user }: { user: User }) {
         </CardHeader>
         <CardContent>
           {isLoading ? (
-            <p className="text-sm text-muted-foreground">Carregando tarefas...</p>
+            <p className="text-sm text-muted-foreground">
+              Carregando tarefas...
+            </p>
           ) : (
             <TaskTable tasks={tasks} tags={tags} onDelete={deleteTask} />
           )}
@@ -221,7 +237,13 @@ function StatusDashboard({ user }: { user: User }) {
   }
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-2">
       <Label>{label}</Label>
@@ -269,7 +291,11 @@ function TaskTable({
   onDelete: (taskId: string) => void;
 }) {
   if (!tasks.length) {
-    return <p className="text-sm text-muted-foreground">Nenhuma tarefa cadastrada.</p>;
+    return (
+      <p className="text-sm text-muted-foreground">
+        Nenhuma tarefa cadastrada.
+      </p>
+    );
   }
 
   return (

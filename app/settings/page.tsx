@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Plus, Save, Trash2 } from "lucide-react";
-import type { User } from "@supabase/supabase-js";
+import { Plus, Trash2 } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { AuthGuard } from "@/components/auth-guard";
@@ -11,13 +10,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { buildDefaultTags } from "@/lib/default-tags";
+import type { MockUser } from "@/lib/mock-auth";
 import { supabase } from "@/lib/supabase";
 import type { TagKind, TagOptionInsert, TagOptionRow } from "@/types/database";
-
-type UserSettingsForm = {
-  nome: string;
-  cargo: string;
-};
 
 type TagForm = {
   tipo: TagKind;
@@ -43,15 +38,10 @@ export default function SettingsPage() {
   );
 }
 
-function SettingsPanel({ user }: { user: User }) {
-  const [profileForm, setProfileForm] = useState<UserSettingsForm>({
-    nome: "",
-    cargo: "",
-  });
+function SettingsPanel({ user }: { user: MockUser }) {
   const [tagForm, setTagForm] = useState<TagForm>(emptyTagForm);
   const [tags, setTags] = useState<TagOptionRow[]>([]);
   const [feedback, setFeedback] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
 
   const statusTags = useMemo(
     () => tags.filter((tag) => tag.tipo === "status"),
@@ -63,28 +53,23 @@ function SettingsPanel({ user }: { user: User }) {
   );
 
   useEffect(() => {
-    loadSettings(user);
-  }, [user]);
-
-  async function loadSettings(currentUser: User) {
-    const [{ data: settingsRow }, tagRows] = await Promise.all([
-      supabase.from("user_settings").select("*").eq("user_id", currentUser.id).maybeSingle(),
-      loadTags(currentUser.id),
-    ]);
-
-    setProfileForm({
-      nome: settingsRow?.nome ?? currentUser.email ?? "",
-      cargo: settingsRow?.cargo ?? "",
+    loadTags(user.id).then((tagRows) => {
+      setTags(tagRows);
     });
-    setTags(tagRows);
-  }
+  }, [user.id]);
 
   async function loadTags(userId: string) {
-    const { data: currentTags } = await supabase
+    const { data: currentTags, error } = await supabase
       .from("tag_options")
       .select("*")
+      .eq("user_id", userId)
       .order("tipo")
       .order("nome");
+
+    if (error) {
+      setFeedback(error.message);
+      return [];
+    }
 
     if (currentTags?.length) {
       return currentTags as TagOptionRow[];
@@ -96,25 +81,6 @@ function SettingsPanel({ user }: { user: User }) {
       .select("*");
 
     return (createdTags ?? []) as TagOptionRow[];
-  }
-
-  async function saveProfile(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setFeedback("");
-    setIsSaving(true);
-
-    const { error } = await supabase.from("user_settings").upsert(
-      {
-        user_id: user.id,
-        nome: profileForm.nome,
-        cargo: profileForm.cargo,
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "user_id" },
-    );
-
-    setIsSaving(false);
-    setFeedback(error ? error.message : "Perfil salvo.");
   }
 
   async function addTag(event: React.FormEvent<HTMLFormElement>) {
@@ -144,7 +110,11 @@ function SettingsPanel({ user }: { user: User }) {
   }
 
   async function deleteTag(tagId: string) {
-    const { error } = await supabase.from("tag_options").delete().eq("id", tagId);
+    const { error } = await supabase
+      .from("tag_options")
+      .delete()
+      .eq("id", tagId)
+      .eq("user_id", user.id);
 
     if (error) {
       setFeedback(error.message);
@@ -155,44 +125,16 @@ function SettingsPanel({ user }: { user: User }) {
   }
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[420px_1fr]">
-      <Card>
-        <CardHeader>
-          <CardTitle>Informações do usuário</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form className="space-y-4" onSubmit={saveProfile}>
-            <div className="space-y-2">
-              <Label htmlFor="nome">Nome</Label>
-              <Input
-                id="nome"
-                value={profileForm.nome}
-                onChange={(event) => setProfileField("nome", event.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="cargo">Cargo</Label>
-              <Input
-                id="cargo"
-                value={profileForm.cargo}
-                onChange={(event) => setProfileField("cargo", event.target.value)}
-              />
-            </div>
-            <Button disabled={isSaving}>
-              <Save className="h-4 w-4" />
-              Salvar perfil
-            </Button>
-          </form>
-          {feedback ? <p className="mt-4 text-sm text-muted-foreground">{feedback}</p> : null}
-        </CardContent>
-      </Card>
-
+    <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Tags de Status e Ambiente</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          <form className="grid gap-4 md:grid-cols-[160px_1fr_96px_140px]" onSubmit={addTag}>
+          <form
+            className="grid gap-4 md:grid-cols-[160px_1fr_96px_140px]"
+            onSubmit={addTag}
+          >
             <div className="space-y-2">
               <Label>Coluna</Label>
               <select
@@ -247,16 +189,19 @@ function SettingsPanel({ user }: { user: User }) {
 
           <div className="grid gap-4 lg:grid-cols-2">
             <TagList title="Status" tags={statusTags} onDelete={deleteTag} />
-            <TagList title="Ambiente" tags={environmentTags} onDelete={deleteTag} />
+            <TagList
+              title="Ambiente"
+              tags={environmentTags}
+              onDelete={deleteTag}
+            />
           </div>
+          {feedback ? (
+            <p className="text-sm text-muted-foreground">{feedback}</p>
+          ) : null}
         </CardContent>
       </Card>
     </div>
   );
-
-  function setProfileField(field: keyof UserSettingsForm, value: string) {
-    setProfileForm((currentForm) => ({ ...currentForm, [field]: value }));
-  }
 }
 
 function TagList({
@@ -273,7 +218,10 @@ function TagList({
       <div className="border-b px-4 py-3 text-sm font-semibold">{title}</div>
       <div className="divide-y">
         {tags.map((tag) => (
-          <div key={tag.id} className="flex items-center justify-between gap-3 px-4 py-3">
+          <div
+            key={tag.id}
+            className="flex items-center justify-between gap-3 px-4 py-3"
+          >
             <span className="flex items-center gap-3 text-sm">
               <span
                 className="h-3 w-3 rounded-full"

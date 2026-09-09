@@ -25,12 +25,19 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anonima
 npm run dev
 ```
 
+## Acesso
+
+O acesso e compartilhado pela equipe e usa um login local mockado:
+
+- Usuario: `inbound`
+- Senha: `inbound`
+
 ## Telas
 
-- `/login`: login e cadastro por e-mail e senha.
+- `/login`: login unico por usuario e senha.
 - `/status`: cadastro e tabela de acompanhamento das tarefas.
-- `/configuracoes`: dados do usuário e edição das tags de Status e Ambiente.
+- `/settings`: edição das tags de Status e Ambiente.
 
 ## Supabase
 
-Ative o provedor de autenticação por e-mail/senha no painel do Supabase. As tabelas usam RLS para manter cada usuário vendo apenas os próprios dados.
+Execute o SQL de `supabase/schema.sql`. As tabelas usam um `user_id` fixo para centralizar os dados da equipe no acesso compartilhado.

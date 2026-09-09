@@ -2,29 +2,30 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import type { User } from "@supabase/supabase-js";
 
-import { supabase } from "@/lib/supabase";
+import {
+  getInboundUser,
+  isInboundSessionActive,
+  type MockUser,
+} from "@/lib/mock-auth";
 
 type AuthGuardProps = {
-  children: (user: User) => React.ReactNode;
+  children: (user: MockUser) => React.ReactNode;
 };
 
 export function AuthGuard({ children }: AuthGuardProps) {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<MockUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session?.user) {
-        router.replace("/login");
-        return;
-      }
+    if (!isInboundSessionActive()) {
+      router.replace("/login");
+      return;
+    }
 
-      setCurrentUser(data.session.user);
-      setIsLoading(false);
-    });
+    setCurrentUser(getInboundUser());
+    setIsLoading(false);
   }, [router]);
 
   if (isLoading) {
