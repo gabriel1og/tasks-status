@@ -47,7 +47,7 @@ export default function LoginPage() {
 
   return (
     <main className="grid min-h-screen grid-cols-1 bg-background lg:grid-cols-[1fr_460px]">
-      <section className="hidden items-center bg-primary px-12 text-primary-foreground lg:flex">
+      <section className="hidden items-center bg-sky-900 px-12 text-primary-foreground lg:flex">
         <div className="max-w-xl space-y-6">
           <div className="flex h-14 w-14 items-center justify-center rounded-md bg-white/15">
             <CheckCircle2 className="h-8 w-8" />
@@ -56,7 +56,7 @@ export default function LoginPage() {
             <p className="mb-3 text-sm uppercase tracking-wide text-white/75">
               Operacional
             </p>
-            <h1 className="text-4xl font-semibold leading-tight">
+            <h1 className="text-4xl font-semibold text-white/75">
               Controle os status de tarefas por sprint, ambiente e fluxo Azure.
             </h1>
           </div>
@@ -65,7 +65,9 @@ export default function LoginPage() {
       <section className="flex items-center justify-center px-4 py-10">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle>{authMode === "login" ? "Entrar" : "Criar acesso"}</CardTitle>
+            <CardTitle>
+              {authMode === "login" ? "Entrar" : "Criar acesso"}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <form className="space-y-4" onSubmit={submitCredentials}>
@@ -90,15 +92,23 @@ export default function LoginPage() {
                   required
                 />
               </div>
-              {feedback ? <p className="text-sm text-muted-foreground">{feedback}</p> : null}
+              {feedback ? (
+                <p className="text-sm text-muted-foreground">{feedback}</p>
+              ) : null}
               <Button className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? "Aguarde..." : authMode === "login" ? "Entrar" : "Cadastrar"}
+                {isSubmitting
+                  ? "Aguarde..."
+                  : authMode === "login"
+                    ? "Entrar"
+                    : "Cadastrar"}
               </Button>
             </form>
             <Button
               className="mt-4 w-full"
               variant="ghost"
-              onClick={() => setAuthMode(authMode === "login" ? "signup" : "login")}
+              onClick={() =>
+                setAuthMode(authMode === "login" ? "signup" : "login")
+              }
             >
               {authMode === "login" ? "Criar uma conta" : "Já tenho conta"}
             </Button>
