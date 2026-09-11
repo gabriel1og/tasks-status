@@ -25,6 +25,9 @@ import type {
 
 type TaskWorkspaceMode = "status" | "future";
 
+const futureTaskInitialStatus = "To Do / Backlog";
+const futureTaskInitialEnvironment = "Sem Ambiente";
+
 export function TaskWorkspace({
   user,
   mode,
@@ -162,9 +165,16 @@ export function TaskWorkspace({
     setFeedback("");
     setIsSaving(true);
 
+    const createTaskForm = isFutureWorkspace
+      ? {
+          ...taskForm,
+          status: futureTaskInitialStatus,
+          ambiente: futureTaskInitialEnvironment,
+        }
+      : taskForm;
     const payload = buildTaskPayload(
       user.id,
-      taskForm,
+      createTaskForm,
       sprints,
       statusTags,
       environmentTags,

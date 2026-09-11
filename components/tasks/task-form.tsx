@@ -136,18 +136,22 @@ export function CreateTaskModal({
                 onChange={(value) => onFieldChange("sprint_id", value)}
               />
             ) : null}
-            <TagSelectField
-              label="Status"
-              value={taskForm.status}
-              options={statusTags}
-              onChange={(value) => onFieldChange("status", value)}
-            />
-            <TagSelectField
-              label="Ambiente"
-              value={taskForm.ambiente}
-              options={environmentTags}
-              onChange={(value) => onFieldChange("ambiente", value)}
-            />
+            {!isFutureTask ? (
+              <>
+                <TagSelectField
+                  label="Status"
+                  value={taskForm.status}
+                  options={statusTags}
+                  onChange={(value) => onFieldChange("status", value)}
+                />
+                <TagSelectField
+                  label="Ambiente"
+                  value={taskForm.ambiente}
+                  options={environmentTags}
+                  onChange={(value) => onFieldChange("ambiente", value)}
+                />
+              </>
+            ) : null}
           </div>
 
           {feedback ? (
