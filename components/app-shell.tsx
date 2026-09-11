@@ -144,29 +144,24 @@ function SidebarHeader({
         isCollapsed ? "flex-col items-center" : "items-center justify-between",
       )}
     >
-      <div
-        className={cn(
-          "overflow-hidden",
-          isCollapsed ? "w-10" : "w-44",
-        )}
-      >
+      <div className={cn("overflow-hidden", isCollapsed ? "w-10" : "w-44")}>
         <Image
-          src="/4tax-inbound-logo.png"
+          src={isCollapsed ? "/logo.png" : "/logo-name.png"}
           alt="4tax Inbound"
-          width={235}
-          height={36}
+          width={225}
+          height={30}
           priority
-          className={cn("h-auto dark:hidden", isCollapsed ? "w-10" : "w-44")}
+          className={cn("h-auto dark:hidden", isCollapsed ? "w-10" : "w-32")}
         />
         <Image
-          src="/4tax-inbound-logo-dark.png"
+          src={isCollapsed ? "/logo.png" : "/logo-name.png"}
           alt="4tax Inbound"
-          width={235}
-          height={36}
+          width={225}
+          height={30}
           priority
           className={cn(
             "hidden h-auto dark:block",
-            isCollapsed ? "w-10" : "w-44",
+            isCollapsed ? "w-10" : "w-32",
           )}
         />
       </div>

@@ -1,27 +1,70 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#0b1220"/>
-  <rect x="10" y="10" width="44" height="44" rx="10" fill="#111827"/>
-  <path
-    d="M24 14a10 10 0 1 0 8.66 15"
-    fill="none"
-    stroke="#2f80ed"
-    stroke-linecap="round"
-    stroke-width="7"
-  />
-  <path
-    d="M33 19h13M33 31h13M18 44h28"
-    fill="none"
-    stroke="#e5e7eb"
-    stroke-linecap="round"
-    stroke-width="4"
-  />
-  <circle cx="18" cy="44" r="5" fill="#22c55e"/>
-  <path
-    d="m15.5 44.2 1.8 1.8 3.4-4"
-    fill="none"
-    stroke="#052e16"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    stroke-width="2"
-  />
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Task status management logo</title>
+  <desc id="desc">A clipboard with task status markers, progress flow, and dashboard chart.</desc>
+  <defs>
+    <linearGradient id="graphite" x1="320" y1="160" x2="780" y2="890" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#263746"/>
+      <stop offset="1" stop-color="#121A24"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="360" y1="260" x2="660" y2="800" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EEF6FA"/>
+    </linearGradient>
+    <linearGradient id="teal" x1="120" y1="610" x2="720" y2="790" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#09C7B4"/>
+      <stop offset="1" stop-color="#04A98F"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="500" y1="120" x2="870" y2="740" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0A96FF"/>
+      <stop offset="1" stop-color="#0878E8"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="620" y1="570" x2="930" y2="900" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFC341"/>
+      <stop offset="1" stop-color="#FFAC00"/>
+    </linearGradient>
+    <linearGradient id="muted" x1="420" y1="340" x2="660" y2="650" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#BDD0DF"/>
+      <stop offset="1" stop-color="#8EA4B6"/>
+    </linearGradient>
+    <filter id="softShadow" x="88" y="120" width="856" height="820" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#0B1620" flood-opacity=".18"/>
+    </filter>
+  </defs>
+
+  <g filter="url(#softShadow)">
+    <path d="M214 606C214 393 385 221 596 221C750 221 883 314 942 447" stroke="url(#blue)" stroke-width="64" stroke-linecap="round"/>
+    <path d="M829 825C763 883 678 918 586 918C381 918 214 752 214 547" stroke="url(#teal)" stroke-width="64" stroke-linecap="round"/>
+
+    <path d="M310 245H430C444 189 495 148 556 148C617 148 668 189 682 245H764C805 245 838 278 838 319V794C838 835 805 868 764 868H310C269 868 236 835 236 794V319C236 278 269 245 310 245Z" fill="url(#graphite)"/>
+    <path d="M323 333C323 310 341 292 364 292H711C734 292 752 310 752 333V779H323V333Z" fill="url(#paper)"/>
+
+    <path d="M405 238C405 215 424 196 447 196H477C486 160 518 133 556 133C594 133 626 160 635 196H663C686 196 705 215 705 238V273C705 296 686 315 663 315H447C424 315 405 296 405 273V238Z" fill="url(#graphite)"/>
+    <circle cx="556" cy="210" r="27" fill="#F7FBFD"/>
+
+    <circle cx="438" cy="399" r="62" fill="url(#teal)"/>
+    <path d="M398 398L427 427L482 372" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="523" y="378" width="201" height="42" rx="21" fill="url(#muted)"/>
+
+    <circle cx="438" cy="553" r="62" fill="url(#blue)"/>
+    <path d="M398 552L427 581L482 526" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="523" y="532" width="166" height="42" rx="21" fill="url(#muted)"/>
+
+    <circle cx="438" cy="707" r="62" fill="url(#amber)"/>
+    <circle cx="438" cy="707" r="29" fill="#F7FBFD"/>
+    <rect x="523" y="686" width="188" height="42" rx="21" fill="url(#muted)"/>
+
+    <rect x="700" y="489" width="268" height="268" rx="48" fill="url(#graphite)"/>
+    <rect x="745" y="630" width="64" height="82" rx="14" fill="url(#teal)"/>
+    <rect x="832" y="583" width="64" height="129" rx="14" fill="url(#blue)"/>
+    <rect x="919" y="531" width="64" height="181" rx="14" fill="url(#amber)"/>
+
+    <path d="M298 827H860" stroke="url(#teal)" stroke-width="54" stroke-linecap="round"/>
+    <circle cx="327" cy="827" r="57" fill="url(#teal)"/>
+    <circle cx="327" cy="827" r="24" fill="#F7FBFD"/>
+    <circle cx="556" cy="827" r="57" fill="url(#blue)"/>
+    <circle cx="556" cy="827" r="24" fill="#F7FBFD"/>
+    <circle cx="785" cy="827" r="57" fill="url(#amber)"/>
+    <circle cx="785" cy="827" r="24" fill="#F7FBFD"/>
+    <path d="M847 774L937 827L847 880V774Z" fill="url(#amber)"/>
+  </g>
 </svg>
