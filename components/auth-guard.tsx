@@ -2,30 +2,54 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 
-import {
-  getInboundUser,
-  isInboundSessionActive,
-  type MockUser,
-} from "@/lib/mock-auth";
+import { supabase } from "@/lib/supabase";
 
 type AuthGuardProps = {
-  children: (user: MockUser) => React.ReactNode;
+  children: (user: User) => React.ReactNode;
 };
 
 export function AuthGuard({ children }: AuthGuardProps) {
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState<MockUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!isInboundSessionActive()) {
-      router.replace("/login");
-      return;
-    }
+    let isMounted = true;
 
-    setCurrentUser(getInboundUser());
-    setIsLoading(false);
+    void supabase.auth.getSession().then(({ data }) => {
+      if (!isMounted) {
+        return;
+      }
+
+      setCurrentUser(data.session?.user ?? null);
+      setIsLoading(false);
+
+      if (!data.session?.user) {
+        router.replace("/login");
+      }
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (!isMounted) {
+          return;
+        }
+
+        setCurrentUser(session?.user ?? null);
+        setIsLoading(false);
+
+        if (!session?.user) {
+          router.replace("/login");
+        }
+      },
+    );
+
+    return () => {
+      isMounted = false;
+      authListener.subscription.unsubscribe();
+    };
   }, [router]);
 
   if (isLoading) {

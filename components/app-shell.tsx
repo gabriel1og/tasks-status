@@ -8,6 +8,7 @@ import {
   CalendarRange,
   ListChecks,
   ListTodo,
+  LoaderCircle,
   type LucideIcon,
   LogOut,
   PanelLeftClose,
@@ -17,7 +18,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { ThemeModeMenu } from "@/components/theme-mode-menu";
-import { signOutInbound } from "@/lib/mock-auth";
+import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
 type AppShellProps = {
@@ -38,6 +39,8 @@ export function AppShell({ children, title }: AppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState("");
 
   useEffect(() => {
     setIsSidebarCollapsed(
@@ -45,8 +48,24 @@ export function AppShell({ children, title }: AppShellProps) {
     );
   }, []);
 
-  function signOut() {
-    signOutInbound();
+  async function signOut() {
+    if (isSigningOut) {
+      return;
+    }
+
+    setIsSigningOut(true);
+    setSignOutError("");
+    const { error } = await supabase.auth.signOut({ scope: "local" });
+
+    if (error) {
+      console.error(
+        JSON.stringify({ event: "auth_sign_out_failed", message: error.message }),
+      );
+      setSignOutError("Não foi possível sair. Tente novamente.");
+      setIsSigningOut(false);
+      return;
+    }
+
     router.replace("/login");
   }
 
@@ -85,7 +104,11 @@ export function AppShell({ children, title }: AppShellProps) {
             );
           })}
         </nav>
-        <SidebarSignOut isCollapsed={isSidebarCollapsed} onClick={signOut} />
+        <SidebarSignOut
+          isCollapsed={isSidebarCollapsed}
+          isSigningOut={isSigningOut}
+          onClick={signOut}
+        />
       </aside>
       <main className={cn(isSidebarCollapsed ? "md:pl-20" : "md:pl-64")}>
         <header className="sticky top-0 z-10 border-b bg-background/90 px-4 py-4 backdrop-blur md:px-8">
@@ -114,9 +137,14 @@ export function AppShell({ children, title }: AppShellProps) {
                   variant="outline"
                   size="icon"
                   onClick={signOut}
-                  aria-label="Sair"
+                  aria-label={isSigningOut ? "Saindo" : "Sair"}
+                  disabled={isSigningOut}
                 >
-                  <LogOut className="h-4 w-4" />
+                  {isSigningOut ? (
+                    <LoaderCircle className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <LogOut className="h-4 w-4" />
+                  )}
                 </Button>
               </div>
             </div>
@@ -124,6 +152,15 @@ export function AppShell({ children, title }: AppShellProps) {
         </header>
         <div className="p-4 md:p-8">{children}</div>
       </main>
+      {signOutError ? (
+        <div
+          role="alert"
+          className="fixed bottom-4 right-4 z-50 rounded-md border border-destructive/40 bg-card px-4 py-3 text-sm text-destructive shadow-lg"
+        >
+          {signOutError}
+        </div>
+      ) : null}
+      {isSigningOut ? <SignOutOverlay /> : null}
     </div>
   );
 }
@@ -147,22 +184,11 @@ function SidebarHeader({
       <div className={cn("overflow-hidden", isCollapsed ? "w-10" : "w-44")}>
         <Image
           src={isCollapsed ? "/logo.png" : "/logo-name.png"}
-          alt="4tax Inbound"
-          width={225}
-          height={30}
+          alt="TaskFlow"
+          width={isCollapsed ? 1280 : 2103}
+          height={isCollapsed ? 1280 : 748}
           priority
-          className={cn("h-auto dark:hidden", isCollapsed ? "w-10" : "w-32")}
-        />
-        <Image
-          src={isCollapsed ? "/logo.png" : "/logo-name.png"}
-          alt="4tax Inbound"
-          width={225}
-          height={30}
-          priority
-          className={cn(
-            "hidden h-auto dark:block",
-            isCollapsed ? "w-10" : "w-32",
-          )}
+          className={cn("h-auto", isCollapsed ? "w-10" : "w-32")}
         />
       </div>
       <Button
@@ -210,22 +236,46 @@ function SidebarNavItem({
 
 function SidebarSignOut({
   isCollapsed,
+  isSigningOut,
   onClick,
 }: {
   isCollapsed: boolean;
+  isSigningOut: boolean;
   onClick: () => void;
 }) {
+  const label = isSigningOut ? "Saindo..." : "Sair";
+
   return (
     <Button
       className={cn("group relative mt-auto", isCollapsed ? "px-0" : "w-full")}
       variant="outline"
       size={isCollapsed ? "icon" : "default"}
       onClick={onClick}
-      aria-label="Sair"
+      aria-label={label}
+      disabled={isSigningOut}
     >
-      <LogOut className="h-4 w-4" />
-      {isCollapsed ? <SidebarTooltip label="Sair" /> : "Sair"}
+      {isSigningOut ? (
+        <LoaderCircle className="h-4 w-4 animate-spin" />
+      ) : (
+        <LogOut className="h-4 w-4" />
+      )}
+      {isCollapsed ? <SidebarTooltip label={label} /> : label}
     </Button>
+  );
+}
+
+function SignOutOverlay() {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className="fixed inset-0 z-40 flex items-center justify-center bg-background/70 backdrop-blur-sm"
+    >
+      <div className="flex items-center gap-3 rounded-md border bg-card px-5 py-4 text-sm font-medium shadow-xl">
+        <LoaderCircle className="h-5 w-5 animate-spin text-primary" />
+        Saindo...
+      </div>
+    </div>
   );
 }
 

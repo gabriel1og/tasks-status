@@ -25,16 +25,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anonima
 npm run dev
 ```
 
-## Acesso
-
-O acesso e compartilhado pela equipe e usa um login local mockado:
-
-- Usuario: `inbound`
-- Senha: `inbound`
-
 ## Telas
 
-- `/login`: login unico por usuario e senha.
+- `/login`: login e cadastro por e-mail/senha ou acesso com Google.
 - `/status`: cadastro e tabela de acompanhamento das tarefas.
 - `/sprints`: tarefas da sprint atual ou da sprint selecionada.
 - `/future-tasks`: cadastro e acompanhamento de tarefas ainda sem planejamento definido.
@@ -42,4 +35,13 @@ O acesso e compartilhado pela equipe e usa um login local mockado:
 
 ## Supabase
 
-Execute o SQL de `supabase/schema.sql`. As tabelas usam um `user_id` fixo para centralizar os dados da equipe no acesso compartilhado. O schema inclui as tabelas `task_statuses`, `sprints`, `tag_options` e `user_settings`.
+Execute o SQL de `supabase/schema.sql`. As tabelas usam RLS com `auth.uid()` para que cada conta acesse apenas os próprios registros. O schema inclui as tabelas `task_statuses`, `sprints`, `tag_options` e `user_settings`.
+
+No painel do Supabase:
+
+1. Mantenha o provedor de e-mail habilitado em **Authentication > Providers**.
+2. Habilite o Google e informe o Client ID e o Client Secret criados no Google Cloud.
+3. No Google Cloud, use `https://SEU-PROJECT-REF.supabase.co/auth/v1/callback` como URI de redirecionamento autorizada.
+4. Em **Authentication > URL Configuration**, configure a URL da aplicação e permita o caminho `/status` entre as URLs de redirecionamento.
+
+O schema recria as chaves para `auth.users` com `NOT VALID` para não apagar nem bloquear registros do antigo acesso compartilhado. Esses registros legados precisam ser atribuídos manualmente a uma conta real antes de validar as constraints.

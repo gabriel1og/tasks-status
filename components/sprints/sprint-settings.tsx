@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
+import type { User } from "@supabase/supabase-js";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatDate } from "@/lib/format";
-import type { MockUser } from "@/lib/mock-auth";
+import { getRequestErrorFeedback } from "@/lib/request-feedback";
 import { supabase } from "@/lib/supabase";
 import type { SprintInsert, SprintRow } from "@/types/database";
 import { DateField } from "../ui/date-field";
@@ -21,7 +22,7 @@ const emptySprintForm: SprintForm = {
   data_fim: "",
 };
 
-export function SprintSettings({ user }: { user: MockUser }) {
+export function SprintSettings({ user }: { user: User }) {
   const [sprints, setSprints] = useState<SprintRow[]>([]);
   const [sprintForm, setSprintForm] = useState<SprintForm>(emptySprintForm);
   const [editSprintForm, setEditSprintForm] =
@@ -42,7 +43,13 @@ export function SprintSettings({ user }: { user: MockUser }) {
       .order("data_inicio", { ascending: false });
 
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "load_sprint_settings",
+          error,
+          "Não foi possível carregar as sprints.",
+        ),
+      );
       return;
     }
 
@@ -63,7 +70,13 @@ export function SprintSettings({ user }: { user: MockUser }) {
 
     setIsSaving(false);
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "create_sprint",
+          error,
+          "Não foi possível criar a sprint.",
+        ),
+      );
       return;
     }
 
@@ -90,7 +103,13 @@ export function SprintSettings({ user }: { user: MockUser }) {
 
     if (error) {
       setIsSaving(false);
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "update_sprint",
+          error,
+          "Não foi possível salvar as alterações da sprint.",
+        ),
+      );
       return;
     }
 
@@ -102,7 +121,13 @@ export function SprintSettings({ user }: { user: MockUser }) {
 
     setIsSaving(false);
     if (taskUpdateError) {
-      setFeedback(taskUpdateError.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "update_tasks_after_sprint_rename",
+          taskUpdateError,
+          "A sprint foi atualizada, mas não foi possível atualizar as tarefas vinculadas.",
+        ),
+      );
     }
 
     setSprints((currentSprints) =>
@@ -126,7 +151,13 @@ export function SprintSettings({ user }: { user: MockUser }) {
 
     if (taskUpdateError) {
       setIsSaving(false);
-      setFeedback(taskUpdateError.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "release_tasks_from_sprint",
+          taskUpdateError,
+          "Não foi possível liberar as tarefas vinculadas à sprint.",
+        ),
+      );
       return;
     }
 
@@ -138,7 +169,13 @@ export function SprintSettings({ user }: { user: MockUser }) {
 
     setIsSaving(false);
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "delete_sprint",
+          error,
+          "Não foi possível remover a sprint.",
+        ),
+      );
       return;
     }
 

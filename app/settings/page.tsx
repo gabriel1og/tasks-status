@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Check, Pencil, Plus, Trash2, X } from "lucide-react";
+import type { User } from "@supabase/supabase-js";
 
 import { AppShell } from "@/components/app-shell";
 import { AuthGuard } from "@/components/auth-guard";
@@ -11,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { buildDefaultTags } from "@/lib/default-tags";
-import type { MockUser } from "@/lib/mock-auth";
+import { getRequestErrorFeedback } from "@/lib/request-feedback";
 import { supabase } from "@/lib/supabase";
 import type { TagKind, TagOptionInsert, TagOptionRow } from "@/types/database";
 
@@ -39,7 +40,7 @@ export default function SettingsPage() {
   );
 }
 
-function SettingsPanel({ user }: { user: MockUser }) {
+function SettingsPanel({ user }: { user: User }) {
   const [tagForm, setTagForm] = useState<TagForm>(emptyTagForm);
   const [editTagForm, setEditTagForm] = useState<TagForm>(emptyTagForm);
   const [editingTagId, setEditingTagId] = useState<string | null>(null);
@@ -71,7 +72,13 @@ function SettingsPanel({ user }: { user: MockUser }) {
       .order("nome");
 
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "load_settings_tags",
+          error,
+          "Não foi possível carregar as tags.",
+        ),
+      );
       return [];
     }
 
@@ -79,10 +86,20 @@ function SettingsPanel({ user }: { user: MockUser }) {
       return currentTags as TagOptionRow[];
     }
 
-    const { data: createdTags } = await supabase
+    const { data: createdTags, error: createError } = await supabase
       .from("tag_options")
       .insert(buildDefaultTags(userId))
       .select("*");
+
+    if (createError) {
+      setFeedback(
+        getRequestErrorFeedback(
+          "create_default_settings_tags",
+          createError,
+          "Não foi possível preparar as tags iniciais.",
+        ),
+      );
+    }
 
     return (createdTags ?? []) as TagOptionRow[];
   }
@@ -105,7 +122,13 @@ function SettingsPanel({ user }: { user: MockUser }) {
       .single();
 
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "create_settings_tag",
+          error,
+          "Não foi possível adicionar a tag.",
+        ),
+      );
       return;
     }
 
@@ -132,7 +155,13 @@ function SettingsPanel({ user }: { user: MockUser }) {
 
     if (error) {
       setIsSaving(false);
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "update_settings_tag",
+          error,
+          "Não foi possível salvar as alterações da tag.",
+        ),
+      );
       return;
     }
 
@@ -159,7 +188,13 @@ function SettingsPanel({ user }: { user: MockUser }) {
       .eq("user_id", user.id);
 
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "delete_settings_tag",
+          error,
+          "Não foi possível remover a tag.",
+        ),
+      );
       return;
     }
 
@@ -279,7 +314,15 @@ function SettingsPanel({ user }: { user: MockUser }) {
       .eq("user_id", user.id)
       .eq(editTagForm.tipo, originalTag.nome);
 
-    return error?.message ?? "";
+    if (!error) {
+      return "";
+    }
+
+    return getRequestErrorFeedback(
+      "update_tasks_after_tag_rename",
+      error,
+      "A tag foi atualizada, mas não foi possível atualizar as tarefas vinculadas.",
+    );
   }
 
   function setEditTagField(field: keyof TagForm, value: string) {

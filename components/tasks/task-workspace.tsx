@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Plus } from "lucide-react";
+import type { User } from "@supabase/supabase-js";
 
 import {
   CreateTaskModal,
@@ -13,7 +14,7 @@ import { TaskTable } from "@/components/tasks/task-table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buildDefaultTags } from "@/lib/default-tags";
-import type { MockUser } from "@/lib/mock-auth";
+import { getRequestErrorFeedback } from "@/lib/request-feedback";
 import { supabase } from "@/lib/supabase";
 import type {
   SprintRow,
@@ -28,7 +29,7 @@ export function TaskWorkspace({
   user,
   mode,
 }: {
-  user: MockUser;
+  user: User;
   mode: TaskWorkspaceMode;
 }) {
   const [tasks, setTasks] = useState<TaskStatusRow[]>([]);
@@ -81,7 +82,13 @@ export function TaskWorkspace({
       .order("nome");
 
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "load_task_tags",
+          error,
+          "Não foi possível carregar as opções das tarefas.",
+        ),
+      );
       return [];
     }
 
@@ -95,7 +102,13 @@ export function TaskWorkspace({
       .select("*");
 
     if (createError) {
-      setFeedback(createError.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "create_default_task_tags",
+          createError,
+          "Não foi possível preparar as opções iniciais das tarefas.",
+        ),
+      );
     }
 
     return (createdTags ?? []) as TagOptionRow[];
@@ -109,7 +122,13 @@ export function TaskWorkspace({
       .order("data_inicio", { ascending: false });
 
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "load_task_sprints",
+          error,
+          "Não foi possível carregar as sprints.",
+        ),
+      );
       return [];
     }
 
@@ -125,7 +144,13 @@ export function TaskWorkspace({
       .order("created_at", { ascending: false });
 
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "load_tasks",
+          error,
+          "Não foi possível carregar as tarefas. Tente novamente em instantes.",
+        ),
+      );
       return [];
     }
 
@@ -153,7 +178,13 @@ export function TaskWorkspace({
 
     setIsSaving(false);
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "create_task",
+          error,
+          "Não foi possível criar a tarefa. Tente novamente.",
+        ),
+      );
       return;
     }
 
@@ -188,7 +219,13 @@ export function TaskWorkspace({
 
     setIsSaving(false);
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "update_task",
+          error,
+          "Não foi possível salvar as alterações da tarefa.",
+        ),
+      );
       return;
     }
 
@@ -209,7 +246,13 @@ export function TaskWorkspace({
       .eq("user_id", user.id);
 
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "delete_task",
+          error,
+          "Não foi possível remover a tarefa.",
+        ),
+      );
       return;
     }
 
@@ -231,7 +274,13 @@ export function TaskWorkspace({
       .eq("user_id", user.id);
 
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "assign_task_to_sprint",
+          error,
+          "Não foi possível associar a tarefa à sprint.",
+        ),
+      );
       return;
     }
 

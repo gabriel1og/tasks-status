@@ -4,11 +4,11 @@ Guia para agentes trabalhando neste projeto. Leia este arquivo antes de editar c
 
 ## Contexto do projeto
 
-Este projeto e uma central interna da equipe de desenvolvimento Inbound para acompanhar o andamento de tasks. Ele foi criado como uma aplicacao simples em Next.js, React, TypeScript, Tailwind/shadcn-ui e Supabase.
+Este projeto e uma central interna de uma equipe de desenvolvimento para acompanhar o andamento de tasks. Ele foi criado como uma aplicacao simples em Next.js, React, TypeScript, Tailwind/shadcn-ui e Supabase.
 
 O fluxo principal fica em:
 
-- `/login`: login unico mockado.
+- `/login`: login e cadastro por e-mail/senha ou Google via Supabase Auth (no momento pausada).
 - `/status`: cadastro, listagem, edicao e remocao de tarefas.
 - `/settings`: cadastro, edicao e remocao das tags usadas nas colunas de Status e Ambiente.
 
@@ -22,11 +22,10 @@ As tarefas possuem as colunas principais:
 
 ## Decisoes ja tomadas
 
-- O app nao usa login pessoal por Supabase Auth. A equipe usa um acesso unico mockado.
-- O usuario e senha padrao sao `inbound` / `inbound`.
-- A identidade compartilhada fica em `lib/mock-auth.ts`.
-- O `user_id` fixo da central e `00000000-0000-4000-8000-000000000001`.
-- As queries do frontend devem sempre filtrar pelo `user_id` fixo, mesmo que o RLS do Supabase tambem esteja configurado.
+- O app usa Supabase Auth com e-mail/senha e Google OAuth (no momento pausada).
+- O `user_id` dos registros corresponde ao `id` da conta autenticada.
+- As queries do frontend devem sempre filtrar pelo `user.id`, mesmo que o RLS do Supabase tambem esteja configurado.
+- O RLS usa `auth.uid() = user_id` para isolar os dados de cada conta.
 - A rota antiga `/configuracoes` foi substituida por `/settings`.
 - O card de informacoes do usuario foi removido da tela de configuracoes.
 - O projeto deve manter suporte real a light mode, dark mode e system mode pelo seletor no header.
@@ -37,12 +36,11 @@ As tarefas possuem as colunas principais:
 
 - `app/status/page.tsx`: dashboard de tarefas, formulario de nova tarefa, tabela e edicao inline.
 - `app/settings/page.tsx`: gerenciamento das tags de Status e Ambiente.
-- `app/login/page.tsx`: tela de login mockado.
+- `app/login/page.tsx`: login, cadastro e acesso com Google via Supabase Auth (no momento pausada).
 - `components/app-shell.tsx`: layout autenticado, menu lateral, header e logout.
-- `components/auth-guard.tsx`: protecao client-side baseada na sessao mockada.
+- `components/auth-guard.tsx`: protecao client-side baseada na sessao do Supabase.
 - `components/theme-mode-menu.tsx`: menu de tema Claro, Escuro e Sistema.
 - `components/ui/*`: componentes base no estilo shadcn-ui.
-- `lib/mock-auth.ts`: usuario compartilhado e controle de sessao via `localStorage`.
 - `lib/default-tags.ts`: tags iniciais criadas quando ainda nao ha tags no Supabase.
 - `lib/supabase.ts`: cliente Supabase.
 - `types/database.ts`: tipos TypeScript das tabelas usadas pela UI.
@@ -60,9 +58,9 @@ Tabelas atuais:
 
 Cuidados ao alterar o schema:
 
-- Mantenha as policies alinhadas com o `user_id` fixo do login compartilhado.
+- Mantenha as policies alinhadas com `auth.uid()` e o `user_id` da conta autenticada.
 - Se a UI criar, editar ou remover registros, garanta policies correspondentes de `insert`, `update`, `delete` e `select`.
-- Nao recrie dependencia em `auth.users` ou `auth.uid()` sem uma decisao explicita do usuario.
+- Preserve as chaves estrangeiras para `auth.users`; use `not valid` enquanto houver registros legados ainda nao migrados.
 - Preserve os `drop policy if exists` antes de recriar policies, pois isso facilita reaplicar o SQL durante ajustes.
 
 ## Padroes de UI
@@ -131,7 +129,7 @@ node_modules\.bin\next.cmd build
 
 - Projeto base Next.js/React/TypeScript com Tailwind/shadcn-ui e Supabase.
 - Tela de login, menu autenticado, tabela de tarefas e tela de configuracoes.
-- Login unico mockado para a equipe Inbound.
+- Login e cadastro por e-mail/senha e integracao com Google via Supabase Auth (no momento pausada).
 - Rota `/settings` no lugar de `/configuracoes`.
 - Remocao do perfil de usuario da tela de configuracoes.
 - Light/dark/system mode no header com persistencia em `localStorage`.

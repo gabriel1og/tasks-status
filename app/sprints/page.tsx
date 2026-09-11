@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 
 import { AppShell } from "@/components/app-shell";
 import { AuthGuard } from "@/components/auth-guard";
@@ -8,7 +9,7 @@ import { selectInputClassName } from "@/components/tasks/task-form";
 import { TaskTable } from "@/components/tasks/task-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import type { MockUser } from "@/lib/mock-auth";
+import { getRequestErrorFeedback } from "@/lib/request-feedback";
 import { supabase } from "@/lib/supabase";
 import type { SprintRow, TagOptionRow, TaskStatusRow } from "@/types/database";
 
@@ -24,7 +25,7 @@ export default function SprintsPage() {
   );
 }
 
-function SprintDashboard({ user }: { user: MockUser }) {
+function SprintDashboard({ user }: { user: User }) {
   const [sprints, setSprints] = useState<SprintRow[]>([]);
   const [tasks, setTasks] = useState<TaskStatusRow[]>([]);
   const [tags, setTags] = useState<TagOptionRow[]>([]);
@@ -79,7 +80,13 @@ function SprintDashboard({ user }: { user: MockUser }) {
 
     const error = sprintResult.error ?? taskResult.error ?? tagResult.error;
     if (error) {
-      setFeedback(error.message);
+      setFeedback(
+        getRequestErrorFeedback(
+          "load_sprint_dashboard",
+          error,
+          "Não foi possível carregar os dados da sprint. Tente novamente em instantes.",
+        ),
+      );
     }
 
     const sprintRows = (sprintResult.data ?? []) as SprintRow[];

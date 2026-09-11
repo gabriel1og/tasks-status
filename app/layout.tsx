@@ -19,8 +19,8 @@ const themeScript = `
 `;
 
 export const metadata: Metadata = {
-  title: "Gerenciamento de Status",
-  description: "Painel simples para acompanhar status de tarefas.",
+  title: "TaskFlow",
+  description: "Painel colaborativo para acompanhar tarefas e sprints.",
 };
 
 export default function RootLayout({
