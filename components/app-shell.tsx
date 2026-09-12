@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   CalendarRange,
+  ListFilter,
   ListChecks,
   ListTodo,
   LoaderCircle,
@@ -30,6 +31,7 @@ const navigationItems = [
   { href: "/status", label: "Status", icon: ListChecks },
   { href: "/sprints", label: "Sprints", icon: CalendarRange },
   { href: "/future-tasks", label: "Tarefas Futuras", icon: ListTodo },
+  { href: "/queries", label: "Queries", icon: ListFilter },
   { href: "/settings", label: "Configurações", icon: Settings },
 ];
 
@@ -59,7 +61,10 @@ export function AppShell({ children, title }: AppShellProps) {
 
     if (error) {
       console.error(
-        JSON.stringify({ event: "auth_sign_out_failed", message: error.message }),
+        JSON.stringify({
+          event: "auth_sign_out_failed",
+          message: error.message,
+        }),
       );
       setSignOutError("Não foi possível sair. Tente novamente.");
       setIsSigningOut(false);
@@ -97,7 +102,9 @@ export function AppShell({ children, title }: AppShellProps) {
                 key={item.href}
                 href={item.href}
                 icon={item.icon}
-                isActive={pathname === item.href}
+                isActive={
+                  pathname === item.href || pathname.startsWith(`${item.href}/`)
+                }
                 isCollapsed={isSidebarCollapsed}
                 label={item.label}
               />
@@ -114,9 +121,9 @@ export function AppShell({ children, title }: AppShellProps) {
         <header className="sticky top-0 z-10 border-b bg-background/90 px-4 py-4 backdrop-blur md:px-8">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <h2 className="text-xl font-semibold">{title}</h2>
-            <div className="flex items-center gap-2">
+            <div className="flex max-w-full flex-wrap items-center gap-2">
               <ThemeModeMenu />
-              <div className="flex gap-2 md:hidden">
+              <div className="flex flex-wrap gap-2 md:hidden">
                 {navigationItems.map((item) => {
                   const Icon = item.icon;
 

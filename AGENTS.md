@@ -10,6 +10,7 @@ O fluxo principal fica em:
 
 - `/login`: login e cadastro por e-mail/senha ou Google via Supabase Auth (no momento pausada).
 - `/status`: cadastro, listagem, edicao e remocao de tarefas.
+- `/queries`: queries salvas por conta, favoritos e pastas; `/queries/new` cria e `/queries/[id]` exibe resultados e edita criterios.
 - `/settings`: cadastro, edicao e remocao das tags usadas nas colunas de Status e Ambiente.
 
 As tarefas possuem as colunas principais:
@@ -43,6 +44,10 @@ As tarefas possuem as colunas principais:
 - `components/ui/*`: componentes base no estilo shadcn-ui.
 - `lib/default-tags.ts`: tags iniciais criadas quando ainda nao ha tags no Supabase.
 - `lib/supabase.ts`: cliente Supabase.
+- `components/queries/*`: biblioteca, editor de condicoes e resultados das queries.
+- `lib/query-repository.ts`: persistencia e leitura paginada dos registros da conta.
+- `lib/task-queries.ts`: validacao e avaliacao das condicoes salvas.
+- `types/queries.ts`: tipos das queries, condicoes e pastas.
 - `types/database.ts`: tipos TypeScript das tabelas usadas pela UI.
 - `supabase/schema.sql`: schema, RLS e policies do banco.
 
@@ -55,6 +60,10 @@ Tabelas atuais:
 - `user_settings`: existe no schema, mas a UI atual nao usa card de perfil.
 - `tag_options`: tags de `status` e `ambiente`, com nome e cor.
 - `task_statuses`: tarefas acompanhadas pela equipe.
+- `saved_queries`: criterios das queries, pasta e favorito por usuario.
+- `query_folders`: pastas de queries por usuario; ao excluir uma pasta, o trigger move suas queries para a raiz.
+
+Queries consultam todos os campos de `TaskStatusRow` e incluem tarefas atuais e futuras. Ao adicionar campos de tarefa, atualize tambem `lib/task-query-fields.ts` e os testes em `tests/`. A FK composta de query/pasta deve manter a mesma conta. Nunca remova tarefas ao excluir uma query ou pasta.
 
 Cuidados ao alterar o schema:
 
