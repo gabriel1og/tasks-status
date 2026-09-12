@@ -163,3 +163,123 @@ create policy "Usuarios atualizam as proprias tarefas"
 create policy "Usuarios removem as proprias tarefas"
   on public.task_statuses for delete
   using (auth.uid() = user_id);
+
+create table if not exists public.query_folders (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  nome text not null check (char_length(btrim(nome)) between 1 and 120),
+  created_at timestamptz not null default now(),
+  unique (id, user_id),
+  unique (user_id, nome)
+);
+
+create table if not exists public.saved_queries (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  nome text not null check (char_length(btrim(nome)) between 1 and 120),
+  descricao text not null default '' check (char_length(descricao) <= 2000),
+  folder_id uuid,
+  is_favorite boolean not null default false,
+  definition jsonb not null default '{"match":"all","conditions":[]}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  constraint saved_queries_folder_owner_fkey
+    foreign key (folder_id, user_id) references public.query_folders(id, user_id),
+  constraint saved_queries_definition_shape check (coalesce(
+    jsonb_typeof(definition) = 'object'
+    and definition->>'match' in ('all', 'any')
+    and case when jsonb_typeof(definition->'conditions') = 'array'
+      then jsonb_array_length(definition->'conditions') <= 50
+      else false
+    end,
+    false
+  ))
+);
+
+create index if not exists saved_queries_user_folder_idx
+  on public.saved_queries(user_id, folder_id);
+
+create index if not exists saved_queries_user_updated_idx
+  on public.saved_queries(user_id, updated_at desc);
+
+-- Apenas a pasta e removida; as queries continuam pertencendo ao mesmo usuario.
+-- O trigger preserva user_id sem depender de SET NULL parcial em FKs compostas.
+create or replace function public.move_queries_to_root_before_folder_delete()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  update public.saved_queries
+    set folder_id = null
+    where folder_id = old.id and user_id = old.user_id;
+  return old;
+end;
+$$;
+
+drop trigger if exists query_folders_move_queries_to_root on public.query_folders;
+create trigger query_folders_move_queries_to_root
+  before delete on public.query_folders
+  for each row execute function public.move_queries_to_root_before_folder_delete();
+
+create or replace function public.touch_saved_query_updated_at()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists saved_queries_touch_updated_at on public.saved_queries;
+create trigger saved_queries_touch_updated_at
+  before update on public.saved_queries
+  for each row execute function public.touch_saved_query_updated_at();
+
+alter table public.query_folders enable row level security;
+alter table public.saved_queries enable row level security;
+
+drop policy if exists "Usuarios leem as proprias pastas de queries" on public.query_folders;
+drop policy if exists "Usuarios criam as proprias pastas de queries" on public.query_folders;
+drop policy if exists "Usuarios atualizam as proprias pastas de queries" on public.query_folders;
+drop policy if exists "Usuarios removem as proprias pastas de queries" on public.query_folders;
+drop policy if exists "Usuarios leem as proprias queries" on public.saved_queries;
+drop policy if exists "Usuarios criam as proprias queries" on public.saved_queries;
+drop policy if exists "Usuarios atualizam as proprias queries" on public.saved_queries;
+drop policy if exists "Usuarios removem as proprias queries" on public.saved_queries;
+
+create policy "Usuarios leem as proprias pastas de queries"
+  on public.query_folders for select
+  using (auth.uid() = user_id);
+
+create policy "Usuarios criam as proprias pastas de queries"
+  on public.query_folders for insert
+  with check (auth.uid() = user_id);
+
+create policy "Usuarios atualizam as proprias pastas de queries"
+  on public.query_folders for update
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create policy "Usuarios removem as proprias pastas de queries"
+  on public.query_folders for delete
+  using (auth.uid() = user_id);
+
+create policy "Usuarios leem as proprias queries"
+  on public.saved_queries for select
+  using (auth.uid() = user_id);
+
+create policy "Usuarios criam as proprias queries"
+  on public.saved_queries for insert
+  with check (auth.uid() = user_id);
+
+create policy "Usuarios atualizam as proprias queries"
+  on public.saved_queries for update
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create policy "Usuarios removem as proprias queries"
+  on public.saved_queries for delete
+  using (auth.uid() = user_id);
