@@ -17,6 +17,7 @@ export type TaskFilterState = {
   sprint: string;
   status: string;
   ambiente: string;
+  availableEnvironment: string;
   query: string;
 };
 
@@ -26,6 +27,7 @@ export const emptyTaskFilters: TaskFilterState = {
   sprint: "",
   status: "",
   ambiente: "",
+  availableEnvironment: "",
   query: "",
 };
 
@@ -33,6 +35,7 @@ export function TaskFilters({
   filters,
   hasActiveFilters,
   hasSort,
+  showAvailableEnvironmentFilter,
   showSprintFilter,
   sprints,
   statusTags,
@@ -43,6 +46,7 @@ export function TaskFilters({
   filters: TaskFilterState;
   hasActiveFilters: boolean;
   hasSort: boolean;
+  showAvailableEnvironmentFilter: boolean;
   showSprintFilter: boolean;
   sprints: SprintRow[];
   statusTags: TagOptionRow[];
@@ -98,13 +102,31 @@ export function TaskFilters({
       </div>
       <div className="min-w-48 flex-1">
         <TagSelectField
-          label="Ambiente"
+          label="Ambiente atual"
           value={filters.ambiente}
           options={environmentTags}
           placeholder="Todos"
           onChange={(value) => onChange("ambiente", value)}
         />
       </div>
+      {showAvailableEnvironmentFilter ? (
+        <Field label="Disponível em" className="min-w-48 flex-1">
+        <select
+          className={selectInputClassName}
+          value={filters.availableEnvironment}
+          onChange={(event) =>
+            onChange("availableEnvironment", event.target.value)
+          }
+        >
+          <option value="">Todos</option>
+          {environmentTags.map((tag) => (
+            <option key={tag.id} value={tag.id}>
+              {tag.nome}
+            </option>
+          ))}
+        </select>
+        </Field>
+      ) : null}
       <div className="flex min-w-48 flex-1 items-end">
         <Button
           type="button"

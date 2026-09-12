@@ -6,6 +6,7 @@ import {
   ArrowUp,
   ArrowUpDown,
   Check,
+  Eye,
   Link,
   Pencil,
   Trash2,
@@ -17,6 +18,7 @@ import {
   SprintSelectField,
   type TaskFormState,
 } from "@/components/tasks/task-form";
+import { TaskEnvironmentModal } from "@/components/tasks/task-environment-modal";
 import {
   emptyTaskFilters,
   TaskFilters,
@@ -24,6 +26,12 @@ import {
 } from "@/components/tasks/task-filters";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Tooltip } from "@/components/ui/tooltip";
+import {
+  buildTaskEnvironmentAvailability,
+  taskMatchesAvailableEnvironment,
+  type TaskEnvironmentAvailability,
+} from "@/lib/task-environments";
 import {
   Table,
   TableBody,
@@ -32,7 +40,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { SprintRow, TagOptionRow, TaskStatusRow } from "@/types/database";
+import type {
+  SprintRow,
+  TagOptionRow,
+  TaskEnvironmentStatusRow,
+  TaskStatusRow,
+} from "@/types/database";
 type FilterableTaskField = "nome" | "azure" | "sprint" | "status" | "ambiente";
 type SortField = "sprint" | "status" | "ambiente";
 type SprintCellMode = "editable" | "assign" | "readonly";
@@ -41,11 +54,13 @@ type SortState = { field: SortField; direction: "asc" | "desc" } | null;
 type TaskTableProps = {
   tasks: TaskStatusRow[];
   tags: TagOptionRow[];
+  taskEnvironmentStatuses?: TaskEnvironmentStatusRow[];
   statusTags: TagOptionRow[];
   environmentTags: TagOptionRow[];
   sprints: SprintRow[];
   sprintCellMode?: SprintCellMode;
   showSprintFilter?: boolean;
+  showEnvironmentMonitor?: boolean;
   emptyMessage?: string;
   editingTaskId?: string | null;
   editTaskForm?: TaskFormState;
@@ -55,6 +70,11 @@ type TaskTableProps = {
   onDelete?: (taskId: string) => void;
   onEdit?: (task: TaskStatusRow) => void;
   onEditField?: (field: keyof TaskFormState, value: string | null) => void;
+  onToggleEnvironment?: (
+    task: TaskStatusRow,
+    environmentTag: TagOptionRow,
+    available: boolean,
+  ) => void;
   onSaveEdit?: () => void;
 };
 
@@ -74,11 +94,13 @@ const taskCollator = new Intl.Collator("pt-BR", {
 export function TaskTable({
   tasks,
   tags,
+  taskEnvironmentStatuses = [],
   statusTags,
   environmentTags,
   sprints,
   sprintCellMode = "editable",
   showSprintFilter = true,
+  showEnvironmentMonitor = true,
   emptyMessage = "Nenhuma tarefa cadastrada.",
   editingTaskId = null,
   editTaskForm,
@@ -88,16 +110,30 @@ export function TaskTable({
   onDelete,
   onEdit,
   onEditField,
+  onToggleEnvironment,
   onSaveEdit,
 }: TaskTableProps) {
   const [filters, setFilters] = useState<TaskFilterState>(emptyTaskFilters);
   const [sort, setSort] = useState<SortState>(null);
+  const [selectedEnvironmentTask, setSelectedEnvironmentTask] =
+    useState<TaskStatusRow | null>(null);
+  const taskEnvironmentAvailability = useMemo(
+    () => buildTaskEnvironmentAvailability(taskEnvironmentStatuses),
+    [taskEnvironmentStatuses],
+  );
   const visibleTasks = useMemo(
-    () => filterAndSortTasks(tasks, filters, sort),
-    [filters, sort, tasks],
+    () =>
+      filterAndSortTasks(
+        tasks,
+        filters,
+        sort,
+        taskEnvironmentAvailability,
+        showEnvironmentMonitor,
+      ),
+    [filters, showEnvironmentMonitor, sort, taskEnvironmentAvailability, tasks],
   );
   const hasActiveFilters = Object.values(filters).some(Boolean);
-  const canManageTasks = Boolean(onDelete && onEdit);
+  const canShowActions = showEnvironmentMonitor || Boolean(onDelete && onEdit);
 
   if (!tasks.length) {
     return <p className="text-sm text-muted-foreground">{emptyMessage}</p>;
@@ -109,6 +145,7 @@ export function TaskTable({
         filters={filters}
         hasActiveFilters={hasActiveFilters}
         hasSort={Boolean(sort)}
+        showAvailableEnvironmentFilter={showEnvironmentMonitor}
         showSprintFilter={showSprintFilter}
         sprints={sprints}
         statusTags={statusTags}
@@ -126,7 +163,7 @@ export function TaskTable({
             <SortableTableHead field="sprint" sort={sort} onSort={toggleSort} />
             <SortableTableHead field="status" sort={sort} onSort={toggleSort} />
             <SortableTableHead field="ambiente" sort={sort} onSort={toggleSort} />
-            {canManageTasks ? <TableHead className="w-28" /> : null}
+            {canShowActions ? <TableHead className="w-44">Ações</TableHead> : null}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -139,11 +176,13 @@ export function TaskTable({
                   taskForm={editTaskForm}
                   environmentTags={environmentTags}
                   isSaving={isSaving}
+                  showEnvironmentMonitor={showEnvironmentMonitor}
                   sprintCellMode={sprintCellMode}
                   sprints={sprints}
                   statusTags={statusTags}
                   onCancelEdit={onCancelEdit}
                   onEditField={onEditField}
+                  onShowEnvironments={setSelectedEnvironmentTask}
                   onSaveEdit={onSaveEdit}
                 />
               ) : (
@@ -152,17 +191,19 @@ export function TaskTable({
                   task={task}
                   tags={tags}
                   sprints={sprints}
+                  showEnvironmentMonitor={showEnvironmentMonitor}
                   sprintCellMode={sprintCellMode}
                   onAssignSprint={onAssignSprint}
                   onDelete={onDelete}
                   onEdit={onEdit}
+                  onShowEnvironments={setSelectedEnvironmentTask}
                 />
               ),
             )
           ) : (
             <TableRow>
               <TableCell
-                colSpan={canManageTasks ? 7 : 6}
+                colSpan={getTaskTableColumnCount(canShowActions)}
                 className="h-24 text-center text-muted-foreground"
               >
                 Nenhuma tarefa encontrada com os filtros atuais.
@@ -171,6 +212,16 @@ export function TaskTable({
           )}
         </TableBody>
       </Table>
+
+      {selectedEnvironmentTask ? (
+        <TaskEnvironmentModal
+          task={selectedEnvironmentTask}
+          environmentTags={environmentTags}
+          environmentAvailability={taskEnvironmentAvailability}
+          onClose={() => setSelectedEnvironmentTask(null)}
+          onToggleEnvironment={onToggleEnvironment}
+        />
+      ) : null}
     </div>
   );
 
@@ -193,22 +244,26 @@ function EditableTaskRow({
   taskForm,
   environmentTags,
   isSaving,
+  showEnvironmentMonitor,
   sprintCellMode,
   sprints,
   statusTags,
   onCancelEdit,
   onEditField,
+  onShowEnvironments,
   onSaveEdit,
 }: {
   task: TaskStatusRow;
   taskForm: TaskFormState;
   environmentTags: TagOptionRow[];
   isSaving: boolean;
+  showEnvironmentMonitor: boolean;
   sprintCellMode: SprintCellMode;
   sprints: SprintRow[];
   statusTags: TagOptionRow[];
   onCancelEdit?: () => void;
   onEditField?: (field: keyof TaskFormState, value: string | null) => void;
+  onShowEnvironments: (task: TaskStatusRow) => void;
   onSaveEdit?: () => void;
 }) {
   if (!onCancelEdit || !onEditField || !onSaveEdit) {
@@ -244,6 +299,9 @@ function EditableTaskRow({
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-1">
+          {showEnvironmentMonitor ? (
+            <EnvironmentStatusAction task={task} onClick={onShowEnvironments} />
+          ) : null}
           <Button variant="ghost" size="icon" onClick={onSaveEdit} disabled={isSaving || !taskForm.nome} aria-label={`Salvar ${task.nome}`}>
             <Check className="h-4 w-4" />
           </Button>
@@ -260,18 +318,22 @@ function ReadonlyTaskRow({
   task,
   tags,
   sprints,
+  showEnvironmentMonitor,
   sprintCellMode,
   onAssignSprint,
   onDelete,
   onEdit,
+  onShowEnvironments,
 }: {
   task: TaskStatusRow;
   tags: TagOptionRow[];
   sprints: SprintRow[];
+  showEnvironmentMonitor: boolean;
   sprintCellMode: SprintCellMode;
   onAssignSprint?: (taskId: string, sprintId: string) => void;
   onDelete?: (taskId: string) => void;
   onEdit?: (task: TaskStatusRow) => void;
+  onShowEnvironments: (task: TaskStatusRow) => void;
 }) {
   return (
     <TableRow>
@@ -296,19 +358,47 @@ function ReadonlyTaskRow({
       </TableCell>
       <TableCell><TagBadge name={task.status} tags={tags} /></TableCell>
       <TableCell><TagBadge name={task.ambiente} tags={tags} /></TableCell>
-      {onDelete && onEdit ? (
+      {showEnvironmentMonitor || (onDelete && onEdit) ? (
         <TableCell>
-          <div className="flex items-center gap-1">
-            <Button variant="ghost" size="icon" onClick={() => onEdit(task)} aria-label={`Editar ${task.nome}`}>
-              <Pencil className="h-4 w-4" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={() => onDelete(task.id)} aria-label={`Remover ${task.nome}`}>
-              <Trash2 className="h-4 w-4" />
-            </Button>
+          <div className="flex flex-wrap items-center gap-1">
+            {showEnvironmentMonitor ? (
+              <EnvironmentStatusAction task={task} onClick={onShowEnvironments} />
+            ) : null}
+            {onEdit ? (
+              <Button variant="ghost" size="icon" onClick={() => onEdit(task)} aria-label={`Editar ${task.nome}`}>
+                <Pencil className="h-4 w-4" />
+              </Button>
+            ) : null}
+            {onDelete ? (
+              <Button variant="ghost" size="icon" onClick={() => onDelete(task.id)} aria-label={`Remover ${task.nome}`}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            ) : null}
           </div>
         </TableCell>
       ) : null}
     </TableRow>
+  );
+}
+
+function EnvironmentStatusAction({
+  task,
+  onClick,
+}: {
+  task: TaskStatusRow;
+  onClick: (task: TaskStatusRow) => void;
+}) {
+  return (
+    <Tooltip content="Ver Status dos Ambientes">
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label={`Ver Status dos Ambientes de ${task.nome}`}
+        onClick={() => onClick(task)}
+      >
+        <Eye className="h-4 w-4" />
+      </Button>
+    </Tooltip>
   );
 }
 
@@ -355,11 +445,18 @@ function TagBadge({ name, tags }: { name: string; tags: TagOptionRow[] }) {
   return <span className="inline-flex rounded-md px-2 py-1 text-xs font-medium text-white" style={{ backgroundColor: tag?.cor ?? "#475569" }}>{name || "-"}</span>;
 }
 
-function filterAndSortTasks(tasks: TaskStatusRow[], filters: TaskFilterState, sort: SortState) {
+function filterAndSortTasks(
+  tasks: TaskStatusRow[],
+  filters: TaskFilterState,
+  sort: SortState,
+  environmentAvailability: TaskEnvironmentAvailability,
+  showEnvironmentMonitor: boolean,
+) {
   const query = normalizeValue(filters.query);
   const filteredTasks = tasks.filter((task) => {
     const matchesFields = (Object.keys(taskFieldLabels) as FilterableTaskField[]).every((field) => !normalizeValue(filters[field]) || normalizeValue(task[field]).includes(normalizeValue(filters[field])));
-    return matchesFields && (!query || (Object.keys(taskFieldLabels) as FilterableTaskField[]).some((field) => normalizeValue(task[field]).includes(query)));
+    const matchesEnvironment = !showEnvironmentMonitor || taskMatchesAvailableEnvironment(task, environmentAvailability, filters.availableEnvironment);
+    return matchesFields && matchesEnvironment && (!query || (Object.keys(taskFieldLabels) as FilterableTaskField[]).some((field) => normalizeValue(task[field]).includes(query)));
   });
 
   if (!sort) return filteredTasks;
@@ -377,6 +474,10 @@ function getNextSort(currentSort: SortState, field: SortField): SortState {
 
 function normalizeValue(value: string | null | undefined) {
   return (value ?? "").trim().toLocaleLowerCase("pt-BR");
+}
+
+function getTaskTableColumnCount(canShowActions: boolean) {
+  return 6 + (canShowActions ? 1 : 0);
 }
 
 function getExternalHref(url: string | null | undefined) {

@@ -11,7 +11,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { getRequestErrorFeedback } from "@/lib/request-feedback";
 import { supabase } from "@/lib/supabase";
-import type { SprintRow, TagOptionRow, TaskStatusRow } from "@/types/database";
+import type {
+  SprintRow,
+  TagOptionRow,
+  TaskEnvironmentStatusRow,
+  TaskStatusRow,
+} from "@/types/database";
 
 export default function SprintsPage() {
   return (
@@ -28,6 +33,9 @@ export default function SprintsPage() {
 function SprintDashboard({ user }: { user: User }) {
   const [sprints, setSprints] = useState<SprintRow[]>([]);
   const [tasks, setTasks] = useState<TaskStatusRow[]>([]);
+  const [taskEnvironmentStatuses, setTaskEnvironmentStatuses] = useState<
+    TaskEnvironmentStatusRow[]
+  >([]);
   const [tags, setTags] = useState<TagOptionRow[]>([]);
   const [selectedSprintId, setSelectedSprintId] = useState("");
   const [feedback, setFeedback] = useState("");
@@ -78,7 +86,17 @@ function SprintDashboard({ user }: { user: User }) {
         .order("nome"),
     ]);
 
-    const error = sprintResult.error ?? taskResult.error ?? tagResult.error;
+    const taskRows = (taskResult.data ?? []) as TaskStatusRow[];
+    const environmentStatusResult = await loadTaskEnvironmentStatuses(
+      userId,
+      taskRows.map((task) => task.id),
+    );
+
+    const error =
+      sprintResult.error ??
+      taskResult.error ??
+      tagResult.error ??
+      environmentStatusResult.error;
     if (error) {
       setFeedback(
         getRequestErrorFeedback(
@@ -91,10 +109,28 @@ function SprintDashboard({ user }: { user: User }) {
 
     const sprintRows = (sprintResult.data ?? []) as SprintRow[];
     setSprints(sprintRows);
-    setTasks((taskResult.data ?? []) as TaskStatusRow[]);
+    setTasks(taskRows);
+    setTaskEnvironmentStatuses(environmentStatusResult.rows);
     setTags((tagResult.data ?? []) as TagOptionRow[]);
     setSelectedSprintId(findDefaultSprint(sprintRows)?.id ?? "");
     setIsLoading(false);
+  }
+
+  async function loadTaskEnvironmentStatuses(userId: string, taskIds: string[]) {
+    if (!taskIds.length) {
+      return { rows: [], error: null };
+    }
+
+    const { data: environmentRows, error } = await supabase
+      .from("task_environment_statuses")
+      .select("*")
+      .eq("user_id", userId)
+      .in("task_id", taskIds);
+
+    return {
+      rows: (environmentRows ?? []) as TaskEnvironmentStatusRow[],
+      error,
+    };
   }
 
   return (
@@ -141,6 +177,7 @@ function SprintDashboard({ user }: { user: User }) {
             <TaskTable
               tasks={sprintTasks}
               tags={tags}
+              taskEnvironmentStatuses={taskEnvironmentStatuses}
               statusTags={statusTags}
               environmentTags={environmentTags}
               sprints={sprints}

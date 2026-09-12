@@ -18,6 +18,8 @@ import { getRequestErrorFeedback } from "@/lib/request-feedback";
 import { supabase } from "@/lib/supabase";
 import type {
   SprintRow,
+  TaskEnvironmentStatusInsert,
+  TaskEnvironmentStatusRow,
   TagOptionRow,
   TaskStatusInsert,
   TaskStatusRow,
@@ -36,6 +38,9 @@ export function TaskWorkspace({
   mode: TaskWorkspaceMode;
 }) {
   const [tasks, setTasks] = useState<TaskStatusRow[]>([]);
+  const [taskEnvironmentStatuses, setTaskEnvironmentStatuses] = useState<
+    TaskEnvironmentStatusRow[]
+  >([]);
   const [tags, setTags] = useState<TagOptionRow[]>([]);
   const [sprints, setSprints] = useState<SprintRow[]>([]);
   const [taskForm, setTaskForm] = useState<TaskFormState>(emptyTaskForm);
@@ -69,10 +74,17 @@ export function TaskWorkspace({
       loadSprints(userId),
       loadTasks(userId, isFuture),
     ]);
+    const loadedEnvironmentStatuses = isFuture
+      ? []
+      : await loadTaskEnvironmentStatuses(
+          userId,
+          loadedTasks.map((task) => task.id),
+        );
 
     setTags(loadedTags);
     setSprints(loadedSprints);
     setTasks(loadedTasks);
+    setTaskEnvironmentStatuses(loadedEnvironmentStatuses);
     setIsLoading(false);
   }
 
@@ -160,6 +172,31 @@ export function TaskWorkspace({
     return (taskRows ?? []) as TaskStatusRow[];
   }
 
+  async function loadTaskEnvironmentStatuses(userId: string, taskIds: string[]) {
+    if (!taskIds.length) {
+      return [];
+    }
+
+    const { data: environmentRows, error } = await supabase
+      .from("task_environment_statuses")
+      .select("*")
+      .eq("user_id", userId)
+      .in("task_id", taskIds);
+
+    if (error) {
+      setFeedback(
+        getRequestErrorFeedback(
+          "load_task_environment_statuses",
+          error,
+          "Não foi possível carregar a disponibilidade por ambiente.",
+        ),
+      );
+      return [];
+    }
+
+    return (environmentRows ?? []) as TaskEnvironmentStatusRow[];
+  }
+
   async function createTask(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setFeedback("");
@@ -198,7 +235,11 @@ export function TaskWorkspace({
       return;
     }
 
-    setTasks((currentTasks) => [createdTask as TaskStatusRow, ...currentTasks]);
+    const createdTaskRow = createdTask as TaskStatusRow;
+    setTasks((currentTasks) => [createdTaskRow, ...currentTasks]);
+    if (!isFutureWorkspace) {
+      await markCurrentEnvironmentAsAvailable(createdTaskRow);
+    }
     setTaskForm(emptyTaskForm);
     setIsCreateModalOpen(false);
   }
@@ -239,11 +280,15 @@ export function TaskWorkspace({
       return;
     }
 
+    const updatedTaskRow = updatedTask as TaskStatusRow;
     setTasks((currentTasks) =>
       currentTasks.map((task) =>
-        task.id === editingTaskId ? (updatedTask as TaskStatusRow) : task,
+        task.id === editingTaskId ? updatedTaskRow : task,
       ),
     );
+    if (!isFutureWorkspace) {
+      await markCurrentEnvironmentAsAvailable(updatedTaskRow);
+    }
     cancelTaskEdit();
   }
 
@@ -267,6 +312,44 @@ export function TaskWorkspace({
     }
 
     setTasks((currentTasks) => currentTasks.filter((task) => task.id !== taskId));
+    setTaskEnvironmentStatuses((currentStatuses) =>
+      currentStatuses.filter((status) => status.task_id !== taskId),
+    );
+  }
+
+  async function toggleTaskEnvironment(
+    task: TaskStatusRow,
+    environmentTag: TagOptionRow,
+    available: boolean,
+  ) {
+    setFeedback("");
+
+    const payload: TaskEnvironmentStatusInsert = {
+      user_id: user.id,
+      task_id: task.id,
+      environment_tag_id: environmentTag.id,
+      available,
+    };
+    const { data: updatedEnvironmentStatus, error } = await supabase
+      .from("task_environment_statuses")
+      .upsert(payload, { onConflict: "task_id,environment_tag_id" })
+      .select("*")
+      .single();
+
+    if (error) {
+      setFeedback(
+        getRequestErrorFeedback(
+          "toggle_task_environment",
+          error,
+          "Não foi possível atualizar o ambiente da tarefa.",
+        ),
+      );
+      return;
+    }
+
+    upsertTaskEnvironmentStatus(
+      updatedEnvironmentStatus as TaskEnvironmentStatusRow,
+    );
   }
 
   async function assignTaskToSprint(taskId: string, sprintId: string) {
@@ -322,10 +405,12 @@ export function TaskWorkspace({
             <TaskTable
               tasks={tasks}
               tags={tags}
+              taskEnvironmentStatuses={taskEnvironmentStatuses}
               statusTags={statusTags}
               environmentTags={environmentTags}
               sprints={sprints}
               sprintCellMode={isFutureWorkspace ? "assign" : "editable"}
+              showEnvironmentMonitor={!isFutureWorkspace}
               showSprintFilter={!isFutureWorkspace}
               emptyMessage={
                 isFutureWorkspace
@@ -340,6 +425,9 @@ export function TaskWorkspace({
               onDelete={deleteTask}
               onEdit={startTaskEdit}
               onEditField={setEditTaskField}
+              onToggleEnvironment={
+                isFutureWorkspace ? undefined : toggleTaskEnvironment
+              }
               onSaveEdit={updateTask}
             />
           )}
@@ -395,6 +483,32 @@ export function TaskWorkspace({
   function cancelTaskEdit() {
     setEditingTaskId(null);
     setEditTaskForm(emptyTaskForm);
+  }
+
+  async function markCurrentEnvironmentAsAvailable(task: TaskStatusRow) {
+    const currentEnvironment = environmentTags.find(
+      (tag) => tag.nome === task.ambiente,
+    );
+    if (!currentEnvironment) {
+      return;
+    }
+
+    await toggleTaskEnvironment(task, currentEnvironment, true);
+  }
+
+  function upsertTaskEnvironmentStatus(status: TaskEnvironmentStatusRow) {
+    setTaskEnvironmentStatuses((currentStatuses) => {
+      const existingStatus = currentStatuses.find(
+        (currentStatus) => currentStatus.id === status.id,
+      );
+      if (!existingStatus) {
+        return [...currentStatuses, status];
+      }
+
+      return currentStatuses.map((currentStatus) =>
+        currentStatus.id === status.id ? status : currentStatus,
+      );
+    });
   }
 }
 

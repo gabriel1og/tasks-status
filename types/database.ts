@@ -15,6 +15,21 @@ export type TaskStatusRow = {
 
 export type TaskStatusInsert = Omit<TaskStatusRow, "id" | "created_at">;
 
+export type TaskEnvironmentStatusRow = {
+  id: string;
+  user_id: string;
+  task_id: string;
+  environment_tag_id: string;
+  available: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TaskEnvironmentStatusInsert = Omit<
+  TaskEnvironmentStatusRow,
+  "id" | "created_at" | "updated_at"
+>;
+
 export type UserSettingsRow = {
   user_id: string;
   nome: string;
