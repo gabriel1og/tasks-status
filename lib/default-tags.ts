@@ -1,3 +1,4 @@
+import { TRACKED_ENVIRONMENT_DEFINITIONS } from "@/lib/environment-tracking";
 import type { TagKind, TagOptionInsert } from "@/types/database";
 
 const fallbackTags = {
@@ -7,11 +8,10 @@ const fallbackTags = {
     { nome: "Bloqueado", cor: "#dc2626" },
     { nome: "Concluido", cor: "#16a34a" },
   ],
-  ambiente: [
-    { nome: "Desenvolvimento", cor: "#0891b2" },
-    { nome: "Homologacao", cor: "#7c3aed" },
-    { nome: "Producao", cor: "#15803d" },
-  ],
+  ambiente: TRACKED_ENVIRONMENT_DEFINITIONS.map(({ persistedName, color }) => ({
+    nome: persistedName,
+    cor: color,
+  })),
 } satisfies Record<TagKind, Array<{ nome: string; cor: string }>>;
 
 export function buildDefaultTags(userId: string): TagOptionInsert[] {
