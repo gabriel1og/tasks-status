@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
+  Boxes,
   CalendarRange,
   ListFilter,
   ListChecks,
@@ -29,6 +30,7 @@ type AppShellProps = {
 
 const navigationItems = [
   { href: "/status", label: "Status", icon: ListChecks },
+  { href: "/environments", label: "Ambientes", icon: Boxes },
   { href: "/sprints", label: "Sprints", icon: CalendarRange },
   { href: "/future-tasks", label: "Tarefas Futuras", icon: ListTodo },
   { href: "/queries", label: "Queries", icon: ListFilter },

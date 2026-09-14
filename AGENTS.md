@@ -10,6 +10,7 @@ O fluxo principal fica em:
 
 - `/login`: login e cadastro por e-mail/senha ou Google via Supabase Auth (no momento pausada).
 - `/status`: cadastro, listagem, edicao e remocao de tarefas.
+- `/environments`: matriz editavel de disponibilidade e analise de compatibilidade entre ambientes.
 - `/queries`: queries salvas por conta, favoritos e pastas; `/queries/new` cria e `/queries/[id]` exibe resultados e edita criterios.
 - `/settings`: cadastro, edicao e remocao das tags usadas nas colunas de Status e Ambiente.
 
@@ -32,6 +33,7 @@ As tarefas possuem as colunas principais:
 - O projeto deve manter suporte real a light mode, dark mode e system mode pelo seletor no header.
 - Os selects usam seta customizada global em `app/globals.css`; ao adicionar novos selects, reaproveite as classes existentes e nao reintroduza seta nativa grudada no canto.
 - Tarefas armazenam `status` e `ambiente` como texto. Ao renomear uma tag mantendo o mesmo tipo, atualize tambem as tarefas que usavam o nome antigo.
+- A rota `/environments` reutiliza `task_environment_statuses` como fonte de verdade e garante as tags padrao Sem Ambiente, Desenvolvimento, Homologacao e Producao para suas colunas fixas.
 
 ## Estrutura importante
 
@@ -42,7 +44,9 @@ As tarefas possuem as colunas principais:
 - `components/auth-guard.tsx`: protecao client-side baseada na sessao do Supabase.
 - `components/theme-mode-menu.tsx`: menu de tema Claro, Escuro e Sistema.
 - `components/ui/*`: componentes base no estilo shadcn-ui.
+- `components/environments/*`: matriz de ambientes, resumo de consistencia e modal de informacoes da tarefa.
 - `lib/default-tags.ts`: tags iniciais criadas quando ainda nao ha tags no Supabase.
+- `lib/environment-tracking.ts`: ambientes operacionais padrao e regras da analise de compatibilidade.
 - `lib/supabase.ts`: cliente Supabase.
 - `components/queries/*`: biblioteca, editor de condicoes e resultados das queries.
 - `lib/query-repository.ts`: persistencia e leitura paginada dos registros da conta.
@@ -60,6 +64,7 @@ Tabelas atuais:
 - `user_settings`: existe no schema, mas a UI atual nao usa card de perfil.
 - `tag_options`: tags de `status` e `ambiente`, com nome e cor.
 - `task_statuses`: tarefas acompanhadas pela equipe.
+- `task_environment_statuses`: disponibilidade de cada tarefa por tag de ambiente.
 - `saved_queries`: criterios das queries, pasta e favorito por usuario.
 - `query_folders`: pastas de queries por usuario; ao excluir uma pasta, o trigger move suas queries para a raiz.
 
@@ -144,6 +149,8 @@ node_modules\.bin\next.cmd build
 - Ajustes globais de dark/light tokens.
 - Correcao global da seta dos selects.
 - Criacao, edicao e remocao de tarefas.
+- Matriz exclusiva e editavel de disponibilidade por ambiente em `/environments`.
+- Analise de compatibilidade, percentual de organizacao e filtro por diagnostico.
 - Criacao, edicao e remocao de tags de Status e Ambiente.
 - Propagacao de renome de status/ambiente para tarefas existentes.
 - Policies de update no Supabase para tags e tarefas.

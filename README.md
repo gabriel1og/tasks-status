@@ -29,6 +29,7 @@ npm run dev
 
 - `/login`: login e cadastro por e-mail/senha ou acesso com Google.
 - `/status`: cadastro e tabela de acompanhamento das tarefas.
+- `/environments`: matriz de disponibilidade e análise de compatibilidade entre ambientes.
 - `/sprints`: tarefas da sprint atual ou da sprint selecionada.
 - `/future-tasks`: cadastro e acompanhamento de tarefas ainda sem planejamento definido.
 - `/queries`: biblioteca de queries, favoritos e pastas.
@@ -38,7 +39,7 @@ npm run dev
 
 ## Supabase
 
-Execute o SQL de `supabase/schema.sql`. As tabelas usam RLS com `auth.uid()` para que cada conta acesse apenas os próprios registros. O schema inclui as tabelas `task_statuses`, `sprints`, `tag_options`, `user_settings`, `saved_queries` e `query_folders`.
+Execute o SQL de `supabase/schema.sql`. As tabelas usam RLS com `auth.uid()` para que cada conta acesse apenas os próprios registros. O schema inclui as tabelas `task_statuses`, `task_environment_statuses`, `sprints`, `tag_options`, `user_settings`, `saved_queries` e `query_folders`.
 
 No painel do Supabase:
 
@@ -48,6 +49,14 @@ No painel do Supabase:
 4. Em **Authentication > URL Configuration**, configure a URL da aplicação e permita o caminho `/status` entre as URLs de redirecionamento.
 
 O schema recria as chaves para `auth.users` com `NOT VALID` para não apagar nem bloquear registros do antigo acesso compartilhado. Esses registros legados precisam ser atribuídos manualmente a uma conta real antes de validar as constraints.
+
+## Rastreamento de ambientes
+
+A rota `/environments` concentra as tarefas atuais em uma matriz com Local/Sem ambiente, Desenvolvimento, Homologação e Produção. Cada status pode ser alternado diretamente na célula e usa a mesma relação `task_environment_statuses` do monitoramento individual disponível em `/status`.
+
+As tags padrão ausentes são criadas de forma idempotente ao carregar a rota, inclusive para contas existentes. Variações já cadastradas, como `Homologação`, `HMG`, `Produção` ou `Prod`, são reconhecidas sem duplicar a tag.
+
+A análise considera incompatível uma tarefa que avançou para Homologação sem Desenvolvimento, chegou a Produção sem Homologação ou cujo ambiente atual não está marcado como disponível. Tarefas sem nenhum ambiente disponível são identificadas separadamente como sem rastreamento. O percentual de organização considera apenas as tarefas classificadas como compatíveis.
 
 ## Queries
 
