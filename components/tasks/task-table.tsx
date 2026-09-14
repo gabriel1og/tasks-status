@@ -7,7 +7,6 @@ import {
   ArrowUpDown,
   Check,
   Eye,
-  Link,
   Pencil,
   Trash2,
   X,
@@ -19,6 +18,11 @@ import {
   type TaskFormState,
 } from "@/components/tasks/task-form";
 import { TaskEnvironmentModal } from "@/components/tasks/task-environment-modal";
+import { EditableTaskGithubCell, TaskGithubCell } from "@/components/tasks/task-github-cell";
+import {
+  TaskIconLink,
+  TaskTextLink,
+} from "@/components/tasks/task-links";
 import {
   emptyTaskFilters,
   TaskFilters,
@@ -60,6 +64,7 @@ type TaskTableProps = {
   sprints: SprintRow[];
   sprintCellMode?: SprintCellMode;
   showSprintFilter?: boolean;
+  showGithubInfo?: boolean;
   showEnvironmentMonitor?: boolean;
   emptyMessage?: string;
   editingTaskId?: string | null;
@@ -100,6 +105,7 @@ export function TaskTable({
   sprints,
   sprintCellMode = "editable",
   showSprintFilter = true,
+  showGithubInfo = true,
   showEnvironmentMonitor = true,
   emptyMessage = "Nenhuma tarefa cadastrada.",
   editingTaskId = null,
@@ -160,6 +166,7 @@ export function TaskTable({
             <TableHead>Nome</TableHead>
             <TableHead>Azure</TableHead>
             <TableHead>LiveOps</TableHead>
+            {showGithubInfo ? <TableHead>GitHub</TableHead> : null}
             <SortableTableHead field="sprint" sort={sort} onSort={toggleSort} />
             <SortableTableHead field="status" sort={sort} onSort={toggleSort} />
             <SortableTableHead field="ambiente" sort={sort} onSort={toggleSort} />
@@ -176,6 +183,7 @@ export function TaskTable({
                   taskForm={editTaskForm}
                   environmentTags={environmentTags}
                   isSaving={isSaving}
+                  showGithubInfo={showGithubInfo}
                   showEnvironmentMonitor={showEnvironmentMonitor}
                   sprintCellMode={sprintCellMode}
                   sprints={sprints}
@@ -191,6 +199,7 @@ export function TaskTable({
                   task={task}
                   tags={tags}
                   sprints={sprints}
+                  showGithubInfo={showGithubInfo}
                   showEnvironmentMonitor={showEnvironmentMonitor}
                   sprintCellMode={sprintCellMode}
                   onAssignSprint={onAssignSprint}
@@ -203,7 +212,7 @@ export function TaskTable({
           ) : (
             <TableRow>
               <TableCell
-                colSpan={getTaskTableColumnCount(canShowActions)}
+                colSpan={getTaskTableColumnCount(canShowActions, showGithubInfo)}
                 className="h-24 text-center text-muted-foreground"
               >
                 Nenhuma tarefa encontrada com os filtros atuais.
@@ -244,6 +253,7 @@ function EditableTaskRow({
   taskForm,
   environmentTags,
   isSaving,
+  showGithubInfo,
   showEnvironmentMonitor,
   sprintCellMode,
   sprints,
@@ -257,6 +267,7 @@ function EditableTaskRow({
   taskForm: TaskFormState;
   environmentTags: TagOptionRow[];
   isSaving: boolean;
+  showGithubInfo: boolean;
   showEnvironmentMonitor: boolean;
   sprintCellMode: SprintCellMode;
   sprints: SprintRow[];
@@ -284,6 +295,14 @@ function EditableTaskRow({
       <TableCell>
         <Input value={taskForm.liveops_url} onChange={(event) => onEditField("liveops_url", event.target.value)} placeholder="Link LiveOps" />
       </TableCell>
+      {showGithubInfo ? (
+        <TableCell>
+          <EditableTaskGithubCell
+            taskForm={taskForm}
+            onEditField={onEditField}
+          />
+        </TableCell>
+      ) : null}
       <TableCell>
         {sprintCellMode === "editable" ? (
           <SprintSelectField label="" value={taskForm.sprint_id} sprints={sprints} onChange={(value) => onEditField("sprint_id", value)} />
@@ -318,6 +337,7 @@ function ReadonlyTaskRow({
   task,
   tags,
   sprints,
+  showGithubInfo,
   showEnvironmentMonitor,
   sprintCellMode,
   onAssignSprint,
@@ -328,6 +348,7 @@ function ReadonlyTaskRow({
   task: TaskStatusRow;
   tags: TagOptionRow[];
   sprints: SprintRow[];
+  showGithubInfo: boolean;
   showEnvironmentMonitor: boolean;
   sprintCellMode: SprintCellMode;
   onAssignSprint?: (taskId: string, sprintId: string) => void;
@@ -340,6 +361,15 @@ function ReadonlyTaskRow({
       <TableCell className="font-medium">{task.nome}</TableCell>
       <TableCell><TaskTextLink text={task.azure} url={task.azure_url} /></TableCell>
       <TableCell><TaskIconLink label={`Abrir LiveOps de ${task.nome}`} url={task.liveops_url} /></TableCell>
+      {showGithubInfo ? (
+        <TableCell>
+          <TaskGithubCell
+            nome={task.nome}
+            github_branch={task.github_branch}
+            github_pr_url={task.github_pr_url}
+          />
+        </TableCell>
+      ) : null}
       <TableCell>
         {sprintCellMode === "assign" && onAssignSprint ? (
           <select
@@ -425,21 +455,6 @@ function TagSelectInput({ value, options, onChange }: { value: string; options: 
   );
 }
 
-function TaskTextLink({ text, url }: { text: string; url: string }) {
-  const href = getExternalHref(url);
-  if (!text) return <span>-</span>;
-  if (!href) return <span>{text}</span>;
-
-  return <a className="font-medium text-primary underline-offset-4 hover:underline" href={href} target="_blank" rel="noreferrer">{text}</a>;
-}
-
-function TaskIconLink({ label, url }: { label: string; url: string }) {
-  const href = getExternalHref(url);
-  if (!href) return <span className="inline-flex h-10 w-10 items-center justify-center rounded-md text-muted-foreground opacity-50" aria-label="LiveOps sem link"><Link className="h-4 w-4" /></span>;
-
-  return <a className="inline-flex h-10 w-10 items-center justify-center rounded-md text-primary transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href={href} target="_blank" rel="noreferrer" aria-label={label}><Link className="h-4 w-4" /></a>;
-}
-
 function TagBadge({ name, tags }: { name: string; tags: TagOptionRow[] }) {
   const tag = tags.find((currentTag) => currentTag.nome === name);
   return <span className="inline-flex rounded-md px-2 py-1 text-xs font-medium text-white" style={{ backgroundColor: tag?.cor ?? "#475569" }}>{name || "-"}</span>;
@@ -476,12 +491,9 @@ function normalizeValue(value: string | null | undefined) {
   return (value ?? "").trim().toLocaleLowerCase("pt-BR");
 }
 
-function getTaskTableColumnCount(canShowActions: boolean) {
-  return 6 + (canShowActions ? 1 : 0);
-}
-
-function getExternalHref(url: string | null | undefined) {
-  const trimmedUrl = (url ?? "").trim();
-  if (!trimmedUrl) return "";
-  return /^https?:\/\//i.test(trimmedUrl) ? trimmedUrl : `https://${trimmedUrl}`;
+function getTaskTableColumnCount(
+  canShowActions: boolean,
+  showGithubInfo: boolean,
+) {
+  return 6 + (showGithubInfo ? 1 : 0) + (canShowActions ? 1 : 0);
 }

@@ -19,6 +19,8 @@ function task(overrides = {}) {
     azure: "12345",
     azure_url: "https://dev.azure.com/team/_workitems/edit/12345?view=a+b",
     liveops_url: "https://liveops.example/ticket/456",
+    github_branch: "feature/github-info",
+    github_pr_url: "https://github.com/gabriel1og/tasks-status/pull/4",
     sprint: "Sprint 10",
     sprint_id: "sprint-10",
     is_future: false,

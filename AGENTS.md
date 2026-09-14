@@ -129,9 +129,8 @@ node_modules\.bin\next.cmd build
 2. Leia os arquivos diretamente relacionados antes de editar.
 3. Mantenha mudancas pequenas e no padrao do app.
 4. Se alterar comportamento de tarefa/tag, revise tambem `supabase/schema.sql` e `types/database.ts`.
-5. Valide com `node_modules\.bin\tsc.cmd --noEmit`.
-6. Valide build com `npm.cmd run build` ou `node_modules\.bin\next.cmd build`.
-7. Informe claramente qualquer validacao que nao foi possivel rodar e o motivo.
+5. Nao rode build, testes ou validacao TypeScript por padrao; o usuario fara essas validacoes manualmente.
+6. Informe claramente que as validacoes nao foram executadas quando concluir a tarefa.
    OBS: Nunca crie um servidor local (https://localhost:3000), a não ser que eu peça explicitamente.
 
 ## Resumo das features implementadas nos chats

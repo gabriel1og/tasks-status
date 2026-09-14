@@ -5,6 +5,8 @@ export type TaskStatusRow = {
   azure: string;
   azure_url: string;
   liveops_url: string;
+  github_branch: string;
+  github_pr_url: string;
   sprint: string;
   sprint_id: string | null;
   is_future: boolean;

@@ -35,6 +35,8 @@ create table if not exists public.task_statuses (
   azure text not null default '',
   azure_url text not null default '',
   liveops_url text not null default '',
+  github_branch text not null default '',
+  github_pr_url text not null default '',
   sprint text not null default '',
   sprint_id uuid,
   is_future boolean not null default false,
@@ -57,6 +59,8 @@ create table if not exists public.task_environment_statuses (
 alter table public.task_statuses
   add column if not exists azure_url text not null default '',
   add column if not exists liveops_url text not null default '',
+  add column if not exists github_branch text not null default '',
+  add column if not exists github_pr_url text not null default '',
   add column if not exists sprint_id uuid,
   add column if not exists is_future boolean not null default false;
 
@@ -67,12 +71,13 @@ alter table public.task_statuses
   add constraint task_statuses_sprint_id_fkey
   foreign key (sprint_id) references public.sprints(id) on delete set null;
 
-alter table public.tag_options drop constraint if exists tag_options_id_user_id_key;
-alter table public.task_statuses drop constraint if exists task_statuses_id_user_id_key;
+-- As FKs compostas dependem das constraints unicas e devem ser removidas primeiro.
 alter table public.task_environment_statuses drop constraint if exists task_environment_statuses_task_id_fkey;
 alter table public.task_environment_statuses drop constraint if exists task_environment_statuses_environment_tag_id_fkey;
 alter table public.task_environment_statuses drop constraint if exists task_environment_statuses_task_owner_fkey;
 alter table public.task_environment_statuses drop constraint if exists task_environment_statuses_environment_owner_fkey;
+alter table public.tag_options drop constraint if exists tag_options_id_user_id_key;
+alter table public.task_statuses drop constraint if exists task_statuses_id_user_id_key;
 
 alter table public.tag_options
   add constraint tag_options_id_user_id_key unique (id, user_id);

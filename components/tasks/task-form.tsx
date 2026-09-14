@@ -19,6 +19,8 @@ export type TaskFormState = Pick<
   | "azure"
   | "azure_url"
   | "liveops_url"
+  | "github_branch"
+  | "github_pr_url"
   | "sprint_id"
   | "status"
   | "ambiente"
@@ -29,6 +31,8 @@ export const emptyTaskForm: TaskFormState = {
   azure: "",
   azure_url: "",
   liveops_url: "",
+  github_branch: "",
+  github_pr_url: "",
   sprint_id: null,
   status: "",
   ambiente: "",
@@ -128,6 +132,22 @@ export function CreateTaskModal({
               onChange={(value) => onFieldChange("liveops_url", value)}
               placeholder="https://..."
             />
+            {!isFutureTask ? (
+              <>
+                <TaskTextField
+                  label="Branch do GitHub"
+                  value={taskForm.github_branch}
+                  onChange={(value) => onFieldChange("github_branch", value)}
+                  placeholder="feature/nome-da-branch"
+                />
+                <TaskTextField
+                  label="Link da PR"
+                  value={taskForm.github_pr_url}
+                  onChange={(value) => onFieldChange("github_pr_url", value)}
+                  placeholder="https://github.com/.../pull/123"
+                />
+              </>
+            ) : null}
             {!isFutureTask ? (
               <SprintSelectField
                 label="Sprint"
@@ -268,6 +288,8 @@ export function getTaskFormState(
     azure: task.azure,
     azure_url: task.azure_url || "",
     liveops_url: task.liveops_url || "",
+    github_branch: task.github_branch || "",
+    github_pr_url: task.github_pr_url || "",
     sprint_id: task.sprint_id ?? matchingSprint?.id ?? null,
     status: task.status,
     ambiente: task.ambiente,
@@ -283,7 +305,10 @@ function TaskTextField({
   label: string;
   value: string;
   onChange: (value: string) => void;
-} & Pick<React.ComponentProps<typeof Input>, "autoFocus" | "placeholder" | "required">) {
+} & Pick<
+  React.ComponentProps<typeof Input>,
+  "autoFocus" | "placeholder" | "required"
+>) {
   return (
     <Field label={label}>
       <Input

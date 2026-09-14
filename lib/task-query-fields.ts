@@ -15,6 +15,8 @@ export const QUERY_FIELDS: QueryFieldDescription[] = [
   { value: "azure", label: "Azure", type: "text" },
   { value: "azure_url", label: "Link do Azure", type: "text" },
   { value: "liveops_url", label: "Link do LiveOps", type: "text" },
+  { value: "github_branch", label: "Branch do GitHub", type: "text" },
+  { value: "github_pr_url", label: "Link da PR", type: "text" },
   { value: "sprint", label: "Sprint", type: "text" },
   { value: "sprint_id", label: "ID da sprint", type: "text" },
   { value: "is_future", label: "Tarefa futura", type: "boolean" },

@@ -410,6 +410,7 @@ export function TaskWorkspace({
               environmentTags={environmentTags}
               sprints={sprints}
               sprintCellMode={isFutureWorkspace ? "assign" : "editable"}
+              showGithubInfo={!isFutureWorkspace}
               showEnvironmentMonitor={!isFutureWorkspace}
               showSprintFilter={!isFutureWorkspace}
               emptyMessage={
@@ -528,6 +529,8 @@ function buildTaskPayload(
     azure: form.azure,
     azure_url: form.azure_url,
     liveops_url: form.liveops_url,
+    github_branch: form.github_branch,
+    github_pr_url: form.github_pr_url,
     sprint_id: isFuture ? null : (sprint?.id ?? null),
     sprint: isFuture ? "" : (sprint?.nome ?? ""),
     is_future: isFuture,
