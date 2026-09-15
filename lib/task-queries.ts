@@ -5,6 +5,7 @@ import type {
   QueryOperator,
 } from "@/types/queries";
 import { validateQueryDefinition } from "@/lib/task-query-validation";
+import { getTaskGithubReferenceValues } from "@/lib/task-github";
 
 export {
   QUERY_FIELDS,
@@ -58,11 +59,32 @@ function matchesQueryText(
   return operator === "starts_with" && actual.startsWith(expected);
 }
 
+function matchesGithubReferences(
+  references: unknown,
+  condition: QueryCondition,
+): boolean {
+  const values = getTaskGithubReferenceValues(references).map(normalizeQueryText);
+  if (condition.operator === "is_empty") return values.length === 0;
+  if (condition.operator === "is_not_empty") return values.length > 0;
+  const expected = normalizeQueryText(condition.value);
+  if (["neq", "not_contains"].includes(condition.operator)) {
+    return values.every((value) =>
+      matchesQueryText(value, expected, condition.operator),
+    );
+  }
+  return values.some((value) =>
+    matchesQueryText(value, expected, condition.operator),
+  );
+}
+
 function matchesQueryCondition(
   task: TaskStatusRow,
   condition: QueryCondition,
 ): boolean {
   const actualValue = task[condition.field];
+  if (condition.field === "github_references") {
+    return matchesGithubReferences(actualValue, condition);
+  }
   const normalizedValue = normalizeQueryText(actualValue);
   if (condition.operator === "is_empty") return normalizedValue.length === 0;
   if (condition.operator === "is_not_empty") return normalizedValue.length > 0;

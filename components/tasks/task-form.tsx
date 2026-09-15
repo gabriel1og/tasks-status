@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Plus, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { TaskGithubFields } from "@/components/tasks/task-github-cell";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import type {
@@ -12,6 +13,10 @@ import type {
   TaskStatusInsert,
   TaskStatusRow,
 } from "@/types/database";
+import {
+  createEmptyTaskGithubReference,
+  getEditableTaskGithubReferences,
+} from "@/lib/task-github";
 
 export type TaskFormState = Pick<
   TaskStatusInsert,
@@ -19,8 +24,7 @@ export type TaskFormState = Pick<
   | "azure"
   | "azure_url"
   | "liveops_url"
-  | "github_branch"
-  | "github_pr_url"
+  | "github_references"
   | "sprint_id"
   | "status"
   | "ambiente"
@@ -31,8 +35,7 @@ export const emptyTaskForm: TaskFormState = {
   azure: "",
   azure_url: "",
   liveops_url: "",
-  github_branch: "",
-  github_pr_url: "",
+  github_references: [createEmptyTaskGithubReference()],
   sprint_id: null,
   status: "",
   ambiente: "",
@@ -47,12 +50,17 @@ type CreateTaskModalProps = {
   isFutureTask: boolean;
   isSaving: boolean;
   onClose: () => void;
-  onFieldChange: (field: keyof TaskFormState, value: string | null) => void;
+  onFieldChange: TaskFormChangeHandler;
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   sprints: SprintRow[];
   statusTags: TagOptionRow[];
   taskForm: TaskFormState;
 };
+
+export type TaskFormChangeHandler = <Field extends keyof TaskFormState>(
+  field: Field,
+  value: TaskFormState[Field],
+) => void;
 
 export function CreateTaskModal({
   environmentTags,
@@ -133,20 +141,14 @@ export function CreateTaskModal({
               placeholder="https://..."
             />
             {!isFutureTask ? (
-              <>
-                <TaskTextField
-                  label="Branch do GitHub"
-                  value={taskForm.github_branch}
-                  onChange={(value) => onFieldChange("github_branch", value)}
-                  placeholder="feature/nome-da-branch"
+              <Field label="GitHub" className="sm:col-span-2">
+                <TaskGithubFields
+                  references={taskForm.github_references}
+                  onChange={(references) =>
+                    onFieldChange("github_references", references)
+                  }
                 />
-                <TaskTextField
-                  label="Link da PR"
-                  value={taskForm.github_pr_url}
-                  onChange={(value) => onFieldChange("github_pr_url", value)}
-                  placeholder="https://github.com/.../pull/123"
-                />
-              </>
+              </Field>
             ) : null}
             {!isFutureTask ? (
               <SprintSelectField
@@ -288,8 +290,7 @@ export function getTaskFormState(
     azure: task.azure,
     azure_url: task.azure_url || "",
     liveops_url: task.liveops_url || "",
-    github_branch: task.github_branch || "",
-    github_pr_url: task.github_pr_url || "",
+    github_references: getEditableTaskGithubReferences(task.github_references),
     sprint_id: task.sprint_id ?? matchingSprint?.id ?? null,
     status: task.status,
     ambiente: task.ambiente,

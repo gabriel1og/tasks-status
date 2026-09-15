@@ -7,7 +7,7 @@ import type {
 type QueryFieldDescription = {
   value: QueryField;
   label: string;
-  type: "text" | "date" | "boolean";
+  type: "text" | "text-list" | "date" | "boolean";
 };
 
 export const QUERY_FIELDS: QueryFieldDescription[] = [
@@ -15,8 +15,11 @@ export const QUERY_FIELDS: QueryFieldDescription[] = [
   { value: "azure", label: "Azure", type: "text" },
   { value: "azure_url", label: "Link do Azure", type: "text" },
   { value: "liveops_url", label: "Link do LiveOps", type: "text" },
-  { value: "github_branch", label: "Branch do GitHub", type: "text" },
-  { value: "github_pr_url", label: "Link da PR", type: "text" },
+  {
+    value: "github_references",
+    label: "GitHub (branch ou PR)",
+    type: "text-list",
+  },
   { value: "sprint", label: "Sprint", type: "text" },
   { value: "sprint_id", label: "ID da sprint", type: "text" },
   { value: "is_future", label: "Tarefa futura", type: "boolean" },
@@ -66,7 +69,9 @@ export function getQueryOperators(field: QueryField): QueryOperator[] {
   const fieldType = QUERY_FIELDS.find((option) => option.value === field)?.type;
   if (fieldType === "boolean") return ["eq", "neq"];
   if (fieldType === "date") return [...DATE_OPERATORS];
-  return fieldType === "text" ? [...TEXT_OPERATORS] : [];
+  return fieldType === "text" || fieldType === "text-list"
+    ? [...TEXT_OPERATORS]
+    : [];
 }
 
 /** Starts an editable condition, e.g. createQueryCondition("status"). */

@@ -15,6 +15,7 @@ import {
 import {
   selectInputClassName,
   SprintSelectField,
+  type TaskFormChangeHandler,
   type TaskFormState,
 } from "@/components/tasks/task-form";
 import { TaskEnvironmentModal } from "@/components/tasks/task-environment-modal";
@@ -74,7 +75,7 @@ type TaskTableProps = {
   onCancelEdit?: () => void;
   onDelete?: (taskId: string) => void;
   onEdit?: (task: TaskStatusRow) => void;
-  onEditField?: (field: keyof TaskFormState, value: string | null) => void;
+  onEditField?: TaskFormChangeHandler;
   onToggleEnvironment?: (
     task: TaskStatusRow,
     environmentTag: TagOptionRow,
@@ -273,7 +274,7 @@ function EditableTaskRow({
   sprints: SprintRow[];
   statusTags: TagOptionRow[];
   onCancelEdit?: () => void;
-  onEditField?: (field: keyof TaskFormState, value: string | null) => void;
+  onEditField?: TaskFormChangeHandler;
   onShowEnvironments: (task: TaskStatusRow) => void;
   onSaveEdit?: () => void;
 }) {
@@ -365,8 +366,7 @@ function ReadonlyTaskRow({
         <TableCell>
           <TaskGithubCell
             nome={task.nome}
-            github_branch={task.github_branch}
-            github_pr_url={task.github_pr_url}
+            references={task.github_references}
           />
         </TableCell>
       ) : null}

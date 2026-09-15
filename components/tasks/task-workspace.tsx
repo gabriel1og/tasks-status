@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buildDefaultTags } from "@/lib/default-tags";
 import { getRequestErrorFeedback } from "@/lib/request-feedback";
+import { sanitizeTaskGithubReferences } from "@/lib/task-github";
 import { supabase } from "@/lib/supabase";
 import type {
   SprintRow,
@@ -452,11 +453,17 @@ export function TaskWorkspace({
     </div>
   );
 
-  function setTaskField(field: keyof TaskFormState, value: string | null) {
+  function setTaskField<Field extends keyof TaskFormState>(
+    field: Field,
+    value: TaskFormState[Field],
+  ) {
     setTaskForm((currentForm) => ({ ...currentForm, [field]: value }));
   }
 
-  function setEditTaskField(field: keyof TaskFormState, value: string | null) {
+  function setEditTaskField<Field extends keyof TaskFormState>(
+    field: Field,
+    value: TaskFormState[Field],
+  ) {
     setEditTaskForm((currentForm) => ({ ...currentForm, [field]: value }));
   }
 
@@ -529,8 +536,7 @@ function buildTaskPayload(
     azure: form.azure,
     azure_url: form.azure_url,
     liveops_url: form.liveops_url,
-    github_branch: form.github_branch,
-    github_pr_url: form.github_pr_url,
+    github_references: sanitizeTaskGithubReferences(form.github_references),
     sprint_id: isFuture ? null : (sprint?.id ?? null),
     sprint: isFuture ? "" : (sprint?.nome ?? ""),
     is_future: isFuture,

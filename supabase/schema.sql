@@ -35,8 +35,7 @@ create table if not exists public.task_statuses (
   azure text not null default '',
   azure_url text not null default '',
   liveops_url text not null default '',
-  github_branch text not null default '',
-  github_pr_url text not null default '',
+  github_references jsonb not null default '[]'::jsonb,
   sprint text not null default '',
   sprint_id uuid,
   is_future boolean not null default false,
@@ -59,10 +58,70 @@ create table if not exists public.task_environment_statuses (
 alter table public.task_statuses
   add column if not exists azure_url text not null default '',
   add column if not exists liveops_url text not null default '',
-  add column if not exists github_branch text not null default '',
-  add column if not exists github_pr_url text not null default '',
+  add column if not exists github_references jsonb not null default '[]'::jsonb,
   add column if not exists sprint_id uuid,
   add column if not exists is_future boolean not null default false;
+
+-- Migra a referencia singular criada pela issue #4 antes de remover as colunas antigas.
+do $$
+begin
+  if exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'task_statuses'
+      and column_name = 'github_branch'
+  ) and exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'task_statuses'
+      and column_name = 'github_pr_url'
+  ) then
+    execute $migration$
+      update public.task_statuses
+      set github_references = jsonb_build_array(
+        jsonb_build_object(
+          'branch', btrim(github_branch),
+          'pr_url', btrim(github_pr_url)
+        )
+      )
+      where github_references = '[]'::jsonb
+        and (btrim(github_branch) <> '' or btrim(github_pr_url) <> '')
+    $migration$;
+  elsif exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'task_statuses'
+      and column_name = 'github_branch'
+  ) then
+    execute $migration$
+      update public.task_statuses
+      set github_references = jsonb_build_array(
+        jsonb_build_object('branch', btrim(github_branch), 'pr_url', '')
+      )
+      where github_references = '[]'::jsonb
+        and btrim(github_branch) <> ''
+    $migration$;
+  elsif exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'task_statuses'
+      and column_name = 'github_pr_url'
+  ) then
+    execute $migration$
+      update public.task_statuses
+      set github_references = jsonb_build_array(
+        jsonb_build_object('branch', '', 'pr_url', btrim(github_pr_url))
+      )
+      where github_references = '[]'::jsonb
+        and btrim(github_pr_url) <> ''
+    $migration$;
+  end if;
+end;
+$$;
+
+alter table public.task_statuses
+  drop column if exists github_branch,
+  drop column if exists github_pr_url;
 
 alter table public.task_statuses
   drop constraint if exists task_statuses_sprint_id_fkey;
@@ -281,6 +340,34 @@ create index if not exists saved_queries_user_folder_idx
 
 create index if not exists saved_queries_user_updated_idx
   on public.saved_queries(user_id, updated_at desc);
+
+-- Queries salvas continuam validas depois da migracao dos campos singulares.
+update public.saved_queries as saved_query
+set definition = jsonb_set(
+  saved_query.definition,
+  '{conditions}',
+  (
+    select jsonb_agg(
+      case
+        when condition->>'field' in ('github_branch', 'github_pr_url')
+          then jsonb_set(
+            condition,
+            '{field}',
+            to_jsonb('github_references'::text)
+          )
+        else condition
+      end
+      order by condition_index
+    )
+    from jsonb_array_elements(saved_query.definition->'conditions')
+      with ordinality as conditions(condition, condition_index)
+  )
+)
+where exists (
+  select 1
+  from jsonb_array_elements(saved_query.definition->'conditions') as conditions(condition)
+  where condition->>'field' in ('github_branch', 'github_pr_url')
+);
 
 -- Apenas a pasta e removida; as queries continuam pertencendo ao mesmo usuario.
 -- O trigger preserva user_id sem depender de SET NULL parcial em FKs compostas.

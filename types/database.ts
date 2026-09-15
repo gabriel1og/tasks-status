@@ -1,3 +1,8 @@
+export type TaskGithubReference = {
+  branch: string;
+  pr_url: string;
+};
+
 export type TaskStatusRow = {
   id: string;
   user_id: string;
@@ -5,8 +10,7 @@ export type TaskStatusRow = {
   azure: string;
   azure_url: string;
   liveops_url: string;
-  github_branch: string;
-  github_pr_url: string;
+  github_references: TaskGithubReference[];
   sprint: string;
   sprint_id: string | null;
   is_future: boolean;

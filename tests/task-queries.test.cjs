@@ -19,8 +19,16 @@ function task(overrides = {}) {
     azure: "12345",
     azure_url: "https://dev.azure.com/team/_workitems/edit/12345?view=a+b",
     liveops_url: "https://liveops.example/ticket/456",
-    github_branch: "feature/github-info",
-    github_pr_url: "https://github.com/gabriel1og/tasks-status/pull/4",
+    github_references: [
+      {
+        branch: "feature/github-info",
+        pr_url: "https://github.com/gabriel1og/tasks-status/pull/4",
+      },
+      {
+        branch: "fix/github-review",
+        pr_url: "https://github.com/gabriel1og/tasks-status/pull/5",
+      },
+    ],
     sprint: "Sprint 10",
     sprint_id: "sprint-10",
     is_future: false,
@@ -52,6 +60,7 @@ test("exposes every persisted task field with suitable operators and labels", ()
     Object.keys(task()).sort(),
   );
   assert.deepEqual(getQueryOperators("is_future"), ["eq", "neq"]);
+  assert.ok(getQueryOperators("github_references").includes("contains"));
   assert.ok(getQueryOperators("created_at").includes("on_or_after"));
   assert.ok(!getQueryOperators("created_at").includes("contains"));
   assert.ok(!getQueryOperators("nome").includes("before"));
@@ -88,6 +97,15 @@ test("filters every text field, including ids and links", () => {
       field.value,
     );
   }
+});
+
+test("filters each GitHub branch and PR independently", () => {
+  assert.ok(matches(task(), "github_references", "eq", "fix/github-review"));
+  assert.ok(matches(task(), "github_references", "contains", "pull/5"));
+  assert.ok(matches(task(), "github_references", "starts_with", "feature/"));
+  assert.ok(matches(task(), "github_references", "neq", "feature/missing"));
+  assert.ok(!matches(task(), "github_references", "not_contains", "pull/4"));
+  assert.ok(matches(task({ github_references: [] }), "github_references", "is_empty"));
 });
 
 test("combines all and any conditions without mutating the task list", () => {

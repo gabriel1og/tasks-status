@@ -75,8 +75,7 @@ export function TaskInfoModal({ task, tags, onClose }: TaskInfoModalProps) {
           <TaskInfoRow label="GitHub">
             <TaskGithubCell
               nome={task.nome}
-              github_branch={task.github_branch}
-              github_pr_url={task.github_pr_url}
+              references={task.github_references}
             />
           </TaskInfoRow>
           <TaskInfoRow label="Sprint" value={task.sprint || "Sem sprint"} />

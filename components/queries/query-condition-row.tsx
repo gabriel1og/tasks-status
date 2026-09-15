@@ -14,6 +14,7 @@ import {
   QUERY_FIELDS,
   QUERY_OPERATOR_LABELS,
 } from "@/lib/task-queries";
+import { getTaskGithubReferenceValues } from "@/lib/task-github";
 import type { SprintRow, TagOptionRow, TaskStatusRow } from "@/types/database";
 import type {
   QueryCondition,
@@ -187,6 +188,11 @@ function getValueSuggestions(
   tasks.forEach((task) => {
     const value = task[field];
     if (typeof value === "string" && value.trim()) values.set(value, value);
+    if (field === "github_references") {
+      getTaskGithubReferenceValues(value).forEach((referenceValue) =>
+        values.set(referenceValue, referenceValue),
+      );
+    }
   });
   if (field === "status" || field === "ambiente") {
     tags
