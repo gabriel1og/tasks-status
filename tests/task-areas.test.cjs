@@ -52,3 +52,61 @@ test("distinguishes incomplete, aligned, blocked and leading areas", () => {
     "backend_ahead",
   );
 });
+
+test("compares persisted task area statuses inside one environment", () => {
+  const { getTaskAreaComparison } = loadTypeScript("lib/task-areas.ts");
+  const task = { id: "task-1", areas: ["frontend", "backend"] };
+  const rows = [
+    {
+      task_id: "task-1",
+      environment_tag_id: "environment-1",
+      area: "frontend",
+      status: "available",
+    },
+    {
+      task_id: "task-1",
+      environment_tag_id: "environment-1",
+      area: "backend",
+      status: "in_progress",
+    },
+  ];
+
+  assert.equal(
+    getTaskAreaComparison(task, rows, "environment-1").status,
+    "frontend_ahead",
+  );
+});
+
+test("summarizes only tasks that compare both areas", () => {
+  const { summarizeTaskAreaComparisons } = loadTypeScript("lib/task-areas.ts");
+  const tasks = [
+    { id: "aligned", areas: ["frontend", "backend"] },
+    { id: "incomplete", areas: ["frontend", "backend"] },
+    { id: "frontend-only", areas: ["frontend"] },
+  ];
+  const rows = [
+    ...["frontend", "backend"].map((area) => ({
+      task_id: "aligned",
+      environment_tag_id: "environment-1",
+      area,
+      status: "available",
+    })),
+    {
+      task_id: "incomplete",
+      environment_tag_id: "environment-1",
+      area: "frontend",
+      status: "in_progress",
+    },
+  ];
+
+  assert.deepEqual(
+    summarizeTaskAreaComparisons(tasks, rows, "environment-1"),
+    {
+      aligned: 1,
+      frontend_ahead: 0,
+      backend_ahead: 0,
+      blocked: 0,
+      incomplete: 1,
+    },
+  );
+});

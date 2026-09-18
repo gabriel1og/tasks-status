@@ -2,6 +2,7 @@ import type {
   TaskArea,
   TaskEnvironmentAreaStatus,
   TaskEnvironmentAreaStatusRow,
+  TaskStatusRow,
 } from "@/types/database";
 
 export const TASK_AREAS: TaskArea[] = ["frontend", "backend"];
@@ -57,6 +58,16 @@ export type TaskAreaComparison = {
   label: string;
 };
 
+export type ComparableTaskAreaStatus = Exclude<
+  TaskAreaComparison["status"],
+  "unclassified" | "not_applicable"
+>;
+
+export type TaskAreaComparisonSummary = Record<
+  ComparableTaskAreaStatus,
+  number
+>;
+
 /** Compara Frontend e Backend somente quando ambos participam. Exemplo: compareTaskAreas(task.areas, front, back). */
 export function compareTaskAreas(
   areas: TaskArea[],
@@ -88,4 +99,42 @@ export function compareTaskAreas(
   return progressRank[frontendStatus] > progressRank[backendStatus]
     ? { status: "frontend_ahead", label: "Frontend adiantado" }
     : { status: "backend_ahead", label: "Backend adiantado" };
+}
+
+/** Compara as áreas persistidas de uma tarefa em um ambiente. Exemplo: getTaskAreaComparison(task, rows, tagId). */
+export function getTaskAreaComparison(
+  task: TaskStatusRow,
+  rows: TaskEnvironmentAreaStatusRow[],
+  environmentTagId: string,
+): TaskAreaComparison {
+  const getStatus = (area: TaskArea) =>
+    findTaskAreaStatus(rows, task.id, environmentTagId, area)?.status;
+
+  return compareTaskAreas(
+    sanitizeTaskAreas(task.areas),
+    getStatus("frontend"),
+    getStatus("backend"),
+  );
+}
+
+/** Resume os diagnósticos comparáveis de um ambiente. Exemplo: summarizeTaskAreaComparisons(tasks, rows, tagId). */
+export function summarizeTaskAreaComparisons(
+  tasks: TaskStatusRow[],
+  rows: TaskEnvironmentAreaStatusRow[],
+  environmentTagId: string,
+): TaskAreaComparisonSummary {
+  const summary: TaskAreaComparisonSummary = {
+    aligned: 0,
+    frontend_ahead: 0,
+    backend_ahead: 0,
+    blocked: 0,
+    incomplete: 0,
+  };
+
+  tasks.forEach((task) => {
+    const { status } = getTaskAreaComparison(task, rows, environmentTagId);
+    if (status === "unclassified" || status === "not_applicable") return;
+    summary[status] += 1;
+  });
+  return summary;
 }

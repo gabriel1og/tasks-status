@@ -1,9 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { FilterX } from "lucide-react";
 
+import { EnvironmentComparisonSelector } from "@/components/environments/environment-comparison-selector";
 import { selectInputClassName } from "@/components/tasks/task-form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -18,12 +21,17 @@ import type {
   TrackedEnvironmentKey,
 } from "@/lib/environment-tracking";
 import {
-  compareTaskAreas,
   findTaskAreaStatus,
+  getTaskAreaComparison,
   sanitizeTaskAreas,
+  summarizeTaskAreaComparisons,
   TASK_AREAS,
   TASK_AREA_LABELS,
   TASK_AREA_STATUS_LABELS,
+} from "@/lib/task-areas";
+import type {
+  ComparableTaskAreaStatus,
+  TaskAreaComparisonSummary,
 } from "@/lib/task-areas";
 import type {
   TaskArea,
@@ -33,6 +41,43 @@ import type {
 } from "@/types/database";
 
 type AreaFilter = "both" | TaskArea | "unclassified" | "all";
+type ComparisonFilter = "all" | "attention" | ComparableTaskAreaStatus;
+
+const comparisonFilterLabels: Record<ComparisonFilter, string> = {
+  all: "Todas as comparações",
+  attention: "Requer atenção",
+  aligned: "Áreas alinhadas",
+  frontend_ahead: "Frontend adiantado",
+  backend_ahead: "Backend adiantado",
+  blocked: "Área bloqueada",
+  incomplete: "Rastreamento incompleto",
+};
+
+const comparisonMetricOrder: ComparableTaskAreaStatus[] = [
+  "aligned",
+  "frontend_ahead",
+  "backend_ahead",
+  "blocked",
+  "incomplete",
+];
+
+const attentionStatuses: ComparableTaskAreaStatus[] = [
+  "frontend_ahead",
+  "backend_ahead",
+  "blocked",
+  "incomplete",
+];
+
+const environmentPreferenceKey =
+  "gerenciamento-status:area-comparison-environment";
+
+const emptyComparisonSummary: TaskAreaComparisonSummary = {
+  aligned: 0,
+  frontend_ahead: 0,
+  backend_ahead: 0,
+  blocked: 0,
+  incomplete: 0,
+};
 
 type AreaEnvironmentTrackingTableProps = {
   tasks: TaskStatusRow[];
@@ -55,81 +100,166 @@ export function AreaEnvironmentTrackingTable({
   savingStatusKeys,
   onStatusChange,
 }: AreaEnvironmentTrackingTableProps) {
-  const availableColumns = columns.filter((column) => column.tag);
+  const availableColumns = useMemo(
+    () => columns.filter((column) => column.tag),
+    [columns],
+  );
+  const restoredEnvironmentPreference = useRef(false);
   const [environmentKey, setEnvironmentKey] = useState<TrackedEnvironmentKey>(
     availableColumns.find((column) => column.key === "development")?.key ??
       availableColumns[0]?.key ??
       "development",
   );
   const [areaFilter, setAreaFilter] = useState<AreaFilter>("both");
+  const [comparisonFilter, setComparisonFilter] =
+    useState<ComparisonFilter>("all");
   const [query, setQuery] = useState("");
   const environment =
     availableColumns.find((column) => column.key === environmentKey) ??
     availableColumns[0];
-  const visibleTasks = useMemo(
+  const comparisonSummary = useMemo(
     () =>
-      tasks.filter(
-        (task) =>
-          matchesAreaFilter(sanitizeTaskAreas(task.areas), areaFilter) &&
-          normalizeSearchValue(task.nome).includes(normalizeSearchValue(query)),
-      ),
-    [areaFilter, query, tasks],
+      environment?.tag
+        ? summarizeTaskAreaComparisons(
+            tasks,
+            areaStatuses,
+            environment.tag.id,
+          )
+        : emptyComparisonSummary,
+    [areaStatuses, environment, tasks],
   );
+  const hasActiveFilters =
+    Boolean(query) || areaFilter !== "both" || comparisonFilter !== "all";
+
+  useEffect(() => {
+    const savedKey = window.localStorage.getItem(environmentPreferenceKey);
+    const savedColumn = availableColumns.find(
+      (column) => column.key === savedKey,
+    );
+    if (!restoredEnvironmentPreference.current && savedColumn) {
+      restoredEnvironmentPreference.current = true;
+      setEnvironmentKey(savedColumn.key);
+      return;
+    }
+
+    restoredEnvironmentPreference.current = true;
+    window.localStorage.setItem(environmentPreferenceKey, environmentKey);
+  }, [availableColumns, environmentKey]);
+  const visibleTasks = useMemo(() => {
+    const normalizedQuery = normalizeSearchValue(query);
+    return tasks.filter((task) => {
+      if (!matchesAreaFilter(sanitizeTaskAreas(task.areas), areaFilter)) {
+        return false;
+      }
+      if (!normalizeSearchValue(task.nome).includes(normalizedQuery)) {
+        return false;
+      }
+      if (comparisonFilter === "all" || !environment?.tag) {
+        return true;
+      }
+      const status = getTaskAreaComparison(
+        task,
+        areaStatuses,
+        environment.tag.id,
+      ).status;
+      return comparisonFilter === "attention"
+        ? attentionStatuses.includes(status as ComparableTaskAreaStatus)
+        : status === comparisonFilter;
+    });
+  }, [areaFilter, areaStatuses, comparisonFilter, environment, query, tasks]);
 
   return (
     <Card>
-      <CardHeader className="gap-4 md:flex md:flex-row md:items-end md:justify-between md:space-y-0">
-        <div className="space-y-2">
-          <CardTitle>Frontend × Backend</CardTitle>
-          <p className="max-w-3xl text-sm text-muted-foreground">
-            Compare somente as áreas envolvidas na tarefa. Uma área não
-            participante é exibida como não aplicável.
-          </p>
-        </div>
-        <div className="grid w-full gap-3 sm:grid-cols-3 md:w-auto">
-          <Input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar tarefa"
-            aria-label="Buscar tarefa por área"
+      <CardHeader className="space-y-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-2">
+            <h3 className={"text-xl font-semibold leading-none"}>
+              Frontend × Backend
+            </h3>
+            <p className="max-w-3xl text-sm text-muted-foreground">
+              Compare somente as áreas envolvidas na tarefa. Uma área não
+              participante é exibida como não aplicável.
+            </p>
+          </div>
+          <EnvironmentComparisonSelector
+            columns={availableColumns}
+            value={environment?.key ?? environmentKey}
+            onChange={setEnvironmentKey}
           />
-          <select
-            className={selectInputClassName}
-            value={environment?.key ?? ""}
-            onChange={(event) =>
-              setEnvironmentKey(event.target.value as TrackedEnvironmentKey)
-            }
-            aria-label="Selecionar ambiente da comparação"
-          >
-            {availableColumns.map((column) => (
-              <option key={column.key} value={column.key}>
-                {column.label}
-              </option>
-            ))}
-          </select>
-          <select
-            className={selectInputClassName}
-            value={areaFilter}
-            onChange={(event) => setAreaFilter(event.target.value as AreaFilter)}
-            aria-label="Filtrar tarefas pelas áreas envolvidas"
-          >
-            <option value="both">Frontend e Backend</option>
-            <option value="frontend">Somente Frontend</option>
-            <option value="backend">Somente Backend</option>
-            <option value="unclassified">Áreas não definidas</option>
-            <option value="all">Todas as tarefas</option>
-          </select>
+        </div>
+        <div className="w-full space-y-2">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <Input
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Buscar tarefa"
+              aria-label="Buscar tarefa por área"
+            />
+            <select
+              className={selectInputClassName}
+              value={areaFilter}
+              onChange={(event) => {
+                const nextFilter = event.target.value as AreaFilter;
+                setAreaFilter(nextFilter);
+                if (nextFilter !== "both" && nextFilter !== "all") {
+                  setComparisonFilter("all");
+                }
+              }}
+              aria-label="Filtrar tarefas pelas áreas envolvidas"
+            >
+              <option value="both">Frontend e Backend</option>
+              <option value="frontend">Somente Frontend</option>
+              <option value="backend">Somente Backend</option>
+              <option value="unclassified">Áreas não definidas</option>
+              <option value="all">Todas as tarefas</option>
+            </select>
+            <select
+              className={selectInputClassName}
+              value={comparisonFilter}
+              disabled={areaFilter !== "both" && areaFilter !== "all"}
+              onChange={(event) =>
+                setComparisonFilter(event.target.value as ComparisonFilter)
+              }
+              aria-label="Filtrar pelo resultado da comparação entre áreas"
+            >
+              {Object.entries(comparisonFilterLabels).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+          {hasActiveFilters ? (
+            <div className="flex justify-end">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setQuery("");
+                  setAreaFilter("both");
+                  setComparisonFilter("all");
+                }}
+              >
+                <FilterX className="h-4 w-4" />
+                Limpar filtros
+              </Button>
+            </div>
+          ) : null}
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         {environment?.tag ? (
-          <AreaComparisonMatrix
-            tasks={visibleTasks}
-            environment={environment}
-            areaStatuses={areaStatuses}
-            savingStatusKeys={savingStatusKeys}
-            onStatusChange={onStatusChange}
-          />
+          <>
+            <AreaComparisonSummary summary={comparisonSummary} />
+            <AreaComparisonMatrix
+              tasks={visibleTasks}
+              environment={environment}
+              areaStatuses={areaStatuses}
+              savingStatusKeys={savingStatusKeys}
+              onStatusChange={onStatusChange}
+            />
+          </>
         ) : (
           <p className="text-sm text-muted-foreground">
             Configure ao menos um ambiente para iniciar o rastreamento.
@@ -137,6 +267,25 @@ export function AreaEnvironmentTrackingTable({
         )}
       </CardContent>
     </Card>
+  );
+}
+
+function AreaComparisonSummary({
+  summary,
+}: {
+  summary: TaskAreaComparisonSummary;
+}) {
+  return (
+    <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-5">
+      {comparisonMetricOrder.map((status) => (
+        <div key={status} className="rounded-md border px-3 py-2">
+          <p className="text-xs text-muted-foreground">
+            {comparisonFilterLabels[status]}
+          </p>
+          <p className="mt-1 text-lg font-semibold">{summary[status]}</p>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -207,14 +356,23 @@ function AreaComparisonRow({
     environmentTagId,
     "backend",
   )?.status;
-  const comparison = compareTaskAreas(
-    areas,
-    frontendStatus,
-    backendStatus,
+  const comparison = getTaskAreaComparison(
+    task,
+    areaStatuses,
+    environmentTagId,
   );
+  const requiresAttention = attentionStatuses.includes(
+    comparison.status as ComparableTaskAreaStatus,
+  );
+  const rowClassName =
+    comparison.status === "blocked"
+      ? "bg-destructive/5 hover:bg-destructive/10"
+      : requiresAttention
+        ? "bg-amber-500/5 hover:bg-amber-500/10"
+        : undefined;
 
   return (
-    <TableRow>
+    <TableRow className={rowClassName}>
       <TableCell className="font-medium">{task.nome}</TableCell>
       {TASK_AREAS.map((area) => (
         <TableCell key={area}>
@@ -289,7 +447,8 @@ function AreaStatusSelect({
 function matchesAreaFilter(areas: TaskArea[], filter: AreaFilter): boolean {
   if (filter === "all") return true;
   if (filter === "unclassified") return areas.length === 0;
-  if (filter === "both") return TASK_AREAS.every((area) => areas.includes(area));
+  if (filter === "both")
+    return TASK_AREAS.every((area) => areas.includes(area));
   return areas.length === 1 && areas.includes(filter);
 }
 
