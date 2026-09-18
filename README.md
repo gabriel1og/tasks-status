@@ -30,7 +30,8 @@ npm run dev
 - `/login`: login e cadastro por e-mail/senha ou acesso com Google.
 - `/status`: cadastro e tabela de acompanhamento das tarefas.
 - `/environments`: matriz de disponibilidade, análise de compatibilidade e comparação opcional entre Frontend e Backend por ambiente.
-- `/sprints`: tarefas da sprint atual ou da sprint selecionada.
+- `/sprints`: hub da sprint atual ou selecionada, com tarefas, indicadores,
+  objetivo, critérios de sucesso, observações e links úteis.
 - `/future-tasks`: cadastro e acompanhamento de tarefas ainda sem planejamento definido.
 - `/queries`: biblioteca de queries, favoritos e pastas.
 - `/queries/new`: criação de uma query com prévia dos resultados.

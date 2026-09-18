@@ -23,9 +23,15 @@ create table if not exists public.sprints (
   nome text not null,
   data_inicio date not null,
   data_fim date not null,
+  objetivo text not null default '',
+  criterios_sucesso text not null default '',
+  observacoes text not null default '',
+  links jsonb not null default '[]'::jsonb,
   created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
   unique (user_id, nome),
-  check (data_fim >= data_inicio)
+  check (data_fim >= data_inicio),
+  constraint sprints_links_array_check check (jsonb_typeof(links) = 'array')
 );
 
 create table if not exists public.task_statuses (
@@ -75,6 +81,20 @@ alter table public.task_statuses
   add column if not exists areas text[] not null default '{}',
   add column if not exists sprint_id uuid,
   add column if not exists is_future boolean not null default false;
+
+alter table public.sprints
+  add column if not exists objetivo text not null default '',
+  add column if not exists criterios_sucesso text not null default '',
+  add column if not exists observacoes text not null default '',
+  add column if not exists links jsonb not null default '[]'::jsonb,
+  add column if not exists updated_at timestamptz not null default now();
+
+alter table public.sprints
+  drop constraint if exists sprints_links_array_check;
+
+alter table public.sprints
+  add constraint sprints_links_array_check
+  check (jsonb_typeof(links) = 'array');
 
 alter table public.task_statuses
   drop constraint if exists task_statuses_areas_check;
@@ -346,6 +366,22 @@ create policy "Usuarios atualizam as proprias areas por ambiente"
 create policy "Usuarios removem as proprias areas por ambiente"
   on public.task_environment_area_statuses for delete
   using (auth.uid() = user_id);
+
+create or replace function public.touch_sprint_updated_at()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists sprints_touch_updated_at on public.sprints;
+create trigger sprints_touch_updated_at
+  before update on public.sprints
+  for each row execute function public.touch_sprint_updated_at();
 
 create or replace function public.touch_task_environment_status_updated_at()
 returns trigger

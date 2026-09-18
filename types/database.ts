@@ -87,7 +87,31 @@ export type SprintRow = {
   nome: string;
   data_inicio: string;
   data_fim: string;
+  objetivo: string;
+  criterios_sucesso: string;
+  observacoes: string;
+  links: SprintLink[];
   created_at: string;
+  updated_at: string;
 };
 
-export type SprintInsert = Omit<SprintRow, "id" | "created_at">;
+export type SprintLink = {
+  label: string;
+  url: string;
+};
+
+export type SprintInsert = Pick<
+  SprintRow,
+  "user_id" | "nome" | "data_inicio" | "data_fim"
+> &
+  Partial<
+    Pick<
+      SprintRow,
+      "objetivo" | "criterios_sucesso" | "observacoes" | "links"
+    >
+  >;
+
+export type SprintAdditionalInfoUpdate = Pick<
+  SprintRow,
+  "objetivo" | "criterios_sucesso" | "observacoes" | "links"
+>;

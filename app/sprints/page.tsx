@@ -5,13 +5,17 @@ import type { User } from "@supabase/supabase-js";
 
 import { AppShell } from "@/components/app-shell";
 import { AuthGuard } from "@/components/auth-guard";
+import { SprintAdditionalInfoCard } from "@/components/sprints/sprint-additional-info-card";
 import { selectInputClassName } from "@/components/tasks/task-form";
 import { TaskTable } from "@/components/tasks/task-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { formatDate } from "@/lib/format";
 import { getRequestErrorFeedback } from "@/lib/request-feedback";
+import { getLocalDateKey } from "@/lib/sprint-hub";
 import { supabase } from "@/lib/supabase";
 import type {
+  SprintAdditionalInfoUpdate,
   SprintRow,
   TagOptionRow,
   TaskEnvironmentStatusRow,
@@ -40,6 +44,7 @@ function SprintDashboard({ user }: { user: User }) {
   const [selectedSprintId, setSelectedSprintId] = useState("");
   const [feedback, setFeedback] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isEditingSprintInfo, setIsEditingSprintInfo] = useState(false);
 
   const selectedSprint = useMemo(
     () => sprints.find((sprint) => sprint.id === selectedSprintId),
@@ -133,6 +138,34 @@ function SprintDashboard({ user }: { user: User }) {
     };
   }
 
+  async function saveSprintAdditionalInfo(
+    values: SprintAdditionalInfoUpdate,
+  ): Promise<string> {
+    if (!selectedSprint) return "Selecione uma sprint antes de salvar.";
+    const { data: updatedSprint, error } = await supabase
+      .from("sprints")
+      .update(values)
+      .eq("id", selectedSprint.id)
+      .eq("user_id", user.id)
+      .select("*")
+      .single();
+
+    if (error) {
+      return getRequestErrorFeedback(
+        "update_sprint_additional_info",
+        error,
+        "Não foi possível salvar as informações da sprint.",
+      );
+    }
+
+    setSprints((currentSprints) =>
+      currentSprints.map((sprint) =>
+        sprint.id === selectedSprint.id ? (updatedSprint as SprintRow) : sprint,
+      ),
+    );
+    return "";
+  }
+
   return (
     <div className="space-y-6">
       <Card>
@@ -152,7 +185,7 @@ function SprintDashboard({ user }: { user: User }) {
               className={selectInputClassName}
               value={selectedSprintId}
               onChange={(event) => setSelectedSprintId(event.target.value)}
-              disabled={!sprints.length}
+              disabled={!sprints.length || isEditingSprintInfo}
             >
               {!sprints.length ? (
                 <option value="">Nenhuma sprint cadastrada</option>
@@ -192,6 +225,13 @@ function SprintDashboard({ user }: { user: User }) {
           )}
         </CardContent>
       </Card>
+      <SprintAdditionalInfoCard
+        sprint={selectedSprint}
+        tasks={sprintTasks}
+        tags={tags}
+        onEditingChange={setIsEditingSprintInfo}
+        onSave={saveSprintAdditionalInfo}
+      />
     </div>
   );
 }
@@ -223,18 +263,6 @@ function findDefaultSprint(sprints: SprintRow[]) {
   return upcomingSprints[0] ?? sprints[0];
 }
 
-function getLocalDateKey() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
 function formatSprintPeriod(sprint: SprintRow) {
   return `${formatDate(sprint.data_inicio)} a ${formatDate(sprint.data_fim)}`;
-}
-
-function formatDate(date: string) {
-  return new Intl.DateTimeFormat("pt-BR").format(new Date(`${date}T00:00:00`));
 }
