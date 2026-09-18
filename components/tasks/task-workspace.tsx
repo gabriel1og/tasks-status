@@ -15,10 +15,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buildDefaultTags } from "@/lib/default-tags";
 import { getRequestErrorFeedback } from "@/lib/request-feedback";
+import { sanitizeTaskAreas } from "@/lib/task-areas";
 import { sanitizeTaskGithubReferences } from "@/lib/task-github";
 import { supabase } from "@/lib/supabase";
 import type {
   SprintRow,
+  TaskArea,
   TaskEnvironmentStatusInsert,
   TaskEnvironmentStatusRow,
   TagOptionRow,
@@ -252,6 +254,7 @@ export function TaskWorkspace({
 
     setFeedback("");
     setIsSaving(true);
+    const previousTask = tasks.find((task) => task.id === editingTaskId);
     const payload = buildTaskPayload(
       user.id,
       editTaskForm,
@@ -288,9 +291,40 @@ export function TaskWorkspace({
       ),
     );
     if (!isFutureWorkspace) {
+      await removeStatusesFromDetachedAreas(previousTask, updatedTaskRow);
       await markCurrentEnvironmentAsAvailable(updatedTaskRow);
     }
     cancelTaskEdit();
+  }
+
+  async function removeStatusesFromDetachedAreas(
+    previousTask: TaskStatusRow | undefined,
+    updatedTask: TaskStatusRow,
+  ) {
+    const updatedAreas = sanitizeTaskAreas(updatedTask.areas);
+    const removedAreas = sanitizeTaskAreas(previousTask?.areas).filter(
+      (area) => !updatedAreas.includes(area),
+    );
+    if (!removedAreas.length) {
+      return;
+    }
+
+    const { error } = await supabase
+      .from("task_environment_area_statuses")
+      .delete()
+      .eq("user_id", user.id)
+      .eq("task_id", updatedTask.id)
+      .in("area", removedAreas as TaskArea[]);
+
+    if (error) {
+      setFeedback(
+        getRequestErrorFeedback(
+          "remove_detached_task_area_statuses",
+          error,
+          "A tarefa foi salva, mas os estados das áreas removidas não puderam ser limpos.",
+        ),
+      );
+    }
   }
 
   async function deleteTask(taskId: string) {
@@ -412,6 +446,7 @@ export function TaskWorkspace({
               sprints={sprints}
               sprintCellMode={isFutureWorkspace ? "assign" : "editable"}
               showGithubInfo={!isFutureWorkspace}
+              showAreaInfo={!isFutureWorkspace}
               showEnvironmentMonitor={!isFutureWorkspace}
               showSprintFilter={!isFutureWorkspace}
               emptyMessage={
@@ -537,6 +572,7 @@ function buildTaskPayload(
     azure_url: form.azure_url,
     liveops_url: form.liveops_url,
     github_references: sanitizeTaskGithubReferences(form.github_references),
+    areas: isFuture ? [] : sanitizeTaskAreas(form.areas),
     sprint_id: isFuture ? null : (sprint?.id ?? null),
     sprint: isFuture ? "" : (sprint?.nome ?? ""),
     is_future: isFuture,

@@ -15,6 +15,7 @@ import {
 import {
   selectInputClassName,
   SprintSelectField,
+  TaskAreasField,
   type TaskFormChangeHandler,
   type TaskFormState,
 } from "@/components/tasks/task-form";
@@ -45,6 +46,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { sanitizeTaskAreas, TASK_AREA_LABELS } from "@/lib/task-areas";
 import type {
   SprintRow,
   TagOptionRow,
@@ -67,6 +69,7 @@ type TaskTableProps = {
   showSprintFilter?: boolean;
   showGithubInfo?: boolean;
   showEnvironmentMonitor?: boolean;
+  showAreaInfo?: boolean;
   emptyMessage?: string;
   editingTaskId?: string | null;
   editTaskForm?: TaskFormState;
@@ -108,6 +111,7 @@ export function TaskTable({
   showSprintFilter = true,
   showGithubInfo = true,
   showEnvironmentMonitor = true,
+  showAreaInfo = true,
   emptyMessage = "Nenhuma tarefa cadastrada.",
   editingTaskId = null,
   editTaskForm,
@@ -168,6 +172,7 @@ export function TaskTable({
             <TableHead>Azure</TableHead>
             <TableHead>LiveOps</TableHead>
             {showGithubInfo ? <TableHead>GitHub</TableHead> : null}
+            {showAreaInfo ? <TableHead>Áreas</TableHead> : null}
             <SortableTableHead field="sprint" sort={sort} onSort={toggleSort} />
             <SortableTableHead field="status" sort={sort} onSort={toggleSort} />
             <SortableTableHead field="ambiente" sort={sort} onSort={toggleSort} />
@@ -186,6 +191,7 @@ export function TaskTable({
                   isSaving={isSaving}
                   showGithubInfo={showGithubInfo}
                   showEnvironmentMonitor={showEnvironmentMonitor}
+                  showAreaInfo={showAreaInfo}
                   sprintCellMode={sprintCellMode}
                   sprints={sprints}
                   statusTags={statusTags}
@@ -202,6 +208,7 @@ export function TaskTable({
                   sprints={sprints}
                   showGithubInfo={showGithubInfo}
                   showEnvironmentMonitor={showEnvironmentMonitor}
+                  showAreaInfo={showAreaInfo}
                   sprintCellMode={sprintCellMode}
                   onAssignSprint={onAssignSprint}
                   onDelete={onDelete}
@@ -213,7 +220,11 @@ export function TaskTable({
           ) : (
             <TableRow>
               <TableCell
-                colSpan={getTaskTableColumnCount(canShowActions, showGithubInfo)}
+                colSpan={getTaskTableColumnCount(
+                  canShowActions,
+                  showGithubInfo,
+                  showAreaInfo,
+                )}
                 className="h-24 text-center text-muted-foreground"
               >
                 Nenhuma tarefa encontrada com os filtros atuais.
@@ -256,6 +267,7 @@ function EditableTaskRow({
   isSaving,
   showGithubInfo,
   showEnvironmentMonitor,
+  showAreaInfo,
   sprintCellMode,
   sprints,
   statusTags,
@@ -270,6 +282,7 @@ function EditableTaskRow({
   isSaving: boolean;
   showGithubInfo: boolean;
   showEnvironmentMonitor: boolean;
+  showAreaInfo: boolean;
   sprintCellMode: SprintCellMode;
   sprints: SprintRow[];
   statusTags: TagOptionRow[];
@@ -301,6 +314,15 @@ function EditableTaskRow({
           <EditableTaskGithubCell
             taskForm={taskForm}
             onEditField={onEditField}
+          />
+        </TableCell>
+      ) : null}
+      {showAreaInfo ? (
+        <TableCell>
+          <TaskAreasField
+            areas={taskForm.areas}
+            onChange={(areas) => onEditField("areas", areas)}
+            compact
           />
         </TableCell>
       ) : null}
@@ -340,6 +362,7 @@ function ReadonlyTaskRow({
   sprints,
   showGithubInfo,
   showEnvironmentMonitor,
+  showAreaInfo,
   sprintCellMode,
   onAssignSprint,
   onDelete,
@@ -351,6 +374,7 @@ function ReadonlyTaskRow({
   sprints: SprintRow[];
   showGithubInfo: boolean;
   showEnvironmentMonitor: boolean;
+  showAreaInfo: boolean;
   sprintCellMode: SprintCellMode;
   onAssignSprint?: (taskId: string, sprintId: string) => void;
   onDelete?: (taskId: string) => void;
@@ -368,6 +392,15 @@ function ReadonlyTaskRow({
             nome={task.nome}
             references={task.github_references}
           />
+        </TableCell>
+      ) : null}
+      {showAreaInfo ? (
+        <TableCell>
+          {sanitizeTaskAreas(task.areas).length
+            ? sanitizeTaskAreas(task.areas)
+                .map((area) => TASK_AREA_LABELS[area])
+                .join(" + ")
+            : "Não definida"}
         </TableCell>
       ) : null}
       <TableCell>
@@ -494,6 +527,12 @@ function normalizeValue(value: string | null | undefined) {
 function getTaskTableColumnCount(
   canShowActions: boolean,
   showGithubInfo: boolean,
+  showAreaInfo: boolean,
 ) {
-  return 6 + (showGithubInfo ? 1 : 0) + (canShowActions ? 1 : 0);
+  return (
+    6 +
+    (showGithubInfo ? 1 : 0) +
+    (showAreaInfo ? 1 : 0) +
+    (canShowActions ? 1 : 0)
+  );
 }

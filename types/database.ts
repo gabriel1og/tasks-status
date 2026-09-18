@@ -3,6 +3,14 @@ export type TaskGithubReference = {
   pr_url: string;
 };
 
+export type TaskArea = "frontend" | "backend";
+
+export type TaskEnvironmentAreaStatus =
+  | "not_started"
+  | "in_progress"
+  | "available"
+  | "blocked";
+
 export type TaskStatusRow = {
   id: string;
   user_id: string;
@@ -11,6 +19,7 @@ export type TaskStatusRow = {
   azure_url: string;
   liveops_url: string;
   github_references: TaskGithubReference[];
+  areas: TaskArea[];
   sprint: string;
   sprint_id: string | null;
   is_future: boolean;
@@ -33,6 +42,22 @@ export type TaskEnvironmentStatusRow = {
 
 export type TaskEnvironmentStatusInsert = Omit<
   TaskEnvironmentStatusRow,
+  "id" | "created_at" | "updated_at"
+>;
+
+export type TaskEnvironmentAreaStatusRow = {
+  id: string;
+  user_id: string;
+  task_id: string;
+  environment_tag_id: string;
+  area: TaskArea;
+  status: TaskEnvironmentAreaStatus;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TaskEnvironmentAreaStatusInsert = Omit<
+  TaskEnvironmentAreaStatusRow,
   "id" | "created_at" | "updated_at"
 >;
 

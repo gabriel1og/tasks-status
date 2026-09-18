@@ -36,6 +36,7 @@ create table if not exists public.task_statuses (
   azure_url text not null default '',
   liveops_url text not null default '',
   github_references jsonb not null default '[]'::jsonb,
+  areas text[] not null default '{}',
   sprint text not null default '',
   sprint_id uuid,
   is_future boolean not null default false,
@@ -55,12 +56,32 @@ create table if not exists public.task_environment_statuses (
   unique (task_id, environment_tag_id)
 );
 
+create table if not exists public.task_environment_area_statuses (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  task_id uuid not null references public.task_statuses(id) on delete cascade,
+  environment_tag_id uuid not null references public.tag_options(id) on delete cascade,
+  area text not null check (area in ('frontend', 'backend')),
+  status text not null check (status in ('not_started', 'in_progress', 'available', 'blocked')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  unique (task_id, environment_tag_id, area)
+);
+
 alter table public.task_statuses
   add column if not exists azure_url text not null default '',
   add column if not exists liveops_url text not null default '',
   add column if not exists github_references jsonb not null default '[]'::jsonb,
+  add column if not exists areas text[] not null default '{}',
   add column if not exists sprint_id uuid,
   add column if not exists is_future boolean not null default false;
+
+alter table public.task_statuses
+  drop constraint if exists task_statuses_areas_check;
+
+alter table public.task_statuses
+  add constraint task_statuses_areas_check
+  check (areas <@ array['frontend', 'backend']::text[]);
 
 -- Migra a referencia singular criada pela issue #4 antes de remover as colunas antigas.
 do $$
@@ -135,6 +156,10 @@ alter table public.task_environment_statuses drop constraint if exists task_envi
 alter table public.task_environment_statuses drop constraint if exists task_environment_statuses_environment_tag_id_fkey;
 alter table public.task_environment_statuses drop constraint if exists task_environment_statuses_task_owner_fkey;
 alter table public.task_environment_statuses drop constraint if exists task_environment_statuses_environment_owner_fkey;
+alter table public.task_environment_area_statuses drop constraint if exists task_environment_area_statuses_task_id_fkey;
+alter table public.task_environment_area_statuses drop constraint if exists task_environment_area_statuses_environment_tag_id_fkey;
+alter table public.task_environment_area_statuses drop constraint if exists task_environment_area_statuses_task_owner_fkey;
+alter table public.task_environment_area_statuses drop constraint if exists task_environment_area_statuses_environment_owner_fkey;
 alter table public.tag_options drop constraint if exists tag_options_id_user_id_key;
 alter table public.task_statuses drop constraint if exists task_statuses_id_user_id_key;
 
@@ -152,11 +177,20 @@ alter table public.task_environment_statuses
   add constraint task_environment_statuses_environment_owner_fkey
   foreign key (environment_tag_id, user_id) references public.tag_options(id, user_id) on delete cascade;
 
+alter table public.task_environment_area_statuses
+  add constraint task_environment_area_statuses_task_owner_fkey
+  foreign key (task_id, user_id) references public.task_statuses(id, user_id) on delete cascade;
+
+alter table public.task_environment_area_statuses
+  add constraint task_environment_area_statuses_environment_owner_fkey
+  foreign key (environment_tag_id, user_id) references public.tag_options(id, user_id) on delete cascade;
+
 alter table public.user_settings drop constraint if exists user_settings_user_id_fkey;
 alter table public.tag_options drop constraint if exists tag_options_user_id_fkey;
 alter table public.sprints drop constraint if exists sprints_user_id_fkey;
 alter table public.task_statuses drop constraint if exists task_statuses_user_id_fkey;
 alter table public.task_environment_statuses drop constraint if exists task_environment_statuses_user_id_fkey;
+alter table public.task_environment_area_statuses drop constraint if exists task_environment_area_statuses_user_id_fkey;
 
 -- NOT VALID preserva registros do acesso compartilhado anterior durante a migracao.
 -- A restricao continua sendo aplicada a todo novo registro autenticado.
@@ -180,11 +214,16 @@ alter table public.task_environment_statuses
   add constraint task_environment_statuses_user_id_fkey
   foreign key (user_id) references auth.users(id) on delete cascade not valid;
 
+alter table public.task_environment_area_statuses
+  add constraint task_environment_area_statuses_user_id_fkey
+  foreign key (user_id) references auth.users(id) on delete cascade not valid;
+
 alter table public.user_settings enable row level security;
 alter table public.tag_options enable row level security;
 alter table public.sprints enable row level security;
 alter table public.task_statuses enable row level security;
 alter table public.task_environment_statuses enable row level security;
+alter table public.task_environment_area_statuses enable row level security;
 
 drop policy if exists "Usuarios leem o proprio perfil" on public.user_settings;
 drop policy if exists "Usuarios salvam o proprio perfil" on public.user_settings;
@@ -205,6 +244,10 @@ drop policy if exists "Usuarios leem os proprios ambientes das tarefas" on publi
 drop policy if exists "Usuarios criam os proprios ambientes das tarefas" on public.task_environment_statuses;
 drop policy if exists "Usuarios atualizam os proprios ambientes das tarefas" on public.task_environment_statuses;
 drop policy if exists "Usuarios removem os proprios ambientes das tarefas" on public.task_environment_statuses;
+drop policy if exists "Usuarios leem as proprias areas por ambiente" on public.task_environment_area_statuses;
+drop policy if exists "Usuarios criam as proprias areas por ambiente" on public.task_environment_area_statuses;
+drop policy if exists "Usuarios atualizam as proprias areas por ambiente" on public.task_environment_area_statuses;
+drop policy if exists "Usuarios removem as proprias areas por ambiente" on public.task_environment_area_statuses;
 
 create policy "Usuarios leem o proprio perfil"
   on public.user_settings for select
@@ -287,6 +330,23 @@ create policy "Usuarios removem os proprios ambientes das tarefas"
   on public.task_environment_statuses for delete
   using (auth.uid() = user_id);
 
+create policy "Usuarios leem as proprias areas por ambiente"
+  on public.task_environment_area_statuses for select
+  using (auth.uid() = user_id);
+
+create policy "Usuarios criam as proprias areas por ambiente"
+  on public.task_environment_area_statuses for insert
+  with check (auth.uid() = user_id);
+
+create policy "Usuarios atualizam as proprias areas por ambiente"
+  on public.task_environment_area_statuses for update
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create policy "Usuarios removem as proprias areas por ambiente"
+  on public.task_environment_area_statuses for delete
+  using (auth.uid() = user_id);
+
 create or replace function public.touch_task_environment_status_updated_at()
 returns trigger
 language plpgsql
@@ -301,6 +361,11 @@ $$;
 drop trigger if exists task_environment_statuses_touch_updated_at on public.task_environment_statuses;
 create trigger task_environment_statuses_touch_updated_at
   before update on public.task_environment_statuses
+  for each row execute function public.touch_task_environment_status_updated_at();
+
+drop trigger if exists task_environment_area_statuses_touch_updated_at on public.task_environment_area_statuses;
+create trigger task_environment_area_statuses_touch_updated_at
+  before update on public.task_environment_area_statuses
   for each row execute function public.touch_task_environment_status_updated_at();
 
 create table if not exists public.query_folders (

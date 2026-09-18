@@ -20,6 +20,7 @@ export const QUERY_FIELDS: QueryFieldDescription[] = [
     label: "GitHub (branch ou PR)",
     type: "text-list",
   },
+  { value: "areas", label: "Áreas envolvidas", type: "text-list" },
   { value: "sprint", label: "Sprint", type: "text" },
   { value: "sprint_id", label: "ID da sprint", type: "text" },
   { value: "is_future", label: "Tarefa futura", type: "boolean" },

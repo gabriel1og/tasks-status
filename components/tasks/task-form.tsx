@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import type {
   SprintRow,
   TagOptionRow,
+  TaskArea,
   TaskStatusInsert,
   TaskStatusRow,
 } from "@/types/database";
@@ -17,6 +18,7 @@ import {
   createEmptyTaskGithubReference,
   getEditableTaskGithubReferences,
 } from "@/lib/task-github";
+import { TASK_AREAS, TASK_AREA_LABELS, sanitizeTaskAreas } from "@/lib/task-areas";
 
 export type TaskFormState = Pick<
   TaskStatusInsert,
@@ -25,6 +27,7 @@ export type TaskFormState = Pick<
   | "azure_url"
   | "liveops_url"
   | "github_references"
+  | "areas"
   | "sprint_id"
   | "status"
   | "ambiente"
@@ -36,6 +39,7 @@ export const emptyTaskForm: TaskFormState = {
   azure_url: "",
   liveops_url: "",
   github_references: [createEmptyTaskGithubReference()],
+  areas: [],
   sprint_id: null,
   status: "",
   ambiente: "",
@@ -149,6 +153,12 @@ export function CreateTaskModal({
                   }
                 />
               </Field>
+            ) : null}
+            {!isFutureTask ? (
+              <TaskAreasField
+                areas={taskForm.areas}
+                onChange={(areas) => onFieldChange("areas", areas)}
+              />
             ) : null}
             {!isFutureTask ? (
               <SprintSelectField
@@ -291,10 +301,45 @@ export function getTaskFormState(
     azure_url: task.azure_url || "",
     liveops_url: task.liveops_url || "",
     github_references: getEditableTaskGithubReferences(task.github_references),
+    areas: sanitizeTaskAreas(task.areas),
     sprint_id: task.sprint_id ?? matchingSprint?.id ?? null,
     status: task.status,
     ambiente: task.ambiente,
   };
+}
+
+/** Edita as áreas participantes da tarefa. Exemplo: <TaskAreasField areas={areas} onChange={setAreas} />. */
+export function TaskAreasField({
+  areas,
+  onChange,
+  compact = false,
+}: {
+  areas: TaskArea[];
+  onChange: (areas: TaskArea[]) => void;
+  compact?: boolean;
+}) {
+  return (
+    <Field label="Áreas envolvidas" className={compact ? "min-w-36" : ""}>
+      <div className="flex flex-wrap gap-3 rounded-md border border-input bg-secondary px-3 py-2">
+        {TASK_AREAS.map((area) => (
+          <label key={area} className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={areas.includes(area)}
+              onChange={() =>
+                onChange(
+                  areas.includes(area)
+                    ? areas.filter((currentArea) => currentArea !== area)
+                    : [...areas, area],
+                )
+              }
+            />
+            {TASK_AREA_LABELS[area]}
+          </label>
+        ))}
+      </div>
+    </Field>
+  );
 }
 
 function TaskTextField({

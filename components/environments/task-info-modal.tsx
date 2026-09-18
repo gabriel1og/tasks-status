@@ -6,6 +6,7 @@ import { ExternalLink, X } from "lucide-react";
 import { TaskGithubCell } from "@/components/tasks/task-github-cell";
 import { Button } from "@/components/ui/button";
 import { getExternalHref } from "@/lib/external-url";
+import { sanitizeTaskAreas, TASK_AREA_LABELS } from "@/lib/task-areas";
 import type { TagOptionRow, TaskStatusRow } from "@/types/database";
 
 type TaskInfoModalProps = {
@@ -78,6 +79,16 @@ export function TaskInfoModal({ task, tags, onClose }: TaskInfoModalProps) {
               references={task.github_references}
             />
           </TaskInfoRow>
+          <TaskInfoRow
+            label="Áreas"
+            value={
+              sanitizeTaskAreas(task.areas).length
+                ? sanitizeTaskAreas(task.areas)
+                    .map((area) => TASK_AREA_LABELS[area])
+                    .join(" + ")
+                : "Não definidas"
+            }
+          />
           <TaskInfoRow label="Sprint" value={task.sprint || "Sem sprint"} />
           <TaskInfoRow label="Status">
             <TaskTagBadge name={task.status} tags={tags} />

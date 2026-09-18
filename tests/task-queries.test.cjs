@@ -29,6 +29,7 @@ function task(overrides = {}) {
         pr_url: "https://github.com/gabriel1og/tasks-status/pull/5",
       },
     ],
+    areas: ["frontend", "backend"],
     sprint: "Sprint 10",
     sprint_id: "sprint-10",
     is_future: false,
@@ -106,6 +107,13 @@ test("filters each GitHub branch and PR independently", () => {
   assert.ok(matches(task(), "github_references", "neq", "feature/missing"));
   assert.ok(!matches(task(), "github_references", "not_contains", "pull/4"));
   assert.ok(matches(task({ github_references: [] }), "github_references", "is_empty"));
+});
+
+test("filters the optional task areas independently", () => {
+  assert.ok(matches(task(), "areas", "eq", "frontend"));
+  assert.ok(matches(task(), "areas", "contains", "BACK"));
+  assert.ok(matches(task({ areas: ["frontend"] }), "areas", "neq", "backend"));
+  assert.ok(matches(task({ areas: [] }), "areas", "is_empty"));
 });
 
 test("combines all and any conditions without mutating the task list", () => {

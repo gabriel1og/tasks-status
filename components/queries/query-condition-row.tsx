@@ -193,6 +193,9 @@ function getValueSuggestions(
         values.set(referenceValue, referenceValue),
       );
     }
+    if (field === "areas" && Array.isArray(value)) {
+      value.forEach((area) => values.set(String(area), String(area)));
+    }
   });
   if (field === "status" || field === "ambiente") {
     tags

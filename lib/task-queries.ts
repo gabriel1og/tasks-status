@@ -77,6 +77,24 @@ function matchesGithubReferences(
   );
 }
 
+function matchesTextList(
+  value: unknown,
+  condition: QueryCondition,
+): boolean {
+  const values = Array.isArray(value) ? value.map(normalizeQueryText) : [];
+  if (condition.operator === "is_empty") return values.length === 0;
+  if (condition.operator === "is_not_empty") return values.length > 0;
+  const expected = normalizeQueryText(condition.value);
+  if (["neq", "not_contains"].includes(condition.operator)) {
+    return values.every((item) =>
+      matchesQueryText(item, expected, condition.operator),
+    );
+  }
+  return values.some((item) =>
+    matchesQueryText(item, expected, condition.operator),
+  );
+}
+
 function matchesQueryCondition(
   task: TaskStatusRow,
   condition: QueryCondition,
@@ -84,6 +102,9 @@ function matchesQueryCondition(
   const actualValue = task[condition.field];
   if (condition.field === "github_references") {
     return matchesGithubReferences(actualValue, condition);
+  }
+  if (condition.field === "areas") {
+    return matchesTextList(actualValue, condition);
   }
   const normalizedValue = normalizeQueryText(actualValue);
   if (condition.operator === "is_empty") return normalizedValue.length === 0;
