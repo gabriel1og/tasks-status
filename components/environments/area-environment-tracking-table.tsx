@@ -13,7 +13,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { TrackedEnvironmentColumn } from "@/lib/environment-tracking";
+import type {
+  TrackedEnvironmentColumn,
+  TrackedEnvironmentKey,
+} from "@/lib/environment-tracking";
 import {
   compareTaskAreas,
   findTaskAreaStatus,
@@ -53,10 +56,10 @@ export function AreaEnvironmentTrackingTable({
   onStatusChange,
 }: AreaEnvironmentTrackingTableProps) {
   const availableColumns = columns.filter((column) => column.tag);
-  const [environmentKey, setEnvironmentKey] = useState(
+  const [environmentKey, setEnvironmentKey] = useState<TrackedEnvironmentKey>(
     availableColumns.find((column) => column.key === "development")?.key ??
       availableColumns[0]?.key ??
-      "",
+      "development",
   );
   const [areaFilter, setAreaFilter] = useState<AreaFilter>("both");
   const [query, setQuery] = useState("");
@@ -93,7 +96,9 @@ export function AreaEnvironmentTrackingTable({
           <select
             className={selectInputClassName}
             value={environment?.key ?? ""}
-            onChange={(event) => setEnvironmentKey(event.target.value)}
+            onChange={(event) =>
+              setEnvironmentKey(event.target.value as TrackedEnvironmentKey)
+            }
             aria-label="Selecionar ambiente da comparação"
           >
             {availableColumns.map((column) => (
