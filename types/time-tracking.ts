@@ -1,0 +1,52 @@
+export type TimeTrackingSettingsRow = {
+  user_id: string;
+  daily_goal_minutes: number;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TimeTrackingSettingsInput = {
+  daily_goal_minutes: number;
+};
+
+export type TimeCategoryRow = {
+  id: string;
+  user_id: string;
+  name: string;
+  color: string;
+  archived_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TimeCategoryInput = {
+  name: string;
+  color: string;
+};
+
+export type TimeCategoryInsert = TimeCategoryInput & {
+  user_id: string;
+};
+
+export type TimeEntryRow = {
+  id: string;
+  user_id: string;
+  entry_date: string;
+  duration_minutes: number;
+  task: string;
+  category_id: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TimeEntryInput = {
+  entry_date: string;
+  duration_minutes: number;
+  task: string;
+  category_id: string;
+};
+
+export type TimeEntryListFilters = {
+  startDate?: string;
+  endDate?: string;
+};
