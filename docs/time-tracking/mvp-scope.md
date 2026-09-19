@@ -14,6 +14,7 @@ O MVP deve permitir que uma pessoa:
 
 - mantenha categorias próprias;
 - configure sua meta diária;
+- marque feriados, férias e outras ausências da jornada;
 - registre, edite, duplique e exclua apontamentos;
 - acompanhe totais diários e semanais;
 - consulte o histórico por período, tarefa e categoria.
@@ -48,6 +49,7 @@ Um apontamento possui somente os seguintes dados de negócio:
 - Um apontamento pode ser editado, duplicado ou excluído pelo proprietário.
 - Totais e relatórios são calculados a partir dos apontamentos; não são armazenados nas tarefas.
 - Datas civis usam o formato persistido `YYYY-MM-DD` e não devem ser convertidas por UTC de maneira que altere o dia escolhido.
+- Sábados, domingos e dias configurados sem apontamento não aceitam novos lançamentos.
 
 ## Categorias
 
@@ -87,6 +89,16 @@ Um apontamento possui somente os seguintes dados de negócio:
 - O MVP não mantém histórico das alterações da meta.
 - Alterar a meta não altera a duração de nenhum apontamento.
 
+## Dias sem apontamento
+
+- Sábados e domingos são ignorados automaticamente nos cálculos.
+- O usuário pode marcar um dia útil ou intervalo como feriado, férias ou outra ausência.
+- Intervalos armazenam somente os dias úteis; finais de semana dentro do período são ignorados.
+- Cada data pode ter apenas uma configuração por conta.
+- Uma data com apontamentos existentes não pode ser marcada como dia sem apontamento.
+- Remover a marcação faz a data voltar a compor a meta e o indicador de pendências.
+- Esses registros pertencem exclusivamente à conta autenticada e usam o mesmo isolamento por RLS.
+
 ## Relatórios do MVP
 
 Os relatórios podem apresentar:
@@ -98,11 +110,11 @@ Os relatórios podem apresentar:
 - comparação entre meta diária e horas realizadas;
 - dias do período sem apontamento.
 
-No MVP, o período considera todos os dias civis entre a data inicial e a data
-final, inclusive. Como ainda não existe calendário de trabalho ou configuração
-de dias úteis, a meta do período é a meta diária vigente multiplicada por essa
-quantidade de dias. Pelo mesmo motivo, fins de semana sem lançamento também
-compõem o indicador de dias sem apontamento.
+O período considera somente os dias úteis entre a data inicial e a data final.
+Sábados, domingos, feriados, férias e outras ausências configuradas não compõem
+a meta, o saldo, o progresso ou o indicador de dias sem lançamento. Horas
+eventualmente preservadas em datas antigas excluídas também não entram nos
+agrupamentos dos relatórios.
 
 Não haverá total por sprint, cliente, equipe ou pessoa.
 

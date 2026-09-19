@@ -16,15 +16,24 @@ import {
 import { WeekNavigation } from "@/components/time-tracking/week-navigation";
 import { useWeeklyTimeTracking } from "@/components/time-tracking/use-weekly-time-tracking";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { shiftDays } from "@/lib/calendar";
 import {
   getRequestErrorFeedback,
   normalizeRequestError,
 } from "@/lib/request-feedback";
 import { formatDuration, parseDurationToMinutes } from "@/lib/time-tracking/duration";
+import {
+  isNonWorkingDate,
+  isWorkingWeekday,
+} from "@/lib/time-tracking/non-working-days";
 import { timeTrackingRepository } from "@/lib/time-tracking/time-tracking-repository";
 import { buildTimeEntryChanges } from "@/lib/time-tracking/time-tracking-rules";
 import { cn } from "@/lib/utils";
-import type { TimeEntryInput, TimeEntryRow } from "@/types/time-tracking";
+import type {
+  TimeEntryInput,
+  TimeEntryRow,
+  TimeNonWorkingDayRow,
+} from "@/types/time-tracking";
 
 type EntryMutationOptions = {
   action: () => Promise<unknown>;
@@ -42,7 +51,14 @@ export function TimeEntriesWorkspace({ userId }: { userId: string }) {
     [weeklyData.categories],
   );
   const [draft, setDraft] = useState<TimeEntryDraft>(() =>
-    createEmptyEntryDraft(weeklyData.today, ""),
+    createEmptyEntryDraft(
+      getDefaultEntryDate(
+        weeklyData.weekRange,
+        weeklyData.today,
+        weeklyData.nonWorkingDays,
+      ),
+      "",
+    ),
   );
   const [editingEntryId, setEditingEntryId] = useState<string | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
@@ -60,9 +76,18 @@ export function TimeEntriesWorkspace({ userId }: { userId: string }) {
     if (editingEntryId) return;
     setDraft((current) => ({
       ...current,
-      date: getDefaultEntryDate(weeklyData.weekRange, weeklyData.today),
+      date: getDefaultEntryDate(
+        weeklyData.weekRange,
+        weeklyData.today,
+        weeklyData.nonWorkingDays,
+      ),
     }));
-  }, [editingEntryId, weeklyData.today, weeklyData.weekRange]);
+  }, [
+    editingEntryId,
+    weeklyData.nonWorkingDays,
+    weeklyData.today,
+    weeklyData.weekRange,
+  ]);
 
   const maxEntryDate =
     weeklyData.weekRange.endDate < weeklyData.today
@@ -70,6 +95,14 @@ export function TimeEntriesWorkspace({ userId }: { userId: string }) {
       : weeklyData.today;
 
   async function saveEntry() {
+    const unavailableDateMessage = getUnavailableDateMessage(
+      draft.date,
+      weeklyData.nonWorkingDays,
+    );
+    if (unavailableDateMessage) {
+      setFeedback({ type: "error", message: unavailableDateMessage });
+      return;
+    }
     const input = buildEntryInput(draft, setFeedback);
     if (!input) return;
 
@@ -105,6 +138,14 @@ export function TimeEntriesWorkspace({ userId }: { userId: string }) {
   }
 
   async function duplicateEntry(entry: TimeEntryRow) {
+    const unavailableDateMessage = getUnavailableDateMessage(
+      entry.entry_date,
+      weeklyData.nonWorkingDays,
+    );
+    if (unavailableDateMessage) {
+      setFeedback({ type: "error", message: unavailableDateMessage });
+      return;
+    }
     const isCategoryActive = activeCategories.some(
       (category) => category.id === entry.category_id,
     );
@@ -179,7 +220,11 @@ export function TimeEntriesWorkspace({ userId }: { userId: string }) {
     setEditingEntryId(null);
     setDraft(
       createEmptyEntryDraft(
-        getDefaultEntryDate(weeklyData.weekRange, weeklyData.today),
+        getDefaultEntryDate(
+          weeklyData.weekRange,
+          weeklyData.today,
+          weeklyData.nonWorkingDays,
+        ),
         activeCategories[0]?.id ?? "",
       ),
     );
@@ -297,10 +342,19 @@ function createEmptyEntryDraft(date: string, categoryId: string): TimeEntryDraft
 function getDefaultEntryDate(
   range: { endDate: string; startDate: string },
   today: string,
+  nonWorkingDays: TimeNonWorkingDayRow[],
 ): string {
-  return today >= range.startDate && today <= range.endDate
-    ? today
-    : range.startDate;
+  const lastAvailableDate = today < range.endDate ? today : range.endDate;
+  for (
+    let date = lastAvailableDate;
+    date >= range.startDate;
+    date = shiftDays(date, -1)
+  ) {
+    if (isWorkingWeekday(date) && !isNonWorkingDate(date, nonWorkingDays)) {
+      return date;
+    }
+  }
+  return range.startDate;
 }
 
 function buildEntryInput(
@@ -330,6 +384,19 @@ function focusEntryForm(): void {
       block: "start",
     });
   });
+}
+
+function getUnavailableDateMessage(
+  date: string,
+  excludedDays: TimeNonWorkingDayRow[],
+): string | null {
+  if (!isWorkingWeekday(date)) {
+    return "Não é permitido apontar horas em sábados ou domingos.";
+  }
+  if (isNonWorkingDate(date, excludedDays)) {
+    return "Este dia foi marcado como feriado, férias ou ausência.";
+  }
+  return null;
 }
 
 function restartEditTransition(

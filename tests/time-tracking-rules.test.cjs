@@ -23,7 +23,7 @@ test("normalizes valid settings, categories and entries", () => {
   assert.deepEqual(
     buildTimeEntryChanges(
       {
-        entry_date: "2026-09-19",
+        entry_date: "2026-09-18",
         duration_minutes: 90,
         task: "  Planejamento  ",
         category_id: "  category-1  ",
@@ -31,7 +31,7 @@ test("normalizes valid settings, categories and entries", () => {
       "2026-09-19",
     ),
     {
-      entry_date: "2026-09-19",
+      entry_date: "2026-09-18",
       duration_minutes: 90,
       task: "Planejamento",
       category_id: "category-1",
@@ -65,6 +65,18 @@ for (const dailyGoal of [0, -1, 30.5, Number.NaN]) {
   });
 }
 
+test("rejects weekend entry dates", () => {
+  assert.throws(
+    () => buildTimeEntryChanges({
+      entry_date: "2026-09-19",
+      duration_minutes: 60,
+      task: "Plantão",
+      category_id: "category-1",
+    }, "2026-09-19"),
+    /Finais de semana/,
+  );
+});
+
 for (const category of [
   { name: "   ", color: "#2563eb" },
   { name: "x".repeat(81), color: "#2563eb" },
@@ -86,7 +98,7 @@ for (const [label, changes] of [
 ]) {
   test(`rejects entry with invalid ${label}`, () => {
     const input = {
-      entry_date: "2026-09-19",
+      entry_date: "2026-09-18",
       duration_minutes: 60,
       task: "Implementação",
       category_id: "category-1",

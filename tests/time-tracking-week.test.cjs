@@ -62,3 +62,17 @@ test("rejects invalid civil dates and non-Monday week starts", () => {
   assert.throws(() => getWeekRange("2026-02-30"), /Data civil inválida/);
   assert.throws(() => summarizeWeek([], "2026-09-15"), /Início de semana inválido/);
 });
+
+test("removes excluded weekdays from the weekly total", () => {
+  const entries = [{ entry_date: "2026-09-16", duration_minutes: 120 }];
+  const excludedDays = [{
+    non_working_date: "2026-09-16",
+    reason: "holiday",
+    note: null,
+  }];
+  const days = summarizeWeek(entries, "2026-09-14", excludedDays);
+  const wednesday = days.find((day) => day.date === "2026-09-16");
+  assert.equal(wednesday.totalMinutes, 0);
+  assert.equal(wednesday.entryCount, 0);
+  assert.equal(wednesday.nonWorkingDay.reason, "holiday");
+});

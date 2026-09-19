@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(29);
+select plan(38);
 
 insert into auth.users (id, email)
 values
@@ -39,6 +39,16 @@ values (
   '41000000-0000-0000-0000-000000000002',
   '2000-01-01 00:00:00+00',
   '2001-01-01 00:00:00+00'
+);
+
+insert into public.time_non_working_days (
+  id, user_id, non_working_date, reason, note
+) values (
+  '61000000-0000-0000-0000-000000000002',
+  '11000000-0000-0000-0000-000000000002',
+  '2026-09-17',
+  'vacation',
+  'Ausencia privada do usuario B'
 );
 
 set local role authenticated;
@@ -78,14 +88,35 @@ select lives_ok(
   'O usuario pode criar um apontamento proprio'
 );
 
+select lives_ok(
+  $$
+    insert into public.time_non_working_days (
+      id, user_id, non_working_date, reason
+    ) values (
+      '61000000-0000-0000-0000-000000000001',
+      '11000000-0000-0000-0000-000000000001',
+      '2026-09-17',
+      'holiday'
+    )
+  $$,
+  'O usuario pode marcar um dia util proprio sem apontamento'
+);
+
 select results_eq('select count(*) from public.time_tracking_settings', array[1::bigint], 'A conta enxerga somente sua configuracao');
 select results_eq('select count(*) from public.time_categories', array[2::bigint], 'A conta enxerga somente suas categorias');
 select results_eq('select count(*) from public.time_entries', array[1::bigint], 'A conta enxerga somente seus apontamentos');
+select results_eq('select count(*) from public.time_non_working_days', array[1::bigint], 'A conta enxerga somente seus dias sem apontamento');
 
 select results_eq(
   $$ update public.time_categories set name = 'Alteracao indevida' where id = '41000000-0000-0000-0000-000000000002' returning id $$,
   $$ select null::uuid where false $$,
   'O usuario nao pode atualizar uma categoria de outra conta'
+);
+
+select results_eq(
+  $$ update public.time_non_working_days set note = 'Alteracao indevida' where id = '61000000-0000-0000-0000-000000000002' returning id $$,
+  $$ select null::uuid where false $$,
+  'O usuario nao pode atualizar um dia sem apontamento de outra conta'
 );
 
 select results_eq(
@@ -98,6 +129,15 @@ select throws_ok(
   $$ insert into public.time_categories (user_id, name) values ('11000000-0000-0000-0000-000000000002', 'Insercao indevida') $$,
   '42501', null,
   'O usuario nao pode criar uma categoria para outra conta'
+);
+
+select throws_ok(
+  $$
+    insert into public.time_non_working_days (user_id, non_working_date, reason)
+    values ('11000000-0000-0000-0000-000000000002', '2026-09-16', 'other')
+  $$,
+  '42501', null,
+  'O usuario nao pode criar um dia sem apontamento para outra conta'
 );
 
 select throws_ok(
@@ -128,6 +168,45 @@ select throws_ok(
   $$,
   '23514', null,
   'Um apontamento nao pode usar data futura'
+);
+
+select throws_ok(
+  $$
+    insert into public.time_entries (user_id, entry_date, duration_minutes, task, category_id)
+    values (
+      '11000000-0000-0000-0000-000000000001',
+      '2026-09-19',
+      30,
+      'Fim de semana',
+      '41000000-0000-0000-0000-000000000003'
+    )
+  $$,
+  '23514', null,
+  'Um apontamento nao pode usar final de semana'
+);
+
+select throws_ok(
+  $$
+    insert into public.time_entries (user_id, entry_date, duration_minutes, task, category_id)
+    values (
+      '11000000-0000-0000-0000-000000000001',
+      '2026-09-17',
+      30,
+      'Dia sem expediente',
+      '41000000-0000-0000-0000-000000000003'
+    )
+  $$,
+  '23514', null,
+  'Um apontamento nao pode usar dia retirado da jornada'
+);
+
+select throws_ok(
+  $$
+    insert into public.time_non_working_days (user_id, non_working_date, reason)
+    values ('11000000-0000-0000-0000-000000000001', '2026-09-18', 'holiday')
+  $$,
+  '23514', null,
+  'Um dia com apontamentos existentes nao pode ser retirado da jornada'
 );
 
 select throws_ok(
@@ -205,6 +284,7 @@ set local request.jwt.claim.sub = '';
 select results_eq('select count(*) from public.time_tracking_settings', array[0::bigint], 'Uma sessao anonima nao le configuracoes de horas');
 select results_eq('select count(*) from public.time_categories', array[0::bigint], 'Uma sessao anonima nao le categorias de horas');
 select results_eq('select count(*) from public.time_entries', array[0::bigint], 'Uma sessao anonima nao le apontamentos');
+select results_eq('select count(*) from public.time_non_working_days', array[0::bigint], 'Uma sessao anonima nao le dias sem apontamento');
 
 reset role;
 
@@ -246,6 +326,11 @@ select results_eq(
   $$ select daily_goal_minutes from public.time_tracking_settings where user_id = '11000000-0000-0000-0000-000000000002' $$,
   array[480],
   'A configuracao da outra conta permaneceu inalterada'
+);
+select results_eq(
+  $$ select note from public.time_non_working_days where id = '61000000-0000-0000-0000-000000000002' $$,
+  array['Ausencia privada do usuario B'::text],
+  'O dia sem apontamento da outra conta permaneceu inalterado'
 );
 
 select * from finish();

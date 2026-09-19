@@ -6,6 +6,7 @@ const tableNames = [
   "time_tracking_settings",
   "time_categories",
   "time_entries",
+  "time_non_working_days",
 ];
 
 function createSettings(userId = ownerId, overrides = {}) {
@@ -45,6 +46,19 @@ function createEntry(id, userId = ownerId, overrides = {}) {
   };
 }
 
+function createNonWorkingDay(id, userId = ownerId, overrides = {}) {
+  return {
+    id,
+    user_id: userId,
+    non_working_date: "2026-09-18",
+    reason: "holiday",
+    note: null,
+    created_at: "2026-09-19T12:00:00.000Z",
+    updated_at: "2026-09-19T12:00:00.000Z",
+    ...overrides,
+  };
+}
+
 class FakeTimeTrackingClient {
   constructor(records = {}) {
     this.records = {
@@ -53,6 +67,9 @@ class FakeTimeTrackingClient {
       ),
       time_categories: structuredClone(records.time_categories ?? []),
       time_entries: structuredClone(records.time_entries ?? []),
+      time_non_working_days: structuredClone(
+        records.time_non_working_days ?? [],
+      ),
     };
     this.calls = [];
     this.failures = new Map();
@@ -119,6 +136,9 @@ class FakeTimeTrackingClient {
     if (table === "time_tracking_settings") return createSettings(payload.user_id, payload);
     if (table === "time_categories") {
       return createCategory(`category-${this.nextId++}`, payload.user_id, payload);
+    }
+    if (table === "time_non_working_days") {
+      return createNonWorkingDay(`excluded-${this.nextId++}`, payload.user_id, payload);
     }
     return createEntry(`entry-${this.nextId++}`, payload.user_id, payload);
   }
@@ -320,6 +340,7 @@ module.exports = {
   assertOwnedRequests,
   createCategory,
   createEntry,
+  createNonWorkingDay,
   createSettings,
   otherOwnerId,
   ownerId,

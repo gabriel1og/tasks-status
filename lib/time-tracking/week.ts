@@ -1,5 +1,5 @@
 import { shiftDays, toISO } from "@/lib/calendar";
-import type { TimeEntryRow } from "@/types/time-tracking";
+import type { TimeEntryRow, TimeNonWorkingDayRow } from "@/types/time-tracking";
 
 export type WeekRange = {
   endDate: string;
@@ -12,6 +12,7 @@ export type WeeklyDaySummary = {
   label: string;
   shortLabel: string;
   totalMinutes: number;
+  nonWorkingDay: TimeNonWorkingDayRow | null;
 };
 
 const weekDayLabels = [
@@ -56,6 +57,7 @@ export function shiftWeekReference(referenceDate: string, weeks: number): string
 export function summarizeWeek(
   entries: TimeEntryRow[],
   weekStartDate: string,
+  excludedDays: TimeNonWorkingDayRow[] = [],
 ): WeeklyDaySummary[] {
   const range = getWeekRange(weekStartDate);
   if (range.startDate !== weekStartDate) {
@@ -66,11 +68,17 @@ export function summarizeWeek(
 
   return weekDayLabels.map((weekDay, index) => {
     const date = shiftDays(weekStartDate, index);
-    const dayEntries = entries.filter((entry) => entry.entry_date === date);
+    const nonWorkingDay = excludedDays.find(
+      (day) => day.non_working_date === date,
+    ) ?? null;
+    const dayEntries = nonWorkingDay
+      ? []
+      : entries.filter((entry) => entry.entry_date === date);
     return {
       ...weekDay,
       date,
       entryCount: dayEntries.length,
+      nonWorkingDay,
       totalMinutes: dayEntries.reduce(
         (total, entry) => total + entry.duration_minutes,
         0,

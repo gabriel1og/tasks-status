@@ -124,3 +124,33 @@ test("honors task and category filters and preserves removed categories", () => 
   assert.equal(removedCategoryReport.actualMinutes, 60);
   assert.equal(removedCategoryReport.categoryTotals[0].label, "Categoria removida");
 });
+
+test("excludes weekends and configured non-working days from every indicator", () => {
+  const entries = [
+    createEntry("1", "2026-09-18", 360, "Sexta", "development"),
+    createEntry("2", "2026-09-19", 120, "Sábado", "development"),
+    createEntry("3", "2026-09-21", 60, "Feriado", "meeting"),
+  ];
+  const report = buildTimeTrackingReport(
+    entries,
+    categories,
+    360,
+    {
+      categoryId: "",
+      endDate: "2026-09-22",
+      startDate: "2026-09-18",
+      task: "",
+    },
+    [{ non_working_date: "2026-09-21" }],
+  );
+  assert.equal(report.goalMinutes, 720);
+  assert.equal(report.actualMinutes, 360);
+  assert.equal(report.balanceMinutes, -360);
+  assert.equal(report.daysWithEntries, 1);
+  assert.equal(report.missingDays, 1);
+  assert.deepEqual(report.dailyTotals.map((day) => day.date), [
+    "2026-09-18",
+    "2026-09-22",
+  ]);
+  assert.equal(report.weeklyTotals.reduce((sum, week) => sum + week.totalMinutes, 0), 360);
+});

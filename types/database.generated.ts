@@ -366,6 +366,36 @@ export type Database = {
           },
         ]
       }
+      time_non_working_days: {
+        Row: {
+          created_at: string
+          id: string
+          non_working_date: string
+          note: string | null
+          reason: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          non_working_date: string
+          note?: string | null
+          reason: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          non_working_date?: string
+          note?: string | null
+          reason?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       time_tracking_settings: {
         Row: {
           created_at: string

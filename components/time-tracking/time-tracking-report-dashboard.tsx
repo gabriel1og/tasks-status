@@ -60,6 +60,10 @@ export function TimeTrackingReportDashboard({
     Promise.all([
       timeTrackingRepository.listCategories(userId, true),
       timeTrackingRepository.getSettings(userId),
+      timeTrackingRepository.listNonWorkingDays(userId, {
+        endDate: appliedFilters.endDate,
+        startDate: appliedFilters.startDate,
+      }),
       timeTrackingRepository.listEntries(userId, {
         categoryId: appliedFilters.categoryId || undefined,
         endDate: appliedFilters.endDate,
@@ -67,7 +71,7 @@ export function TimeTrackingReportDashboard({
         task: appliedFilters.task || undefined,
       }),
     ])
-      .then(([nextCategories, settings, entries]) => {
+      .then(([nextCategories, settings, excludedDays, entries]) => {
         if (!isCurrent) return;
         setCategories(nextCategories);
         setReport(
@@ -76,6 +80,7 @@ export function TimeTrackingReportDashboard({
             nextCategories,
             settings?.daily_goal_minutes ?? DEFAULT_DAILY_GOAL_MINUTES,
             appliedFilters,
+            excludedDays,
           ),
         );
       })

@@ -2,19 +2,25 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(24);
+select plan(31);
 
 select has_table('public', 'time_tracking_settings', 'A tabela de configuracao de horas deve existir');
 select has_table('public', 'time_categories', 'A tabela de categorias de horas deve existir');
 select has_table('public', 'time_entries', 'A tabela de apontamentos deve existir');
+select has_table('public', 'time_non_working_days', 'A tabela de dias sem apontamento deve existir');
 
 select col_is_pk('public', 'time_tracking_settings', 'user_id', 'A configuracao deve ter uma linha por usuario');
 select col_is_pk('public', 'time_categories', 'id', 'A categoria deve ter id como chave primaria');
 select col_is_pk('public', 'time_entries', 'id', 'O apontamento deve ter id como chave primaria');
+select col_is_pk('public', 'time_non_working_days', 'id', 'O dia sem apontamento deve ter id como chave primaria');
 
 select col_is_unique(
   'public', 'time_categories', array['id', 'user_id'],
   'A categoria deve identificar seu proprietario para a FK composta'
+);
+select col_is_unique(
+  'public', 'time_non_working_days', array['user_id', 'non_working_date'],
+  'Cada conta deve configurar uma data sem apontamento apenas uma vez'
 );
 select col_is_unique(
   'public', 'time_categories', array['user_id', 'name'],
@@ -48,6 +54,10 @@ select has_function(
   'public', 'validate_time_entry', array[]::name[],
   'A funcao de validacao do apontamento deve existir'
 );
+select has_function(
+  'public', 'validate_time_non_working_day', array[]::name[],
+  'A funcao de validacao dos dias sem apontamento deve existir'
+);
 
 select has_trigger(
   'public', 'time_tracking_settings', 'time_tracking_settings_set_timestamps',
@@ -65,6 +75,14 @@ select has_trigger(
   'public', 'time_entries', 'time_entries_validate',
   'O apontamento deve validar data e categoria antes da escrita'
 );
+select has_trigger(
+  'public', 'time_non_working_days', 'time_non_working_days_set_timestamps',
+  'O dia sem apontamento deve proteger seus timestamps'
+);
+select has_trigger(
+  'public', 'time_non_working_days', 'time_non_working_days_validate',
+  'O dia sem apontamento deve validar conflitos antes da escrita'
+);
 
 select is(
   (
@@ -73,10 +91,10 @@ select is(
     join pg_catalog.pg_namespace n on n.oid = c.relnamespace
     where n.nspname = 'public'
       and c.relkind = 'r'
-      and c.relname = any (array['time_tracking_settings', 'time_categories', 'time_entries'])
+      and c.relname = any (array['time_tracking_settings', 'time_categories', 'time_entries', 'time_non_working_days'])
       and c.relrowsecurity
   ),
-  3::bigint,
+  4::bigint,
   'Todas as tabelas do dominio de horas devem ter RLS habilitado'
 );
 
@@ -95,6 +113,11 @@ select is(
   2::bigint,
   'O apontamento deve validar duracao e tarefa'
 );
+select is(
+  (select count(*) from pg_catalog.pg_constraint where conrelid = 'public.time_non_working_days'::regclass and contype = 'c'),
+  2::bigint,
+  'O dia sem apontamento deve validar motivo e observacao'
+);
 
 select is(
   (
@@ -104,7 +127,8 @@ select is(
       array[
         'public.time_tracking_settings'::regclass,
         'public.time_categories'::regclass,
-        'public.time_entries'::regclass
+        'public.time_entries'::regclass,
+        'public.time_non_working_days'::regclass
       ]
     )
       and contype = 'f'
