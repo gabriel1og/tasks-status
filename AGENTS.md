@@ -14,7 +14,9 @@ O fluxo principal fica em:
 - `/environments`: matriz editavel de disponibilidade, analise entre ambientes e comparacao opcional entre Frontend e Backend.
 - `/queries`: queries salvas por conta, favoritos e pastas; `/queries/new` cria e `/queries/[id]` exibe resultados e edita criterios.
 - `/settings`: cadastro, edicao e remocao das tags usadas nas colunas de Status e Ambiente.
-- `/time-tracking`: entrada do dominio de apontamento de horas; durante a fase estrutural, suas subrotas de apontamentos, categorias e configuracoes sao placeholders autenticados.
+- `/time-tracking`: entrada do dominio de apontamento de horas; a visao geral e os apontamentos ainda sao placeholders autenticados.
+- `/time-tracking/categories`: gerenciamento de categorias ativas e arquivadas, com nome e cor editaveis.
+- `/time-tracking/settings`: configuracao da meta diaria individual, armazenada em minutos.
 
 As tarefas possuem as colunas principais:
 
@@ -176,3 +178,5 @@ node_modules\.bin\next.cmd build
 - Criacao, edicao e remocao de tags de Status e Ambiente.
 - Propagacao de renome de status/ambiente para tarefas existentes.
 - Policies de update no Supabase para tags e tarefas.
+- Categorias de horas editaveis, arquivaveis, reativaveis e removiveis quando nao utilizadas.
+- Meta diaria individual de apontamento, com valor inicial de 6h e persistencia em minutos.

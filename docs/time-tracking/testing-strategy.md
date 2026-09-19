@@ -6,10 +6,10 @@ Esta estratégia acompanha a implementação incremental do domínio de apontame
 
 | Camada | Objetivo | Implementação atual |
 | --- | --- | --- |
-| Unitária | Validar regras sem rede ou banco | `tests/time-tracking-rules.test.cjs` |
+| Unitária | Validar regras sem rede ou banco | `tests/time-tracking-rules.test.cjs` e `tests/daily-goal.test.cjs` |
 | Repository | Validar payloads, CRUD, erros e filtro obrigatório por proprietário | `tests/time-tracking-repository.test.cjs` |
 | Banco | Validar estrutura, constraints, triggers, FK composta e RLS | `supabase/tests/database/time_tracking_*.test.sql` |
-| Interface | Validar formulário, acessibilidade e feedback | Pendente das fases de interface |
+| Interface | Validar formulário, acessibilidade e feedback | Telas da Fase 4 implementadas; automação de interação pendente |
 | Smoke | Validar fluxo real com duas contas | Pendente da fase de entrega |
 
 ## Casos críticos da fundação
@@ -25,6 +25,22 @@ Esta estratégia acompanha a implementação incremental do domínio de apontame
 - preservar apontamentos quando a categoria é arquivada;
 - impedir exclusão física de categoria utilizada;
 - propagar falhas do Supabase sem simular sucesso.
+- impedir nomes de categoria duplicados, inclusive entre ativas e arquivadas;
+- exigir confirmação antes da exclusão física de categoria;
+- orientar o arquivamento quando uma categoria já possuir apontamentos;
+- converter a meta editável de horas e minutos para minutos inteiros;
+- inicializar a meta padrão em 6h quando a conta ainda não possuir configuração.
+
+## Validação manual da Fase 4
+
+1. abrir Categorias com uma conta sem registros e confirmar a criação idempotente das categorias padrão;
+2. criar e editar uma categoria, validando nome, cor e feedback de sucesso;
+3. tentar repetir um nome ativo e um nome arquivado;
+4. arquivar e reativar uma categoria;
+5. excluir uma categoria sem uso e tentar excluir outra que possua apontamentos;
+6. abrir Configurações sem registro prévio e confirmar a meta inicial de 6h;
+7. salvar metas com horas e minutos, incluindo valores inválidos e uma meta inferior a uma hora;
+8. repetir o fluxo em light mode, dark mode e viewport mobile.
 
 ## Comandos de validação
 

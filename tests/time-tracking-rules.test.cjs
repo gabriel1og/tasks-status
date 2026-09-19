@@ -6,6 +6,7 @@ const {
   buildTimeCategoryChanges,
   buildTimeEntryChanges,
   buildTimeTrackingSettingsChanges,
+  hasDuplicateTimeCategoryName,
 } = loadTypeScript("lib/time-tracking/time-tracking-rules.ts");
 const { buildDefaultTimeCategories } = loadTypeScript(
   "lib/time-tracking/default-time-categories.ts",
@@ -35,6 +36,23 @@ test("normalizes valid settings, categories and entries", () => {
       task: "Planejamento",
       category_id: "category-1",
     },
+  );
+});
+
+test("detects duplicate category names across active and archived records", () => {
+  const categories = [
+    { id: "active", name: "Reunião" },
+    { id: "archived", name: "Suporte" },
+  ];
+  assert.equal(hasDuplicateTimeCategoryName(categories, "reuniao"), true);
+  assert.equal(hasDuplicateTimeCategoryName(categories, "SUPORTE"), true);
+  assert.equal(
+    hasDuplicateTimeCategoryName(categories, "Suporte", "archived"),
+    false,
+  );
+  assert.equal(
+    hasDuplicateTimeCategoryName(categories, "Desenvolvimento"),
+    false,
   );
 });
 
