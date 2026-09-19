@@ -65,7 +65,7 @@ ALTER TABLE ONLY "public"."time_categories"
     ADD CONSTRAINT "time_categories_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
 ALTER TABLE ONLY "public"."time_entries"
-    ADD CONSTRAINT "time_entries_category_owner_fkey" FOREIGN KEY ("category_id", "user_id") REFERENCES "public"."time_categories"("id", "user_id");
+    ADD CONSTRAINT "time_entries_category_owner_fkey" FOREIGN KEY ("category_id", "user_id") REFERENCES "public"."time_categories"("id", "user_id") ON UPDATE RESTRICT ON DELETE RESTRICT;
 
 ALTER TABLE ONLY "public"."time_entries"
     ADD CONSTRAINT "time_entries_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;

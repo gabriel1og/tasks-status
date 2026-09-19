@@ -69,6 +69,18 @@ Esta estratégia acompanha a implementação incremental do domínio de apontame
 8. validar filtros e listas em light mode, dark mode e viewport mobile;
 9. repetir a consulta com uma segunda conta e confirmar que nenhum registro da primeira aparece.
 
+## Validação manual da Fase 7
+
+1. tentar excluir uma categoria utilizada e confirmar que a confirmação destrutiva não é aberta;
+2. arquivar essa categoria e confirmar que seus apontamentos permanecem no histórico e nos relatórios;
+3. renomear uma categoria arquivada e confirmar que o histórico apresenta o nome vigente;
+4. editar duração, data ou tarefa de um apontamento cuja categoria está arquivada, mantendo a categoria original;
+5. tentar reclassificar um apontamento para uma categoria arquivada e confirmar o bloqueio;
+6. reclassificar o mesmo apontamento para uma categoria ativa;
+7. excluir definitivamente uma categoria nunca utilizada;
+8. confirmar com acesso direto ao banco que `created_at` não pode ser sobrescrito no insert ou update;
+9. repetir as operações com duas contas e confirmar o isolamento por proprietário.
+
 ## Comandos de validação
 
 ```powershell
@@ -113,3 +125,15 @@ A fase pode ser aceita quando:
 5. consultas paginadas e de relatório mantêm o filtro obrigatório por `user_id`;
 6. estados de carregamento, erro e resultado vazio são legíveis;
 7. os testes unitários, de repository e as validações manuais da fase são concluídos.
+
+## Critério da Fase 7
+
+A fase pode ser aceita quando:
+
+1. categorias utilizadas não podem ser excluídas pela UI, repository ou banco;
+2. arquivar, editar ou reativar categoria não remove nem altera a duração dos apontamentos;
+3. novas associações com categorias arquivadas continuam bloqueadas;
+4. o texto manual da tarefa permanece independente de `task_statuses` e `sprints`;
+5. o banco controla os timestamps de criação e atualização do domínio;
+6. os testes SQL cobrem referência histórica, reclassificação e timestamps;
+7. as validações manuais da fase são concluídas.

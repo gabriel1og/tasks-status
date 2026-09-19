@@ -289,8 +289,8 @@ function DeleteCategoryConfirmation({
       className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-md border border-destructive/40 bg-destructive/5 px-3 py-3 text-sm"
     >
       <p>
-        Excluir <strong>{category.name}</strong>? Categorias já utilizadas devem
-        ser arquivadas.
+        Excluir <strong>{category.name}</strong>? Esta categoria não possui
+        apontamentos e a exclusão será definitiva.
       </p>
       <div className="flex gap-2">
         <Button

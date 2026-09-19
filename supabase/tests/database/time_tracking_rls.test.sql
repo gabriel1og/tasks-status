@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(23);
+select plan(29);
 
 insert into auth.users (id, email)
 values
@@ -28,7 +28,7 @@ values
   );
 
 insert into public.time_entries (
-  id, user_id, entry_date, duration_minutes, task, category_id
+  id, user_id, entry_date, duration_minutes, task, category_id, created_at, updated_at
 )
 values (
   '51000000-0000-0000-0000-000000000002',
@@ -36,7 +36,9 @@ values (
   '2026-09-18',
   90,
   'Apontamento privado do usuario B',
-  '41000000-0000-0000-0000-000000000002'
+  '41000000-0000-0000-0000-000000000002',
+  '2000-01-01 00:00:00+00',
+  '2001-01-01 00:00:00+00'
 );
 
 set local role authenticated;
@@ -160,6 +162,33 @@ select lives_ok(
 );
 
 select lives_ok(
+  $$ update public.time_categories set name = 'Categoria historica renomeada' where id = '41000000-0000-0000-0000-000000000001' $$,
+  'Uma categoria arquivada continua editavel sem perder apontamentos'
+);
+
+select results_eq(
+  $$
+    select c.name
+    from public.time_entries e
+    join public.time_categories c on c.id = e.category_id and c.user_id = e.user_id
+    where e.id = '51000000-0000-0000-0000-000000000001'
+  $$,
+  array['Categoria historica renomeada'::text],
+  'O historico preserva a referencia e apresenta o nome vigente da categoria'
+);
+
+select lives_ok(
+  $$ update public.time_entries set category_id = '41000000-0000-0000-0000-000000000003' where id = '51000000-0000-0000-0000-000000000001' $$,
+  'Um apontamento antigo pode ser reclassificado para uma categoria ativa'
+);
+
+select throws_ok(
+  $$ update public.time_entries set category_id = '41000000-0000-0000-0000-000000000001' where id = '51000000-0000-0000-0000-000000000001' $$,
+  '23514', null,
+  'Um apontamento nao pode ser reclassificado para uma categoria arquivada'
+);
+
+select lives_ok(
   $$ delete from public.time_entries where id = '51000000-0000-0000-0000-000000000001' $$,
   'O usuario pode excluir um apontamento proprio'
 );
@@ -178,6 +207,30 @@ select results_eq('select count(*) from public.time_categories', array[0::bigint
 select results_eq('select count(*) from public.time_entries', array[0::bigint], 'Uma sessao anonima nao le apontamentos');
 
 reset role;
+
+select results_eq(
+  $$
+    select created_at = updated_at
+    from public.time_entries
+    where id = '51000000-0000-0000-0000-000000000002'
+  $$,
+  array[true],
+  'O banco ignora timestamps enviados na criacao do apontamento'
+);
+
+update public.time_entries
+set created_at = '1999-01-01 00:00:00+00'
+where id = '51000000-0000-0000-0000-000000000002';
+
+select results_eq(
+  $$
+    select created_at <> '1999-01-01 00:00:00+00'::timestamptz
+    from public.time_entries
+    where id = '51000000-0000-0000-0000-000000000002'
+  $$,
+  array[true],
+  'O banco impede a alteracao retroativa de created_at'
+);
 
 select results_eq(
   $$ select name from public.time_categories where id = '41000000-0000-0000-0000-000000000002' $$,

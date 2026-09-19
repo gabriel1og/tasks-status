@@ -48,6 +48,10 @@ export type TimeTrackingRepository = {
     userId: string,
     categoryId: string,
   ) => Promise<TimeCategoryRow>;
+  categoryHasEntries: (
+    userId: string,
+    categoryId: string,
+  ) => Promise<boolean>;
   deleteCategory: (userId: string, categoryId: string) => Promise<void>;
   listEntries: (
     userId: string,
@@ -110,8 +114,10 @@ function createCategoryOperations(
       setCategoryArchive(client, clock, userId, categoryId, true),
     restoreCategory: (userId, categoryId) =>
       setCategoryArchive(client, clock, userId, categoryId, false),
+    categoryHasEntries: (userId, categoryId) =>
+      categoryHasEntries(client, userId, categoryId),
     deleteCategory: (userId, categoryId) =>
-      deleteOwnedRow(client, "time_categories", userId, categoryId),
+      deleteUnusedCategory(client, userId, categoryId),
   } satisfies Pick<
     TimeTrackingRepository,
     | "listCategories"
@@ -120,6 +126,7 @@ function createCategoryOperations(
     | "updateCategory"
     | "archiveCategory"
     | "restoreCategory"
+    | "categoryHasEntries"
     | "deleteCategory"
   >;
 }
@@ -252,6 +259,40 @@ async function setCategoryArchive(
     categoryId,
     { archived_at: shouldArchive ? clock.now().toISOString() : null },
   );
+}
+
+async function categoryHasEntries(
+  client: TimeTrackingClient,
+  userId: string,
+  categoryId: string,
+): Promise<boolean> {
+  const { count, error } = await client
+    .from("time_entries")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("category_id", categoryId);
+  if (error) throw error;
+  if (count === null) {
+    throw new Error(
+      `Uso da categoria ${categoryId} indeterminado. A contagem exata era obrigatória.`,
+    );
+  }
+  return count > 0;
+}
+
+async function deleteUnusedCategory(
+  client: TimeTrackingClient,
+  userId: string,
+  categoryId: string,
+): Promise<void> {
+  if (await categoryHasEntries(client, userId, categoryId)) {
+    const usageError = new Error(
+      `A categoria ${categoryId} possui apontamentos e deve ser arquivada.`,
+    ) as Error & { code: string };
+    usageError.code = "TIME_CATEGORY_IN_USE";
+    throw usageError;
+  }
+  await deleteOwnedRow(client, "time_categories", userId, categoryId);
 }
 
 async function listEntries(
