@@ -1,5 +1,6 @@
 import type {
   TimeCategoryInput,
+  TimeCategoryRow,
   TimeEntryInput,
   TimeTrackingSettingsInput,
 } from "@/types/time-tracking";
@@ -42,6 +43,21 @@ export function buildTimeCategoryChanges(
     );
   }
   return { name, color: input.color.toLowerCase() };
+}
+
+/** Verifica duplicidade de nome sem diferenciar maiúsculas, minúsculas ou acentos. */
+export function hasDuplicateTimeCategoryName(
+  categories: Array<Pick<TimeCategoryRow, "id" | "name">>,
+  categoryName: string,
+  ignoredCategoryId?: string,
+): boolean {
+  return categories.some(
+    (category) =>
+      category.id !== ignoredCategoryId &&
+      category.name.localeCompare(categoryName, "pt-BR", {
+        sensitivity: "base",
+      }) === 0,
+  );
 }
 
 /** Valida e normaliza um apontamento. Ex.: buildTimeEntryChanges(input, "2026-09-19"). */
