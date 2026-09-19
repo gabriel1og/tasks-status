@@ -14,8 +14,8 @@ O fluxo principal fica em:
 - `/environments`: matriz editavel de disponibilidade, analise entre ambientes e comparacao opcional entre Frontend e Backend.
 - `/queries`: queries salvas por conta, favoritos e pastas; `/queries/new` cria e `/queries/[id]` exibe resultados e edita criterios.
 - `/settings`: cadastro, edicao e remocao das tags usadas nas colunas de Status e Ambiente.
-- `/time-tracking`: visao semanal dos totais diarios, meta vigente e dias com lancamento.
-- `/time-tracking/entries`: cadastro, edicao, duplicacao e exclusao de apontamentos manuais por semana.
+- `/time-tracking`: visao semanal e dashboard historico com filtros e totais derivados dos apontamentos.
+- `/time-tracking/entries`: cadastro, edicao, duplicacao, exclusao e historico paginado de apontamentos manuais.
 - `/time-tracking/categories`: gerenciamento de categorias ativas e arquivadas, com nome e cor editaveis.
 - `/time-tracking/settings`: configuracao da meta diaria individual, armazenada em minutos.
 
@@ -183,3 +183,5 @@ node_modules\.bin\next.cmd build
 - Meta diaria individual de apontamento, com valor inicial de 6h e persistencia em minutos.
 - Apontamentos manuais com parser de duracao, navegacao semanal e bloqueio de datas futuras.
 - Visao semanal calculada a partir dos apontamentos, sem totais persistidos.
+- Historico paginado com filtros por periodo, tarefa e categoria.
+- Dashboard com totais por dia, semana, tarefa e categoria, meta vigente e dias sem lancamento.
