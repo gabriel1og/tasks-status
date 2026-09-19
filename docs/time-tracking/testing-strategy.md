@@ -6,10 +6,10 @@ Esta estratégia acompanha a implementação incremental do domínio de apontame
 
 | Camada | Objetivo | Implementação atual |
 | --- | --- | --- |
-| Unitária | Validar regras sem rede ou banco | `tests/time-tracking-rules.test.cjs` e `tests/daily-goal.test.cjs` |
+| Unitária | Validar regras sem rede ou banco | `tests/time-tracking-rules.test.cjs`, `tests/daily-goal.test.cjs` e `tests/time-tracking-{duration,week}.test.cjs` |
 | Repository | Validar payloads, CRUD, erros e filtro obrigatório por proprietário | `tests/time-tracking-repository.test.cjs` |
 | Banco | Validar estrutura, constraints, triggers, FK composta e RLS | `supabase/tests/database/time_tracking_*.test.sql` |
-| Interface | Validar formulário, acessibilidade e feedback | Telas da Fase 4 implementadas; automação de interação pendente |
+| Interface | Validar formulário, acessibilidade e feedback | Telas das Fases 4 e 5 implementadas; automação de interação pendente |
 | Smoke | Validar fluxo real com duas contas | Pendente da fase de entrega |
 
 ## Casos críticos da fundação
@@ -42,6 +42,21 @@ Esta estratégia acompanha a implementação incremental do domínio de apontame
 7. salvar metas com horas e minutos, incluindo valores inválidos e uma meta inferior a uma hora;
 8. repetir o fluxo em light mode, dark mode e viewport mobile.
 
+## Validação manual da Fase 5
+
+1. criar apontamentos usando `1h30`, `1:30`, `90min` e minutos sem sufixo;
+2. rejeitar duração vazia, zero, negativa ou com minutos inválidos;
+3. criar um apontamento para hoje e outro em uma semana anterior;
+4. confirmar que datas futuras não podem ser selecionadas nem persistidas;
+5. editar data, duração, tarefa e categoria de um apontamento;
+6. duplicar um apontamento de categoria ativa e confirmar a nova linha;
+7. duplicar um registro cuja categoria foi arquivada, selecionar uma categoria ativa e salvar;
+8. excluir um apontamento somente após a confirmação explícita;
+9. navegar entre semanas sem permitir avanço além da semana atual;
+10. conferir total semanal, total por dia, quantidade de lançamentos e progresso da meta;
+11. confirmar que categorias arquivadas continuam identificadas no histórico;
+12. repetir os fluxos em light mode, dark mode e viewport mobile.
+
 ## Comandos de validação
 
 ```powershell
@@ -63,3 +78,14 @@ A fase pode ser aceita quando:
 3. testes pgTAP passam integralmente;
 4. os tipos gerados incluem as três tabelas do domínio;
 5. nenhuma operação autenticada atravessa o limite de outra conta.
+
+## Critério da Fase 5
+
+A fase pode ser aceita quando:
+
+1. o parser aceita os formatos documentados e rejeita duração inválida;
+2. o usuário cria, edita, duplica e exclui apontamentos próprios;
+3. a navegação semanal nunca avança além da semana atual;
+4. totais diários e semanais são derivados dos apontamentos carregados;
+5. datas futuras e novas associações com categorias arquivadas permanecem bloqueadas;
+6. as validações manuais de tema, acessibilidade e viewport mobile são concluídas.
