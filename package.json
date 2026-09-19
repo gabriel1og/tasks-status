@@ -7,7 +7,21 @@
     "build": "next build",
     "start": "next start",
     "test": "node --test tests/*.test.cjs",
-    "lint": "next lint"
+    "lint": "next lint",
+    "supabase:start": "supabase start",
+    "supabase:stop": "supabase stop",
+    "supabase:status": "supabase status",
+    "supabase:db:reset": "supabase db reset --local",
+    "supabase:db:reset:no-seed": "supabase db reset --local --no-seed",
+    "supabase:db:diff": "supabase db diff --local --schema public -f",
+    "supabase:db:lint": "supabase db lint --local --level warning",
+    "supabase:test:db": "supabase test db --local",
+    "supabase:types": "supabase gen types --lang typescript --local --schema public > types/database.generated.ts",
+    "supabase:migration:new": "supabase migration new",
+    "supabase:migration:list": "supabase migration list",
+    "supabase:db:pull:linked": "supabase db pull --linked",
+    "supabase:db:push:linked": "supabase db push --linked",
+    "supabase:types:linked": "supabase gen types --lang typescript --linked --schema public > types/database.generated.ts"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.0",
@@ -28,6 +42,7 @@
     "eslint": "^9.17.0",
     "eslint-config-next": "^15.1.3",
     "postcss": "^8.4.49",
+    "supabase": "^2.117.0",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.2"
   }
