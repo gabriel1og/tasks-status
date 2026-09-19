@@ -15,7 +15,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getRequestErrorFeedback } from "@/lib/request-feedback";
+import {
+  getRequestErrorFeedback,
+  normalizeRequestError,
+} from "@/lib/request-feedback";
 import { timeTrackingRepository } from "@/lib/time-tracking/time-tracking-repository";
 import {
   buildTimeCategoryChanges,
@@ -336,17 +339,4 @@ function getCategoryRequestFeedback(
         ? "Esta categoria possui apontamentos. Arquive-a para preservar o histórico."
         : fallbackMessage;
   return getRequestErrorFeedback(operation, requestError, userMessage);
-}
-
-function normalizeRequestError(error: unknown) {
-  if (error && typeof error === "object" && "message" in error) {
-    return error as {
-      code?: string;
-      details?: string | null;
-      hint?: string | null;
-      message: string;
-      status?: number;
-    };
-  }
-  return { message: String(error) };
 }

@@ -130,6 +130,7 @@ class FakeTimeTrackingClient {
         if (operator === "is") return row[field] === value;
         if (operator === "gte") return row[field] >= value;
         if (operator === "lte") return row[field] <= value;
+        if (operator === "ilike") return matchesIlike(row[field], value);
         return false;
       }),
     );
@@ -137,13 +138,12 @@ class FakeTimeTrackingClient {
 
   respond(request, rows) {
     let selectedRows = [...rows];
-    if (request.orderField) {
-      selectedRows.sort((left, right) =>
-        String(left[request.orderField]).localeCompare(
-          String(right[request.orderField]),
-        ),
-      );
-      if (!request.ascending) selectedRows.reverse();
+    const totalCount = selectedRows.length;
+    if (request.orders.length > 0) {
+      selectedRows.sort((left, right) => compareRows(left, right, request.orders));
+    }
+    if (request.rangeStart !== null) {
+      selectedRows = selectedRows.slice(request.rangeStart, request.rangeEnd + 1);
     }
     if (request.singleRow && selectedRows.length !== 1) {
       return {
@@ -152,7 +152,11 @@ class FakeTimeTrackingClient {
       };
     }
     const selected = request.singleRow ? selectedRows[0] : selectedRows;
-    return { data: structuredClone(selected ?? null), error: null };
+    return {
+      count: request.includeCount ? totalCount : null,
+      data: structuredClone(selected ?? null),
+      error: null,
+    };
   }
 }
 
@@ -163,15 +167,18 @@ class FakeTimeTrackingRequest {
   filters = [];
   singleRow = false;
   optionalSingleRow = false;
-  orderField = null;
-  ascending = true;
+  orders = [];
+  includeCount = false;
+  rangeStart = null;
+  rangeEnd = null;
 
   constructor(client, table) {
     this.client = client;
     this.table = table;
   }
 
-  select() {
+  select(_columns, options = {}) {
+    this.includeCount = options.count === "exact";
     return this;
   }
 
@@ -195,9 +202,19 @@ class FakeTimeTrackingRequest {
     return this;
   }
 
+  ilike(field, value) {
+    this.filters.push({ operator: "ilike", field, value });
+    return this;
+  }
+
   order(field, options = {}) {
-    this.orderField = field;
-    this.ascending = options.ascending ?? true;
+    this.orders.push({ field, ascending: options.ascending ?? true });
+    return this;
+  }
+
+  range(start, end) {
+    this.rangeStart = start;
+    this.rangeEnd = end;
     return this;
   }
 
@@ -253,10 +270,30 @@ class FakeTimeTrackingRequest {
       payload: this.payload,
       options: this.options,
       filters: this.filters,
-      orderField: this.orderField,
-      ascending: this.ascending,
+      orders: this.orders,
+      includeCount: this.includeCount,
+      rangeStart: this.rangeStart,
+      rangeEnd: this.rangeEnd,
     });
   }
+}
+
+function matchesIlike(fieldValue, pattern) {
+  const searchValue = pattern
+    .replace(/^%|%$/g, "")
+    .replace(/\\([\\%_])/g, "$1")
+    .toLocaleLowerCase("pt-BR");
+  return String(fieldValue).toLocaleLowerCase("pt-BR").includes(searchValue);
+}
+
+function compareRows(left, right, orders) {
+  for (const order of orders) {
+    const comparison = String(left[order.field]).localeCompare(
+      String(right[order.field]),
+    );
+    if (comparison !== 0) return order.ascending ? comparison : -comparison;
+  }
+  return 0;
 }
 
 function assertOwnedRequests(client) {

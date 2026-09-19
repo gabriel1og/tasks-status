@@ -127,6 +127,56 @@ test("runs the complete entry lifecycle and applies date filters", async () => {
   assertOwnedRequests(client);
 });
 
+test("filters and paginates the entry history with an exact count", async () => {
+  const client = new FakeTimeTrackingClient({
+    time_entries: [
+      createEntry("entry-1", ownerId, {
+        entry_date: "2026-09-18",
+        task: "Relatório mensal",
+        category_id: "category-1",
+      }),
+      createEntry("entry-2", ownerId, {
+        entry_date: "2026-09-17",
+        task: "Relatório semanal",
+        category_id: "category-1",
+      }),
+      createEntry("entry-3", ownerId, {
+        entry_date: "2026-09-16",
+        task: "Cerimônia",
+        category_id: "category-2",
+      }),
+      createEntry("entry-4", otherOwnerId, { task: "Relatório externo" }),
+    ],
+  });
+  const page = await createRepository(client).listEntriesPage(ownerId, {
+    categoryId: "category-1",
+    page: 2,
+    pageSize: 1,
+    task: "relatório",
+  });
+  assert.deepEqual(page, {
+    entries: [client.records.time_entries[1]],
+    page: 2,
+    pageSize: 1,
+    totalCount: 2,
+    totalPages: 2,
+  });
+  assertOwnedRequests(client);
+});
+
+test("rejects invalid history pagination before database I/O", async () => {
+  const client = new FakeTimeTrackingClient();
+  await assert.rejects(
+    () =>
+      createRepository(client).listEntriesPage(ownerId, {
+        page: 0,
+        pageSize: 101,
+      }),
+    /Paginação inválida/,
+  );
+  assert.deepEqual(client.calls, []);
+});
+
 test("cannot mutate records owned by another account", async () => {
   const foreignCategory = createCategory("category-1", otherOwnerId);
   const foreignEntry = createEntry("entry-1", otherOwnerId);

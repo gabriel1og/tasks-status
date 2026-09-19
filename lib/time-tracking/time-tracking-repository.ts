@@ -10,6 +10,8 @@ import type {
   TimeCategoryRow,
   TimeEntryInput,
   TimeEntryListFilters,
+  TimeEntryPage,
+  TimeEntryPageRequest,
   TimeEntryRow,
   TimeTrackingSettingsInput,
   TimeTrackingSettingsRow,
@@ -51,6 +53,10 @@ export type TimeTrackingRepository = {
     userId: string,
     filters?: TimeEntryListFilters,
   ) => Promise<TimeEntryRow[]>;
+  listEntriesPage: (
+    userId: string,
+    request: TimeEntryPageRequest,
+  ) => Promise<TimeEntryPage>;
   createEntry: (
     userId: string,
     input: TimeEntryInput,
@@ -125,6 +131,8 @@ function createEntryOperations(
   return {
     listEntries: (userId, filters = {}) =>
       listEntries(client, userId, filters),
+    listEntriesPage: (userId, request) =>
+      listEntriesPage(client, userId, request),
     createEntry: (userId, input) =>
       createEntry(client, clock, userId, input),
     updateEntry: (userId, entryId, input) =>
@@ -133,7 +141,11 @@ function createEntryOperations(
       deleteOwnedRow(client, "time_entries", userId, entryId),
   } satisfies Pick<
     TimeTrackingRepository,
-    "listEntries" | "createEntry" | "updateEntry" | "deleteEntry"
+    | "listEntries"
+    | "listEntriesPage"
+    | "createEntry"
+    | "updateEntry"
+    | "deleteEntry"
   >;
 }
 
@@ -253,11 +265,64 @@ async function listEntries(
     .eq("user_id", userId);
   if (filters.startDate) request = request.gte("entry_date", filters.startDate);
   if (filters.endDate) request = request.lte("entry_date", filters.endDate);
+  if (filters.categoryId) request = request.eq("category_id", filters.categoryId);
+  if (filters.task?.trim()) {
+    request = request.ilike("task", buildContainsPattern(filters.task));
+  }
   const { data, error } = await request.order("entry_date", {
     ascending: false,
   });
   if (error) throw error;
   return (data ?? []) as TimeEntryRow[];
+}
+
+async function listEntriesPage(
+  client: TimeTrackingClient,
+  userId: string,
+  filters: TimeEntryPageRequest,
+): Promise<TimeEntryPage> {
+  assertValidPageRequest(filters);
+  let request = client
+    .from("time_entries")
+    .select("*", { count: "exact" })
+    .eq("user_id", userId);
+  if (filters.startDate) request = request.gte("entry_date", filters.startDate);
+  if (filters.endDate) request = request.lte("entry_date", filters.endDate);
+  if (filters.categoryId) request = request.eq("category_id", filters.categoryId);
+  if (filters.task?.trim()) {
+    request = request.ilike("task", buildContainsPattern(filters.task));
+  }
+
+  const firstRow = (filters.page - 1) * filters.pageSize;
+  const { count, data, error } = await request
+    .order("entry_date", { ascending: false })
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false })
+    .range(firstRow, firstRow + filters.pageSize - 1);
+  if (error) throw error;
+  const totalCount = count ?? 0;
+  return {
+    entries: (data ?? []) as TimeEntryRow[],
+    page: filters.page,
+    pageSize: filters.pageSize,
+    totalCount,
+    totalPages: Math.max(1, Math.ceil(totalCount / filters.pageSize)),
+  };
+}
+
+function assertValidPageRequest(request: TimeEntryPageRequest): void {
+  const validPage = Number.isInteger(request.page) && request.page > 0;
+  const validSize = Number.isInteger(request.pageSize) && request.pageSize > 0;
+  if (!validPage || !validSize || request.pageSize > 100) {
+    throw new Error(
+      `Paginação inválida: página ${request.page}, tamanho ${request.pageSize}. Use inteiros positivos e até 100 itens.`,
+    );
+  }
+}
+
+function buildContainsPattern(value: string): string {
+  const escaped = value.trim().replace(/[\\%_]/g, "\\$&");
+  return `%${escaped}%`;
 }
 
 async function createEntry(

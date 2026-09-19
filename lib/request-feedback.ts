@@ -1,10 +1,18 @@
-type RequestError = {
+export type RequestError = {
   code?: string;
   details?: string | null;
   hint?: string | null;
   message: string;
   status?: number;
 };
+
+/** Converte falhas desconhecidas no contrato seguro usado pelo feedback. */
+export function normalizeRequestError(error: unknown): RequestError {
+  if (error && typeof error === "object" && "message" in error) {
+    return error as RequestError;
+  }
+  return { message: String(error) };
+}
 
 /**
  * Registra os detalhes técnicos e devolve somente a mensagem segura para a UI.

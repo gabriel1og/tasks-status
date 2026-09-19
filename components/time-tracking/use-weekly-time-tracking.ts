@@ -2,7 +2,10 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import { getRequestErrorFeedback } from "@/lib/request-feedback";
+import {
+  getRequestErrorFeedback,
+  normalizeRequestError,
+} from "@/lib/request-feedback";
 import { DEFAULT_DAILY_GOAL_MINUTES } from "@/lib/time-tracking/daily-goal";
 import { timeTrackingRepository } from "@/lib/time-tracking/time-tracking-repository";
 import {
@@ -106,17 +109,4 @@ async function loadTimeSettings(userId: string): Promise<TimeTrackingSettingsRow
   return timeTrackingRepository.saveSettings(userId, {
     daily_goal_minutes: DEFAULT_DAILY_GOAL_MINUTES,
   });
-}
-
-function normalizeRequestError(error: unknown) {
-  if (error && typeof error === "object" && "message" in error) {
-    return error as {
-      code?: string;
-      details?: string | null;
-      hint?: string | null;
-      message: string;
-      status?: number;
-    };
-  }
-  return { message: String(error) };
 }
