@@ -33,6 +33,17 @@ export function formatDuration(durationMinutes: number): string {
   return `${hours}h ${minutes}min`;
 }
 
+/** Formata um saldo em minutos com sinal explícito quando diferente de zero. */
+export function formatSignedDuration(durationMinutes: number): string {
+  if (!Number.isInteger(durationMinutes)) {
+    throw new Error(
+      `Saldo inválido: ${durationMinutes}. Informe minutos inteiros.`,
+    );
+  }
+  const prefix = durationMinutes > 0 ? "+" : durationMinutes < 0 ? "−" : "";
+  return `${prefix}${formatDuration(Math.abs(durationMinutes))}`;
+}
+
 function buildDurationMinutes(
   originalInput: string,
   hoursInput: string,

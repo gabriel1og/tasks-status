@@ -81,6 +81,12 @@ Os relatórios podem apresentar:
 - comparação entre meta diária e horas realizadas;
 - dias do período sem apontamento.
 
+No MVP, o período considera todos os dias civis entre a data inicial e a data
+final, inclusive. Como ainda não existe calendário de trabalho ou configuração
+de dias úteis, a meta do período é a meta diária vigente multiplicada por essa
+quantidade de dias. Pelo mesmo motivo, fins de semana sem lançamento também
+compõem o indicador de dias sem apontamento.
+
 Não haverá total por sprint, cliente, equipe ou pessoa.
 
 ## Fora do escopo

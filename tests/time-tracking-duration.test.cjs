@@ -2,7 +2,7 @@ const assert = require("node:assert/strict");
 const test = require("node:test");
 
 const { loadTypeScript } = require("./helpers/load-typescript.cjs");
-const { formatDuration, parseDurationToMinutes } = loadTypeScript(
+const { formatDuration, formatSignedDuration, parseDurationToMinutes } = loadTypeScript(
   "lib/time-tracking/duration.ts",
 );
 
@@ -31,4 +31,11 @@ test("formats durations for the interface", () => {
   assert.equal(formatDuration(60), "1h");
   assert.equal(formatDuration(90), "1h 30min");
   assert.throws(() => formatDuration(-1), /Duração inválida/);
+});
+
+test("formats positive, negative and neutral balances", () => {
+  assert.equal(formatSignedDuration(90), "+1h 30min");
+  assert.equal(formatSignedDuration(-30), "−30min");
+  assert.equal(formatSignedDuration(0), "0min");
+  assert.throws(() => formatSignedDuration(1.5), /Saldo inválido/);
 });

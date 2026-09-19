@@ -47,6 +47,21 @@ export type TimeEntryInput = {
 };
 
 export type TimeEntryListFilters = {
+  categoryId?: string;
   startDate?: string;
   endDate?: string;
+  task?: string;
+};
+
+export type TimeEntryPageRequest = TimeEntryListFilters & {
+  page: number;
+  pageSize: number;
+};
+
+export type TimeEntryPage = {
+  entries: TimeEntryRow[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
 };

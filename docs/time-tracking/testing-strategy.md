@@ -6,7 +6,7 @@ Esta estratégia acompanha a implementação incremental do domínio de apontame
 
 | Camada | Objetivo | Implementação atual |
 | --- | --- | --- |
-| Unitária | Validar regras sem rede ou banco | `tests/time-tracking-rules.test.cjs`, `tests/daily-goal.test.cjs` e `tests/time-tracking-{duration,week}.test.cjs` |
+| Unitária | Validar regras sem rede ou banco | `tests/time-tracking-rules.test.cjs`, `tests/daily-goal.test.cjs`, `tests/time-tracking-{duration,week}.test.cjs` e `tests/time-tracking-reporting.test.cjs` |
 | Repository | Validar payloads, CRUD, erros e filtro obrigatório por proprietário | `tests/time-tracking-repository.test.cjs` |
 | Banco | Validar estrutura, constraints, triggers, FK composta e RLS | `supabase/tests/database/time_tracking_*.test.sql` |
 | Interface | Validar formulário, acessibilidade e feedback | Telas das Fases 4 e 5 implementadas; automação de interação pendente |
@@ -57,6 +57,18 @@ Esta estratégia acompanha a implementação incremental do domínio de apontame
 11. confirmar que categorias arquivadas continuam identificadas no histórico;
 12. repetir os fluxos em light mode, dark mode e viewport mobile.
 
+## Validação manual da Fase 6
+
+1. filtrar o histórico por período e confirmar a paginação com mais de 10 lançamentos;
+2. combinar os filtros de tarefa e categoria, incluindo uma categoria arquivada;
+3. confirmar os estados de carregamento, erro e resultado vazio;
+4. comparar os totais por dia, semana, tarefa e categoria com os registros filtrados;
+5. confirmar que a meta do período usa a meta diária vigente multiplicada por todos os dias civis selecionados;
+6. confirmar que dias sem apontamento incluem fins de semana dentro do período;
+7. alterar um lançamento e confirmar a atualização do histórico ao concluir a operação;
+8. validar filtros e listas em light mode, dark mode e viewport mobile;
+9. repetir a consulta com uma segunda conta e confirmar que nenhum registro da primeira aparece.
+
 ## Comandos de validação
 
 ```powershell
@@ -89,3 +101,15 @@ A fase pode ser aceita quando:
 4. totais diários e semanais são derivados dos apontamentos carregados;
 5. datas futuras e novas associações com categorias arquivadas permanecem bloqueadas;
 6. as validações manuais de tema, acessibilidade e viewport mobile são concluídas.
+
+## Critério da Fase 6
+
+A fase pode ser aceita quando:
+
+1. o histórico filtra por período, texto de tarefa e categoria com paginação;
+2. categorias arquivadas continuam disponíveis nos filtros históricos;
+3. os totais por dia, semana, tarefa e categoria são derivados dos apontamentos;
+4. meta, saldo, dias com lançamento e dias sem lançamento respeitam o período;
+5. consultas paginadas e de relatório mantêm o filtro obrigatório por `user_id`;
+6. estados de carregamento, erro e resultado vazio são legíveis;
+7. os testes unitários, de repository e as validações manuais da fase são concluídos.
