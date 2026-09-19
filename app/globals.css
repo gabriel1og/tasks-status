@@ -74,3 +74,15 @@
     display: none;
   }
 }
+
+@layer utilities {
+  /* Mantém o scroll funcional sem competir visualmente com a navegação. */
+  .scrollbar-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
+}

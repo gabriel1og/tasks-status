@@ -3,23 +3,37 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Boxes,
   CalendarRange,
+  ChartNoAxesCombined,
+  Clock3,
+  LayoutDashboard,
   ListFilter,
   ListChecks,
   ListTodo,
   LoaderCircle,
+  Menu,
   type LucideIcon,
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
   Settings,
+  SlidersHorizontal,
+  Tags,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Popover } from "@/components/ui/popover";
 import { ThemeModeMenu } from "@/components/theme-mode-menu";
+import {
+  isNavigationItemActive,
+  navigationGroups,
+  type NavigationGroup,
+  type NavigationIconName,
+  type NavigationItem,
+} from "@/lib/app-navigation";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
@@ -28,14 +42,19 @@ type AppShellProps = {
   title: string;
 };
 
-const navigationItems = [
-  { href: "/status", label: "Status", icon: ListChecks },
-  { href: "/environments", label: "Ambientes", icon: Boxes },
-  { href: "/sprints", label: "Sprints", icon: CalendarRange },
-  { href: "/future-tasks", label: "Tarefas Futuras", icon: ListTodo },
-  { href: "/queries", label: "Queries", icon: ListFilter },
-  { href: "/settings", label: "Configurações", icon: Settings },
-];
+const navigationIcons: Record<NavigationIconName, LucideIcon> = {
+  dashboard: LayoutDashboard,
+  status: ListChecks,
+  environments: Boxes,
+  sprints: CalendarRange,
+  futureTasks: ListTodo,
+  queries: ListFilter,
+  taskSettings: Settings,
+  timeOverview: ChartNoAxesCombined,
+  timeEntries: Clock3,
+  timeCategories: Tags,
+  timeSettings: SlidersHorizontal,
+};
 
 const sidebarStorageKey = "gerenciamento-status:sidebar-collapsed";
 
@@ -97,21 +116,18 @@ export function AppShell({ children, title }: AppShellProps) {
           isCollapsed={isSidebarCollapsed}
           onToggle={toggleSidebar}
         />
-        <nav className="space-y-1">
-          {navigationItems.map((item) => {
-            return (
-              <SidebarNavItem
-                key={item.href}
-                href={item.href}
-                icon={item.icon}
-                isActive={
-                  pathname === item.href || pathname.startsWith(`${item.href}/`)
-                }
-                isCollapsed={isSidebarCollapsed}
-                label={item.label}
-              />
-            );
-          })}
+        <nav
+          className="scrollbar-hidden min-h-0 flex-1 space-y-5 overflow-y-auto overflow-x-hidden"
+          aria-label="Navegação principal"
+        >
+          {navigationGroups.map((group) => (
+            <SidebarNavigationGroup
+              key={group.id}
+              group={group}
+              pathname={pathname}
+              isCollapsed={isSidebarCollapsed}
+            />
+          ))}
         </nav>
         <SidebarSignOut
           isCollapsed={isSidebarCollapsed}
@@ -125,37 +141,11 @@ export function AppShell({ children, title }: AppShellProps) {
             <h2 className="text-xl font-semibold">{title}</h2>
             <div className="flex max-w-full flex-wrap items-center gap-2">
               <ThemeModeMenu />
-              <div className="flex flex-wrap gap-2 md:hidden">
-                {navigationItems.map((item) => {
-                  const Icon = item.icon;
-
-                  return (
-                    <Button
-                      key={item.href}
-                      asChild
-                      variant="outline"
-                      size="icon"
-                    >
-                      <Link href={item.href} aria-label={item.label}>
-                        <Icon className="h-4 w-4" />
-                      </Link>
-                    </Button>
-                  );
-                })}
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={signOut}
-                  aria-label={isSigningOut ? "Saindo" : "Sair"}
-                  disabled={isSigningOut}
-                >
-                  {isSigningOut ? (
-                    <LoaderCircle className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <LogOut className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
+              <MobileNavigation
+                pathname={pathname}
+                isSigningOut={isSigningOut}
+                onSignOut={signOut}
+              />
             </div>
           </div>
         </header>
@@ -171,6 +161,160 @@ export function AppShell({ children, title }: AppShellProps) {
       ) : null}
       {isSigningOut ? <SignOutOverlay /> : null}
     </div>
+  );
+}
+
+function SidebarNavigationGroup({
+  group,
+  pathname,
+  isCollapsed,
+}: {
+  group: NavigationGroup;
+  pathname: string;
+  isCollapsed: boolean;
+}) {
+  return (
+    <div
+      className={cn(
+        "space-y-1",
+        isCollapsed && "border-b pb-4 last:border-b-0 last:pb-0",
+      )}
+      role="group"
+      aria-label={group.label}
+    >
+      {isCollapsed ? null : (
+        <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+          {group.label}
+        </p>
+      )}
+      {group.items.map((item) => (
+        <SidebarNavItem
+          key={item.href}
+          href={item.href}
+          icon={navigationIcons[item.icon]}
+          isActive={isNavigationItemActive(pathname, item)}
+          isCollapsed={isCollapsed}
+          label={item.label}
+        />
+      ))}
+    </div>
+  );
+}
+
+function MobileNavigation({
+  pathname,
+  isSigningOut,
+  onSignOut,
+}: {
+  pathname: string;
+  isSigningOut: boolean;
+  onSignOut: () => void;
+}) {
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => setIsOpen(false), [pathname]);
+
+  return (
+    <div className="md:hidden">
+      <Button
+        ref={triggerRef}
+        variant="outline"
+        size="icon"
+        onClick={() => setIsOpen((currentValue) => !currentValue)}
+        aria-label={isOpen ? "Fechar navegação" : "Abrir navegação"}
+        aria-expanded={isOpen}
+      >
+        <Menu className="h-4 w-4" />
+      </Button>
+      <Popover
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        anchorRef={triggerRef}
+        label="Navegação principal"
+        align="right"
+        width={288}
+      >
+        <nav className="scrollbar-hidden max-h-[70vh] space-y-5 overflow-y-auto">
+          {navigationGroups.map((group) => (
+            <MobileNavigationGroup
+              key={group.id}
+              group={group}
+              pathname={pathname}
+              onNavigate={() => setIsOpen(false)}
+            />
+          ))}
+          <Button
+            className="w-full justify-start gap-3"
+            variant="outline"
+            onClick={onSignOut}
+            disabled={isSigningOut}
+          >
+            {isSigningOut ? (
+              <LoaderCircle className="h-4 w-4 animate-spin" />
+            ) : (
+              <LogOut className="h-4 w-4" />
+            )}
+            {isSigningOut ? "Saindo..." : "Sair"}
+          </Button>
+        </nav>
+      </Popover>
+    </div>
+  );
+}
+
+function MobileNavigationGroup({
+  group,
+  pathname,
+  onNavigate,
+}: {
+  group: NavigationGroup;
+  pathname: string;
+  onNavigate: () => void;
+}) {
+  return (
+    <div className="space-y-1" role="group" aria-label={group.label}>
+      <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        {group.label}
+      </p>
+      {group.items.map((item) => (
+        <MobileNavigationItem
+          key={item.href}
+          item={item}
+          isActive={isNavigationItemActive(pathname, item)}
+          onNavigate={onNavigate}
+        />
+      ))}
+    </div>
+  );
+}
+
+function MobileNavigationItem({
+  item,
+  isActive,
+  onNavigate,
+}: {
+  item: NavigationItem;
+  isActive: boolean;
+  onNavigate: () => void;
+}) {
+  const Icon = navigationIcons[item.icon];
+
+  return (
+    <Link
+      href={item.href}
+      onClick={onNavigate}
+      aria-current={isActive ? "page" : undefined}
+      className={cn(
+        "flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium",
+        isActive
+          ? "bg-primary text-primary-foreground"
+          : "text-muted-foreground hover:bg-muted hover:text-foreground",
+      )}
+    >
+      <Icon className="h-4 w-4 shrink-0" />
+      {item.label}
+    </Link>
   );
 }
 
@@ -228,6 +372,8 @@ function SidebarNavItem({
   return (
     <Link
       href={href}
+      aria-current={isActive ? "page" : undefined}
+      title={isCollapsed ? label : undefined}
       className={cn(
         "group relative flex h-10 items-center rounded-md text-sm font-medium",
         isCollapsed ? "justify-center px-0" : "gap-3 px-3",
@@ -238,7 +384,7 @@ function SidebarNavItem({
       aria-label={label}
     >
       <Icon className="h-4 w-4 shrink-0" />
-      {isCollapsed ? <SidebarTooltip label={label} /> : <span>{label}</span>}
+      {isCollapsed ? null : <span>{label}</span>}
     </Link>
   );
 }
