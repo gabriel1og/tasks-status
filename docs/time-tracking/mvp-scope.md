@@ -61,6 +61,23 @@ Um apontamento possui somente os seguintes dados de negócio:
 - Renomear uma categoria altera o nome apresentado também nos apontamentos antigos. O MVP não mantém snapshot do nome da categoria.
 - Excluir ou arquivar uma categoria nunca exclui apontamentos.
 
+## Integridade e preservação histórica
+
+- A FK entre apontamento e categoria usa exclusão restrita: uma categoria
+  referenciada não pode ser removida, mesmo por acesso direto ao banco.
+- A interface e o repository verificam o uso antes da exclusão; a FK permanece
+  como garantia final para acessos concorrentes.
+- O texto manual de tarefa armazenado no próprio apontamento é o valor
+  histórico. Alterar ou excluir uma tarefa do outro domínio não o modifica.
+- Tarefas e sprints não recebem arquivamento por causa do domínio de horas:
+  como não são referenciadas, seu ciclo de vida não afeta relatórios antigos.
+- `created_at` e `updated_at` são controlados pelo banco. Clientes não podem
+  retroagir a data de criação de configurações, categorias ou apontamentos.
+- O nome da categoria não possui snapshot: renomeá-la altera a identificação
+  apresentada no histórico, conforme a regra já aprovada para o MVP.
+- A exclusão explícita de um apontamento continua permitida e é definitiva; o
+  MVP não adota lixeira, soft delete ou trilha de auditoria de alterações.
+
 ## Meta diária
 
 - A meta inicial é de 6 horas, armazenada como `360` minutos.
@@ -103,6 +120,7 @@ Não haverá total por sprint, cliente, equipe ou pessoa.
 - copiar semana anterior;
 - exportação CSV;
 - histórico da meta diária;
+- lixeira, soft delete e auditoria de alterações dos apontamentos;
 - dashboards gerenciais.
 
 Esses itens podem ser reavaliados depois do MVP, mas não devem orientar o schema ou a interface inicial.

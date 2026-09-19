@@ -100,6 +100,8 @@ Cuidados ao alterar o schema:
 - Preserve os `drop policy if exists` antes de recriar policies, pois isso facilita reaplicar o SQL durante ajustes.
 - O dominio de horas nao referencia `task_statuses` ou `sprints`; a tarefa do apontamento e texto manual.
 - Categorias utilizadas devem ser arquivadas, nunca removidas em cascata com seus apontamentos.
+- A exclusao de categoria e protegida na UI, no repository e pela FK `ON DELETE RESTRICT`; preserve as tres camadas.
+- `created_at` e `updated_at` do dominio de horas sao controlados por trigger do banco.
 
 ## Padroes de UI
 
@@ -185,3 +187,4 @@ node_modules\.bin\next.cmd build
 - Visao semanal calculada a partir dos apontamentos, sem totais persistidos.
 - Historico paginado com filtros por periodo, tarefa e categoria.
 - Dashboard com totais por dia, semana, tarefa e categoria, meta vigente e dias sem lancamento.
+- Protecao historica de categorias utilizadas e timestamps controlados pelo banco.
