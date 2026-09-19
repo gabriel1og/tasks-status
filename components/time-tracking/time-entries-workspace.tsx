@@ -7,6 +7,7 @@ import {
   TimeEntryForm,
   type TimeEntryDraft,
 } from "@/components/time-tracking/time-entry-form";
+import { TimeEntryHistory } from "@/components/time-tracking/time-entry-history";
 import { TimeEntryList } from "@/components/time-tracking/time-entry-list";
 import {
   TimeTrackingFeedback,
@@ -15,7 +16,10 @@ import {
 import { WeekNavigation } from "@/components/time-tracking/week-navigation";
 import { useWeeklyTimeTracking } from "@/components/time-tracking/use-weekly-time-tracking";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getRequestErrorFeedback } from "@/lib/request-feedback";
+import {
+  getRequestErrorFeedback,
+  normalizeRequestError,
+} from "@/lib/request-feedback";
 import { formatDuration, parseDurationToMinutes } from "@/lib/time-tracking/duration";
 import { timeTrackingRepository } from "@/lib/time-tracking/time-tracking-repository";
 import { buildTimeEntryChanges } from "@/lib/time-tracking/time-tracking-rules";
@@ -43,6 +47,7 @@ export function TimeEntriesWorkspace({ userId }: { userId: string }) {
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<TimeTrackingFeedbackValue | null>(null);
+  const [historyRefreshVersion, setHistoryRefreshVersion] = useState(0);
 
   useEffect(() => {
     if (draft.categoryId || activeCategories.length === 0) return;
@@ -149,6 +154,7 @@ export function TimeEntriesWorkspace({ userId }: { userId: string }) {
     try {
       await options.action();
       weeklyData.refresh();
+      setHistoryRefreshVersion((version) => version + 1);
       setFeedback({ type: "success", message: options.successMessage });
       return true;
     } catch (error) {
@@ -263,6 +269,13 @@ export function TimeEntriesWorkspace({ userId }: { userId: string }) {
           )}
         </CardContent>
       </Card>
+
+      <TimeEntryHistory
+        categories={weeklyData.categories}
+        refreshVersion={historyRefreshVersion}
+        today={weeklyData.today}
+        userId={userId}
+      />
     </div>
   );
 }
@@ -307,17 +320,4 @@ function focusEntryForm(): void {
       block: "start",
     });
   });
-}
-
-function normalizeRequestError(error: unknown) {
-  if (error && typeof error === "object" && "message" in error) {
-    return error as {
-      code?: string;
-      details?: string | null;
-      hint?: string | null;
-      message: string;
-      status?: number;
-    };
-  }
-  return { message: String(error) };
 }
