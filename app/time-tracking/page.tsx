@@ -1,10 +1,17 @@
-import { TimeTrackingPlaceholder } from "@/components/time-tracking/time-tracking-placeholder";
+"use client";
+
+import { AppShell } from "@/components/app-shell";
+import { AuthGuard } from "@/components/auth-guard";
+import { WeeklyOverview } from "@/components/time-tracking/weekly-overview";
 
 export default function TimeTrackingPage() {
   return (
-    <TimeTrackingPlaceholder
-      title="Visão geral de horas"
-      description="Esta página será o resumo diário do apontamento de horas e da meta configurada."
-    />
+    <AuthGuard>
+      {(user) => (
+        <AppShell title="Visão geral de horas">
+          <WeeklyOverview userId={user.id} />
+        </AppShell>
+      )}
+    </AuthGuard>
   );
 }

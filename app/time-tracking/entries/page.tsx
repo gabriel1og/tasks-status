@@ -1,10 +1,17 @@
-import { TimeTrackingPlaceholder } from "@/components/time-tracking/time-tracking-placeholder";
+"use client";
+
+import { AppShell } from "@/components/app-shell";
+import { AuthGuard } from "@/components/auth-guard";
+import { TimeEntriesWorkspace } from "@/components/time-tracking/time-entries-workspace";
 
 export default function TimeEntriesPage() {
   return (
-    <TimeTrackingPlaceholder
-      title="Apontamentos"
-      description="Esta página receberá o cadastro, a edição e o histórico dos apontamentos de horas."
-    />
+    <AuthGuard>
+      {(user) => (
+        <AppShell title="Apontamentos">
+          <TimeEntriesWorkspace userId={user.id} />
+        </AppShell>
+      )}
+    </AuthGuard>
   );
 }
