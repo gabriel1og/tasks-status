@@ -26,6 +26,9 @@ As tarefas possuem as colunas principais:
 
 ## Decisoes ja tomadas
 
+- `docs/time-tracking/mvp-scope.md` e a fonte de verdade das regras do MVP de apontamento de horas.
+- `docs/adr/0001-modular-monolith.md` registra a separacao entre tarefas e horas dentro do monolito modular.
+- Apontamentos usam tarefa manual e nao possuem FK ou integracao com `task_statuses` e `sprints`.
 - O app usa Supabase Auth com e-mail/senha e Google OAuth (no momento pausada).
 - O `user_id` dos registros corresponde ao `id` da conta autenticada.
 - As queries do frontend devem sempre filtrar pelo `user.id`, mesmo que o RLS do Supabase tambem esteja configurado.
@@ -41,6 +44,8 @@ As tarefas possuem as colunas principais:
 ## Estrutura importante
 
 - `app/dashboard/page.tsx`: entrada autenticada do hub e acesso aos dois dominios.
+- `docs/time-tracking/mvp-scope.md`: regras aprovadas e limites do MVP de apontamento de horas.
+- `docs/adr/0001-modular-monolith.md`: decisao arquitetural e limites entre os dominios.
 - `app/status/page.tsx`: dashboard de tarefas, formulario de nova tarefa, tabela e edicao inline.
 - `app/time-tracking/*`: rotas estruturais do dominio de apontamento de horas.
 - `app/settings/page.tsx`: gerenciamento das tags de Status e Ambiente.
@@ -59,11 +64,12 @@ As tarefas possuem as colunas principais:
 - `lib/task-queries.ts`: validacao e avaliacao das condicoes salvas.
 - `types/queries.ts`: tipos das queries, condicoes e pastas.
 - `types/database.ts`: tipos TypeScript das tabelas usadas pela UI.
-- `supabase/schema.sql`: schema, RLS e policies do banco.
+- `supabase/schemas/*`: schemas declarativos organizados por dominio.
+- `supabase/migrations/*`: historico incremental usado para reconstruir o banco.
 
 ## Banco de dados e Supabase
 
-Execute `supabase/schema.sql` no projeto Supabase para criar ou atualizar as tabelas.
+Use `npm run supabase:db:reset` para reconstruir o banco local pelas migrations.
 
 Tabelas atuais:
 
@@ -140,7 +146,7 @@ node_modules\.bin\next.cmd build
 1. Rode `git status --short --branch`.
 2. Leia os arquivos diretamente relacionados antes de editar.
 3. Mantenha mudancas pequenas e no padrao do app.
-4. Se alterar comportamento de tarefa/tag, revise tambem `supabase/schema.sql` e `types/database.ts`.
+4. Se alterar comportamento persistido, revise o schema declarativo do dominio, crie uma migration incremental e regenere os tipos.
 5. Nao rode build, testes ou validacao TypeScript por padrao; o usuario fara essas validacoes manualmente.
 6. Informe claramente que as validacoes nao foram executadas quando concluir a tarefa.
    OBS: Nunca crie um servidor local (https://localhost:3000), a não ser que eu peça explicitamente.

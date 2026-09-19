@@ -1,6 +1,11 @@
-# Gerenciamento de Status
+# TaskFlow
 
-Aplicação Next.js, React, TypeScript, shadcn-ui e Supabase para acompanhar tarefas atuais, futuras e organizadas por sprint.
+Hub pessoal em Next.js, React, TypeScript, shadcn-ui e Supabase para gerenciar tarefas e apontamentos de horas.
+
+## Documentação
+
+- [Escopo e regras do MVP de apontamento de horas](docs/time-tracking/mvp-scope.md)
+- [ADR-0001 — Monólito modular](docs/adr/0001-modular-monolith.md)
 
 ## Como rodar
 
@@ -10,14 +15,19 @@ Aplicação Next.js, React, TypeScript, shadcn-ui e Supabase para acompanhar tar
 npm install
 ```
 
-2. Crie `.env.local` usando `.env.example` como base:
+2. Crie `.env.local` usando `.env.example` como base. Para o banco local, substitua os valores pelos exibidos por `npm run supabase:status`; para o banco remoto, use as credenciais do projeto:
 
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anonima
 ```
 
-3. No Supabase, execute o SQL de `supabase/schema.sql`.
+3. Inicie e reconstrua o banco local:
+
+```bash
+npm run supabase:start
+npm run supabase:db:reset
+```
 
 4. Rode o projeto:
 
@@ -28,6 +38,7 @@ npm run dev
 ## Telas
 
 - `/login`: login e cadastro por e-mail/senha ou acesso com Google.
+- `/dashboard`: entrada do hub para os domínios de tarefas e horas.
 - `/status`: cadastro e tabela de acompanhamento das tarefas.
 - `/environments`: matriz de disponibilidade, análise de compatibilidade e comparação opcional entre Frontend e Backend por ambiente.
 - `/sprints`: hub da sprint atual ou selecionada, com tarefas, indicadores,
@@ -37,10 +48,14 @@ npm run dev
 - `/queries/new`: criação de uma query com prévia dos resultados.
 - `/queries/[id]`: tarefas encontradas pela query salva e edição dos critérios.
 - `/settings`: edição das tags de Status e Ambiente e gerenciamento de sprints.
+- `/time-tracking`: estrutura reservada para a visão geral de horas.
+- `/time-tracking/entries`: estrutura reservada para lançamentos e histórico.
+- `/time-tracking/categories`: estrutura reservada para categorias editáveis.
+- `/time-tracking/settings`: estrutura reservada para meta diária e preferências.
 
 ## Supabase
 
-Execute o SQL de `supabase/schema.sql`. As tabelas usam RLS com `auth.uid()` para que cada conta acesse apenas os próprios registros. O schema inclui as tabelas `task_statuses`, `task_environment_statuses`, `task_environment_area_statuses`, `sprints`, `tag_options`, `user_settings`, `saved_queries` e `query_folders`.
+O banco é reconstruído pelas migrations em `supabase/migrations`, enquanto `supabase/schemas` mantém a organização declarativa por domínio. As tabelas usam RLS com `auth.uid()` para que cada conta acesse apenas os próprios registros.
 
 No painel do Supabase:
 
@@ -63,7 +78,7 @@ A análise considera incompatível uma tarefa que avançou para Homologação se
 
 ## Queries
 
-Antes de usar a funcionalidade, reaplique `supabase/schema.sql` no SQL Editor do projeto Supabase. As novas tabelas guardam os critérios, favoritos e pastas de cada conta; nenhuma tarefa é copiada para uma query.
+As tabelas de queries guardam os critérios, favoritos e pastas de cada conta; nenhuma tarefa é copiada para uma query.
 
 Na biblioteca, use **Criar nova query**, informe o nome e adicione condições. Escolha **Todas (E)** para exigir todas as condições ou **Qualquer uma (OU)** para aceitar pelo menos uma. Sem condições, a query retorna todas as tarefas da conta, incluindo tarefas futuras. É possível consultar nome, Azure, links Azure/LiveOps, sprint, IDs, status, ambiente, tarefa futura e data de criação.
 
