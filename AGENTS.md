@@ -46,6 +46,7 @@ As tarefas possuem as colunas principais:
 - `app/dashboard/page.tsx`: entrada autenticada do hub e acesso aos dois dominios.
 - `docs/time-tracking/mvp-scope.md`: regras aprovadas e limites do MVP de apontamento de horas.
 - `docs/adr/0001-modular-monolith.md`: decisao arquitetural e limites entre os dominios.
+- `docs/time-tracking/testing-strategy.md`: piramide e criterios de teste do dominio de horas.
 - `app/status/page.tsx`: dashboard de tarefas, formulario de nova tarefa, tabela e edicao inline.
 - `app/time-tracking/*`: rotas estruturais do dominio de apontamento de horas.
 - `app/settings/page.tsx`: gerenciamento das tags de Status e Ambiente.
@@ -59,11 +60,13 @@ As tarefas possuem as colunas principais:
 - `lib/default-tags.ts`: tags iniciais criadas quando ainda nao ha tags no Supabase.
 - `lib/environment-tracking.ts`: ambientes operacionais padrao e regras da analise de compatibilidade.
 - `lib/supabase.ts`: cliente Supabase.
+- `lib/time-tracking/*`: categorias padrao, regras puras e repository do dominio de horas.
 - `components/queries/*`: biblioteca, editor de condicoes e resultados das queries.
 - `lib/query-repository.ts`: persistencia e leitura paginada dos registros da conta.
 - `lib/task-queries.ts`: validacao e avaliacao das condicoes salvas.
 - `types/queries.ts`: tipos das queries, condicoes e pastas.
 - `types/database.ts`: tipos TypeScript das tabelas usadas pela UI.
+- `types/time-tracking.ts`: contratos manuais do dominio de horas.
 - `supabase/schemas/*`: schemas declarativos organizados por dominio.
 - `supabase/migrations/*`: historico incremental usado para reconstruir o banco.
 
@@ -80,6 +83,9 @@ Tabelas atuais:
 - `task_environment_area_statuses`: estado opcional de Frontend ou Backend por tarefa e ambiente.
 - `saved_queries`: criterios das queries, pasta e favorito por usuario.
 - `query_folders`: pastas de queries por usuario; ao excluir uma pasta, o trigger move suas queries para a raiz.
+- `time_tracking_settings`: meta diaria atual de cada usuario.
+- `time_categories`: categorias editaveis e arquivaveis de apontamento.
+- `time_entries`: apontamentos manuais de data, duracao, tarefa e categoria.
 
 Queries consultam todos os campos de `TaskStatusRow` e incluem tarefas atuais e futuras. Ao adicionar campos de tarefa, atualize tambem `lib/task-query-fields.ts` e os testes em `tests/`. A FK composta de query/pasta deve manter a mesma conta. Nunca remova tarefas ao excluir uma query ou pasta.
 
@@ -89,6 +95,8 @@ Cuidados ao alterar o schema:
 - Se a UI criar, editar ou remover registros, garanta policies correspondentes de `insert`, `update`, `delete` e `select`.
 - Preserve as chaves estrangeiras para `auth.users`; use `not valid` enquanto houver registros legados ainda nao migrados.
 - Preserve os `drop policy if exists` antes de recriar policies, pois isso facilita reaplicar o SQL durante ajustes.
+- O dominio de horas nao referencia `task_statuses` ou `sprints`; a tarefa do apontamento e texto manual.
+- Categorias utilizadas devem ser arquivadas, nunca removidas em cascata com seus apontamentos.
 
 ## Padroes de UI
 

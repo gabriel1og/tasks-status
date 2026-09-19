@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -294,6 +294,98 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      time_categories: {
+        Row: {
+          archived_at: string | null
+          color: string
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          color?: string
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          color?: string
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      time_entries: {
+        Row: {
+          category_id: string
+          created_at: string
+          duration_minutes: number
+          entry_date: string
+          id: string
+          task: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          duration_minutes: number
+          entry_date: string
+          id?: string
+          task: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          duration_minutes?: number
+          entry_date?: string
+          id?: string
+          task?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_entries_category_owner_fkey"
+            columns: ["category_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "time_categories"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
+      time_tracking_settings: {
+        Row: {
+          created_at: string
+          daily_goal_minutes: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          daily_goal_minutes?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          daily_goal_minutes?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_settings: {
         Row: {

@@ -6,6 +6,7 @@ Hub pessoal em Next.js, React, TypeScript, shadcn-ui e Supabase para gerenciar t
 
 - [Escopo e regras do MVP de apontamento de horas](docs/time-tracking/mvp-scope.md)
 - [ADR-0001 — Monólito modular](docs/adr/0001-modular-monolith.md)
+- [Estratégia de testes do domínio de horas](docs/time-tracking/testing-strategy.md)
 
 ## Como rodar
 

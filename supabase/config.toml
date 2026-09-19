@@ -66,6 +66,7 @@ schema_paths = [
   "./schemas/20_task_management.sql",
   "./schemas/30_environment_tracking.sql",
   "./schemas/40_saved_queries.sql",
+  "./schemas/50_time_tracking.sql",
   "./schemas/90_functions.sql"
 ]
 

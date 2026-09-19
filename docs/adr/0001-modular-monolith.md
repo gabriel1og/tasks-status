@@ -125,10 +125,10 @@ Os nomes podem ser refinados durante a implementação, mas a propriedade de cad
 
 - [x] Registrar as regras do MVP.
 - [x] Criar a estrutura de navegação do hub.
-- [ ] Criar o schema declarativo do domínio de horas.
-- [ ] Criar migration incremental.
-- [ ] Implementar regras e repository do domínio.
-- [ ] Adicionar testes de RLS e referências entre contas.
+- [x] Criar o schema declarativo do domínio de horas.
+- [x] Criar migration incremental.
+- [x] Implementar regras e repository do domínio.
+- [x] Adicionar testes de RLS e referências entre contas.
 - [ ] Revisar os limites modulares antes da entrega do MVP.
 
 ## Referências
