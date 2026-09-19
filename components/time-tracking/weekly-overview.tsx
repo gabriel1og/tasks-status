@@ -4,6 +4,7 @@ import { CalendarCheck2, Clock3, ListChecks, type LucideIcon } from "lucide-reac
 import Link from "next/link";
 
 import { TimeTrackingFeedback } from "@/components/time-tracking/time-tracking-feedback";
+import { TimeTrackingReportDashboard } from "@/components/time-tracking/time-tracking-report-dashboard";
 import { WeekNavigation } from "@/components/time-tracking/week-navigation";
 import { useWeeklyTimeTracking } from "@/components/time-tracking/use-weekly-time-tracking";
 import { Button } from "@/components/ui/button";
@@ -92,6 +93,11 @@ export function WeeklyOverview({ userId }: { userId: string }) {
           )}
         </CardContent>
       </Card>
+
+      <TimeTrackingReportDashboard
+        today={weeklyData.today}
+        userId={userId}
+      />
     </div>
   );
 }
