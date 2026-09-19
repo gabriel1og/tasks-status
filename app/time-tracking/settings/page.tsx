@@ -1,10 +1,17 @@
-import { TimeTrackingPlaceholder } from "@/components/time-tracking/time-tracking-placeholder";
+"use client";
+
+import { AppShell } from "@/components/app-shell";
+import { AuthGuard } from "@/components/auth-guard";
+import { DailyGoalSettings } from "@/components/time-tracking/daily-goal-settings";
 
 export default function TimeTrackingSettingsPage() {
   return (
-    <TimeTrackingPlaceholder
-      title="Configurações de horas"
-      description="Esta página receberá a meta diária e as demais preferências do apontamento de horas."
-    />
+    <AuthGuard>
+      {(user) => (
+        <AppShell title="Configurações de horas">
+          <DailyGoalSettings userId={user.id} />
+        </AppShell>
+      )}
+    </AuthGuard>
   );
 }
