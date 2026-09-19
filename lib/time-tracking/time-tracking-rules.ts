@@ -1,3 +1,4 @@
+import { isWorkingWeekday } from "@/lib/time-tracking/non-working-days";
 import type {
   TimeCategoryInput,
   TimeCategoryRow,
@@ -68,12 +69,20 @@ export function buildTimeEntryChanges(
   assertValidCivilDate(input.entry_date, "Data do apontamento");
   assertValidCivilDate(todayCivilDate, "Data de referência");
   assertNotFutureDate(input.entry_date, todayCivilDate);
+  assertWorkingWeekday(input.entry_date);
   assertPositiveDuration(input.duration_minutes);
   return {
     ...input,
     task: normalizeTask(input.task),
     category_id: normalizeCategoryId(input.category_id),
   };
+}
+
+function assertWorkingWeekday(entryDate: string): void {
+  if (isWorkingWeekday(entryDate)) return;
+  throw new Error(
+    `Data do apontamento inválida: ${entryDate}. Finais de semana não aceitam apontamentos.`,
+  );
 }
 
 function assertNotFutureDate(entryDate: string, todayCivilDate: string): void {

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, History } from "lucide-react";
+import { ChevronLeft, ChevronRight, History, LoaderCircle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { TimeReportFiltersForm } from "@/components/time-tracking/time-report-filters";
@@ -18,6 +18,7 @@ import {
   normalizeTimeReportFilters,
 } from "@/lib/time-tracking/reporting";
 import { timeTrackingRepository } from "@/lib/time-tracking/time-tracking-repository";
+import { cn } from "@/lib/utils";
 import type { TimeCategoryRow, TimeEntryPage } from "@/types/time-tracking";
 
 const HISTORY_PAGE_SIZE = 10;
@@ -53,7 +54,6 @@ export function TimeEntryHistory({
     let isCurrent = true;
     setIsLoading(true);
     setErrorMessage(null);
-    setHistoryPage({ ...emptyPage, page: currentPage });
     timeTrackingRepository
       .listEntriesPage(userId, {
         categoryId: appliedFilters.categoryId || undefined,
@@ -160,8 +160,13 @@ function HistoryResults({
   isLoading: boolean;
   onPageChange: (page: number) => void;
 }) {
-  if (isLoading) {
-    return <p className="py-8 text-center text-sm text-muted-foreground">Carregando histórico...</p>;
+  if (isLoading && historyPage.entries.length === 0) {
+    return (
+      <div className="flex min-h-40 items-center justify-center gap-2 text-sm text-muted-foreground">
+        <LoaderCircle className="h-4 w-4 animate-spin" />
+        Carregando histórico...
+      </div>
+    );
   }
   if (historyPage.entries.length === 0) {
     return (
@@ -173,7 +178,19 @@ function HistoryResults({
   }
   const categoriesById = new Map(categories.map((category) => [category.id, category]));
   return (
-    <div className="space-y-4">
+    <div
+      className={cn(
+        "relative min-h-40 space-y-4 transition-opacity",
+        isLoading && "pointer-events-none opacity-60",
+      )}
+      aria-busy={isLoading}
+    >
+      {isLoading ? (
+        <div className="absolute right-2 top-2 z-10 rounded-full border bg-card p-2 shadow-sm">
+          <LoaderCircle className="h-4 w-4 animate-spin text-primary" />
+          <span className="sr-only">Atualizando histórico</span>
+        </div>
+      ) : null}
       <div className="divide-y rounded-md border">
         {historyPage.entries.map((entry) => {
           const category = categoriesById.get(entry.category_id);

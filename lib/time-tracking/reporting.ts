@@ -1,6 +1,14 @@
 import { shiftDays } from "@/lib/calendar";
+import {
+  isNonWorkingDate,
+  isWorkingWeekday,
+} from "@/lib/time-tracking/non-working-days";
 import { getWeekRange } from "@/lib/time-tracking/week";
-import type { TimeCategoryRow, TimeEntryRow } from "@/types/time-tracking";
+import type {
+  TimeCategoryRow,
+  TimeEntryRow,
+  TimeNonWorkingDayRow,
+} from "@/types/time-tracking";
 
 export type TimeReportFilters = {
   categoryId: string;
@@ -69,9 +77,13 @@ export function buildTimeTrackingReport(
   categories: TimeCategoryRow[],
   dailyGoalMinutes: number,
   filters: TimeReportFilters,
+  excludedDays: TimeNonWorkingDayRow[] = [],
 ): TimeTrackingReport {
-  const dates = listCivilDates(filters.startDate, filters.endDate);
-  const selectedEntries = filterReportEntries(entries, filters);
+  const dates = listEligibleDates(filters, excludedDays);
+  const eligibleDates = new Set(dates);
+  const selectedEntries = filterReportEntries(entries, filters).filter((entry) =>
+    eligibleDates.has(entry.entry_date),
+  );
   const actualMinutes = sumEntryMinutes(selectedEntries);
   const goalMinutes = dates.length * dailyGoalMinutes;
   const dailyTotals = buildDailyTotals(selectedEntries, dates);
@@ -86,6 +98,15 @@ export function buildTimeTrackingReport(
     taskTotals: buildTaskTotals(selectedEntries),
     weeklyTotals: buildWeeklyTotals(selectedEntries, dates),
   };
+}
+
+function listEligibleDates(
+  filters: TimeReportFilters,
+  excludedDays: TimeNonWorkingDayRow[],
+): string[] {
+  return listCivilDates(filters.startDate, filters.endDate).filter(
+    (date) => isWorkingWeekday(date) && !isNonWorkingDate(date, excludedDays),
+  );
 }
 
 function filterReportEntries(

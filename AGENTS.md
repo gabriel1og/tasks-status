@@ -17,7 +17,7 @@ O fluxo principal fica em:
 - `/time-tracking`: visao semanal e dashboard historico com filtros e totais derivados dos apontamentos.
 - `/time-tracking/entries`: cadastro, edicao, duplicacao, exclusao e historico paginado de apontamentos manuais.
 - `/time-tracking/categories`: gerenciamento de categorias ativas e arquivadas, com nome e cor editaveis.
-- `/time-tracking/settings`: configuracao da meta diaria individual, armazenada em minutos.
+- `/time-tracking/settings`: configuracao da meta diaria individual e dos dias sem apontamento, como feriados e ferias.
 
 As tarefas possuem as colunas principais:
 
@@ -89,6 +89,7 @@ Tabelas atuais:
 - `time_tracking_settings`: meta diaria atual de cada usuario.
 - `time_categories`: categorias editaveis e arquivaveis de apontamento.
 - `time_entries`: apontamentos manuais de data, duracao, tarefa e categoria.
+- `time_non_working_days`: dias uteis retirados da meta individual por feriado, ferias ou outra ausencia.
 
 Queries consultam todos os campos de `TaskStatusRow` e incluem tarefas atuais e futuras. Ao adicionar campos de tarefa, atualize tambem `lib/task-query-fields.ts` e os testes em `tests/`. A FK composta de query/pasta deve manter a mesma conta. Nunca remova tarefas ao excluir uma query ou pasta.
 
@@ -185,6 +186,7 @@ node_modules\.bin\next.cmd build
 - Meta diaria individual de apontamento, com valor inicial de 6h e persistencia em minutos.
 - Apontamentos manuais com parser de duracao, navegacao semanal e bloqueio de datas futuras.
 - Visao semanal calculada a partir dos apontamentos, sem totais persistidos.
+- Finais de semana e dias marcados sem apontamento sao excluidos das metas e dos indicadores de horas.
 - Historico paginado com filtros por periodo, tarefa e categoria.
 - Dashboard com totais por dia, semana, tarefa e categoria, meta vigente e dias sem lancamento.
 - Protecao historica de categorias utilizadas e timestamps controlados pelo banco.

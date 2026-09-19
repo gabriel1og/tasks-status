@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { buildDefaultTimeCategories } from "@/lib/time-tracking/default-time-categories";
+import { buildNonWorkingDayInputs } from "@/lib/time-tracking/non-working-days";
 import {
   buildTimeCategoryChanges,
   buildTimeEntryChanges,
@@ -13,6 +14,9 @@ import type {
   TimeEntryPage,
   TimeEntryPageRequest,
   TimeEntryRow,
+  TimeNonWorkingDayInput,
+  TimeNonWorkingDayListFilters,
+  TimeNonWorkingDayRow,
   TimeTrackingSettingsInput,
   TimeTrackingSettingsRow,
 } from "@/types/time-tracking";
@@ -71,6 +75,15 @@ export type TimeTrackingRepository = {
     input: TimeEntryInput,
   ) => Promise<TimeEntryRow>;
   deleteEntry: (userId: string, entryId: string) => Promise<void>;
+  listNonWorkingDays: (
+    userId: string,
+    filters?: TimeNonWorkingDayListFilters,
+  ) => Promise<TimeNonWorkingDayRow[]>;
+  saveNonWorkingDays: (
+    userId: string,
+    inputs: TimeNonWorkingDayInput[],
+  ) => Promise<TimeNonWorkingDayRow[]>;
+  deleteNonWorkingDay: (userId: string, dayId: string) => Promise<void>;
 };
 
 const systemClock: TimeTrackingClock = { now: () => new Date() };
@@ -84,7 +97,22 @@ export function createTimeTrackingRepository(
     ...createSettingsOperations(client),
     ...createCategoryOperations(client, clock),
     ...createEntryOperations(client, clock),
+    ...createNonWorkingDayOperations(client),
   };
+}
+
+function createNonWorkingDayOperations(client: TimeTrackingClient) {
+  return {
+    listNonWorkingDays: (userId, filters = {}) =>
+      listNonWorkingDays(client, userId, filters),
+    saveNonWorkingDays: (userId, inputs) =>
+      saveNonWorkingDays(client, userId, inputs),
+    deleteNonWorkingDay: (userId, dayId) =>
+      deleteOwnedRow(client, "time_non_working_days", userId, dayId),
+  } satisfies Pick<
+    TimeTrackingRepository,
+    "listNonWorkingDays" | "saveNonWorkingDays" | "deleteNonWorkingDay"
+  >;
 }
 
 function createSettingsOperations(client: TimeTrackingClient) {
@@ -317,6 +345,52 @@ async function listEntries(
   return (data ?? []) as TimeEntryRow[];
 }
 
+async function listNonWorkingDays(
+  client: TimeTrackingClient,
+  userId: string,
+  filters: TimeNonWorkingDayListFilters,
+): Promise<TimeNonWorkingDayRow[]> {
+  let request = client
+    .from("time_non_working_days")
+    .select("*")
+    .eq("user_id", userId);
+  if (filters.startDate) {
+    request = request.gte("non_working_date", filters.startDate);
+  }
+  if (filters.endDate) {
+    request = request.lte("non_working_date", filters.endDate);
+  }
+  const { data, error } = await request.order("non_working_date", {
+    ascending: false,
+  });
+  if (error) throw error;
+  return (data ?? []) as TimeNonWorkingDayRow[];
+}
+
+async function saveNonWorkingDays(
+  client: TimeTrackingClient,
+  userId: string,
+  inputs: TimeNonWorkingDayInput[],
+): Promise<TimeNonWorkingDayRow[]> {
+  if (inputs.length === 0) {
+    throw new Error("Informe pelo menos um dia sem apontamento.");
+  }
+  const rows = inputs.flatMap((input) =>
+    buildNonWorkingDayInputs({
+      endDate: input.non_working_date,
+      note: input.note ?? "",
+      reason: input.reason,
+      startDate: input.non_working_date,
+    }).map((normalized) => ({ ...normalized, user_id: userId })),
+  );
+  const { data, error } = await client
+    .from("time_non_working_days")
+    .upsert(rows, { onConflict: "user_id,non_working_date" })
+    .select("*");
+  if (error) throw error;
+  return (data ?? []) as TimeNonWorkingDayRow[];
+}
+
 async function listEntriesPage(
   client: TimeTrackingClient,
   userId: string,
@@ -419,7 +493,7 @@ async function updateOwnedRow<Row>(
 
 async function deleteOwnedRow(
   client: TimeTrackingClient,
-  table: "time_categories" | "time_entries",
+  table: "time_categories" | "time_entries" | "time_non_working_days",
   userId: string,
   recordId: string,
 ): Promise<void> {

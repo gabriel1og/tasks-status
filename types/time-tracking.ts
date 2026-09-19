@@ -9,6 +9,29 @@ export type TimeTrackingSettingsInput = {
   daily_goal_minutes: number;
 };
 
+export type TimeNonWorkingDayReason = "holiday" | "vacation" | "other";
+
+export type TimeNonWorkingDayRow = {
+  id: string;
+  user_id: string;
+  non_working_date: string;
+  reason: TimeNonWorkingDayReason;
+  note: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type TimeNonWorkingDayInput = {
+  non_working_date: string;
+  reason: TimeNonWorkingDayReason;
+  note: string | null;
+};
+
+export type TimeNonWorkingDayListFilters = {
+  endDate?: string;
+  startDate?: string;
+};
+
 export type TimeCategoryRow = {
   id: string;
   user_id: string;

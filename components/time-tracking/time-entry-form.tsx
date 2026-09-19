@@ -62,6 +62,9 @@ export function TimeEntryForm({
             required
             onChange={(date) => onChange({ ...draft, date })}
           />
+          <p className="text-xs text-muted-foreground">
+            Finais de semana e dias marcados sem apontamento não são permitidos.
+          </p>
         </div>
         <div className="space-y-2">
           <Label htmlFor="time-entry-duration">Duração</Label>

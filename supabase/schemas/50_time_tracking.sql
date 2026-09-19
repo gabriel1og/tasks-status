@@ -8,6 +8,20 @@ CREATE TABLE IF NOT EXISTS "public"."time_tracking_settings" (
 
 ALTER TABLE "public"."time_tracking_settings" OWNER TO "postgres";
 
+CREATE TABLE IF NOT EXISTS "public"."time_non_working_days" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "non_working_date" "date" NOT NULL,
+    "reason" "text" NOT NULL,
+    "note" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "time_non_working_days_reason_check" CHECK (("reason" = ANY (ARRAY['holiday'::"text", 'vacation'::"text", 'other'::"text"]))),
+    CONSTRAINT "time_non_working_days_note_check" CHECK (("note" IS NULL) OR ("char_length"("btrim"("note")) BETWEEN 1 AND 120))
+);
+
+ALTER TABLE "public"."time_non_working_days" OWNER TO "postgres";
+
 CREATE TABLE IF NOT EXISTS "public"."time_categories" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" NOT NULL,
@@ -40,6 +54,12 @@ ALTER TABLE "public"."time_entries" OWNER TO "postgres";
 ALTER TABLE ONLY "public"."time_tracking_settings"
     ADD CONSTRAINT "time_tracking_settings_pkey" PRIMARY KEY ("user_id");
 
+ALTER TABLE ONLY "public"."time_non_working_days"
+    ADD CONSTRAINT "time_non_working_days_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."time_non_working_days"
+    ADD CONSTRAINT "time_non_working_days_user_date_key" UNIQUE ("user_id", "non_working_date");
+
 ALTER TABLE ONLY "public"."time_categories"
     ADD CONSTRAINT "time_categories_pkey" PRIMARY KEY ("id");
 
@@ -60,6 +80,9 @@ CREATE INDEX "time_entries_user_date_idx" ON "public"."time_entries" USING "btre
 
 ALTER TABLE ONLY "public"."time_tracking_settings"
     ADD CONSTRAINT "time_tracking_settings_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
+
+ALTER TABLE ONLY "public"."time_non_working_days"
+    ADD CONSTRAINT "time_non_working_days_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
 
 ALTER TABLE ONLY "public"."time_categories"
     ADD CONSTRAINT "time_categories_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE CASCADE;
@@ -103,8 +126,21 @@ CREATE POLICY "Usuarios criam a propria configuracao de horas" ON "public"."time
 DROP POLICY IF EXISTS "Usuarios leem a propria configuracao de horas" ON "public"."time_tracking_settings";
 CREATE POLICY "Usuarios leem a propria configuracao de horas" ON "public"."time_tracking_settings" FOR SELECT USING (("auth"."uid"() = "user_id"));
 
+DROP POLICY IF EXISTS "Usuarios atualizam os proprios dias sem apontamento" ON "public"."time_non_working_days";
+CREATE POLICY "Usuarios atualizam os proprios dias sem apontamento" ON "public"."time_non_working_days" FOR UPDATE USING (("auth"."uid"() = "user_id")) WITH CHECK (("auth"."uid"() = "user_id"));
+
+DROP POLICY IF EXISTS "Usuarios criam os proprios dias sem apontamento" ON "public"."time_non_working_days";
+CREATE POLICY "Usuarios criam os proprios dias sem apontamento" ON "public"."time_non_working_days" FOR INSERT WITH CHECK (("auth"."uid"() = "user_id"));
+
+DROP POLICY IF EXISTS "Usuarios leem os proprios dias sem apontamento" ON "public"."time_non_working_days";
+CREATE POLICY "Usuarios leem os proprios dias sem apontamento" ON "public"."time_non_working_days" FOR SELECT USING (("auth"."uid"() = "user_id"));
+
+DROP POLICY IF EXISTS "Usuarios removem os proprios dias sem apontamento" ON "public"."time_non_working_days";
+CREATE POLICY "Usuarios removem os proprios dias sem apontamento" ON "public"."time_non_working_days" FOR DELETE USING (("auth"."uid"() = "user_id"));
+
 ALTER TABLE "public"."time_categories" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."time_entries" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "public"."time_non_working_days" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."time_tracking_settings" ENABLE ROW LEVEL SECURITY;
 
 GRANT ALL ON TABLE "public"."time_categories" TO "anon";
@@ -114,6 +150,10 @@ GRANT ALL ON TABLE "public"."time_categories" TO "service_role";
 GRANT ALL ON TABLE "public"."time_entries" TO "anon";
 GRANT ALL ON TABLE "public"."time_entries" TO "authenticated";
 GRANT ALL ON TABLE "public"."time_entries" TO "service_role";
+
+GRANT ALL ON TABLE "public"."time_non_working_days" TO "anon";
+GRANT ALL ON TABLE "public"."time_non_working_days" TO "authenticated";
+GRANT ALL ON TABLE "public"."time_non_working_days" TO "service_role";
 
 GRANT ALL ON TABLE "public"."time_tracking_settings" TO "anon";
 GRANT ALL ON TABLE "public"."time_tracking_settings" TO "authenticated";

@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDate } from "@/lib/format";
 import { DEFAULT_DAILY_GOAL_MINUTES } from "@/lib/time-tracking/daily-goal";
 import { formatDuration } from "@/lib/time-tracking/duration";
+import { nonWorkingDayReasonLabels } from "@/lib/time-tracking/non-working-days";
 import { summarizeWeek, type WeeklyDaySummary } from "@/lib/time-tracking/week";
 import { cn } from "@/lib/utils";
 
@@ -20,9 +21,14 @@ export function WeeklyOverview({ userId }: { userId: string }) {
   const weeklyData = useWeeklyTimeTracking(userId);
   const dailyGoalMinutes =
     weeklyData.settings?.daily_goal_minutes ?? DEFAULT_DAILY_GOAL_MINUTES;
-  const days = summarizeWeek(weeklyData.entries, weeklyData.weekRange.startDate);
+  const days = summarizeWeek(
+    weeklyData.entries,
+    weeklyData.weekRange.startDate,
+    weeklyData.nonWorkingDays,
+  );
+  const eligibleDays = days.filter((day) => !day.nonWorkingDay);
   const totalMinutes = days.reduce((total, day) => total + day.totalMinutes, 0);
-  const daysWithEntries = days.filter((day) => day.entryCount > 0).length;
+  const daysWithEntries = eligibleDays.filter((day) => day.entryCount > 0).length;
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
@@ -65,7 +71,7 @@ export function WeeklyOverview({ userId }: { userId: string }) {
         <SummaryCard
           icon={ListChecks}
           label="Dias com lançamento"
-          value={`${daysWithEntries} de 5`}
+          value={`${daysWithEntries} de ${eligibleDays.length}`}
         />
       </div>
 
@@ -147,6 +153,7 @@ function WeeklyDayCard({
         "space-y-3 rounded-md border bg-secondary/20 p-4",
         isToday && "border-primary/60 bg-primary/5",
         isFuture && "opacity-50",
+        day.nonWorkingDay && "border-dashed bg-muted/40",
       )}
     >
       <div className="flex items-start justify-between gap-2">
@@ -166,7 +173,12 @@ function WeeklyDayCard({
           {day.entryCount} {day.entryCount === 1 ? "apontamento" : "apontamentos"}
         </p>
       </div>
-      {isFuture ? (
+      {day.nonWorkingDay ? (
+        <p className="text-xs font-medium text-primary">
+          {nonWorkingDayReasonLabels[day.nonWorkingDay.reason]}
+          {day.nonWorkingDay.note ? ` · ${day.nonWorkingDay.note}` : ""}
+        </p>
+      ) : isFuture ? (
         <p className="text-xs text-muted-foreground">Data futura</p>
       ) : (
         <div className="space-y-1.5">

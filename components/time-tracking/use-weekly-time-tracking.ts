@@ -16,6 +16,7 @@ import {
 import type {
   TimeCategoryRow,
   TimeEntryRow,
+  TimeNonWorkingDayRow,
   TimeTrackingSettingsRow,
 } from "@/types/time-tracking";
 
@@ -27,6 +28,7 @@ export function useWeeklyTimeTracking(userId: string) {
   const [entries, setEntries] = useState<TimeEntryRow[]>([]);
   const [categories, setCategories] = useState<TimeCategoryRow[]>([]);
   const [settings, setSettings] = useState<TimeTrackingSettingsRow | null>(null);
+  const [nonWorkingDays, setNonWorkingDays] = useState<TimeNonWorkingDayRow[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
   const [refreshVersion, setRefreshVersion] = useState(0);
@@ -41,18 +43,23 @@ export function useWeeklyTimeTracking(userId: string) {
       setLoadError("");
       setEntries([]);
       try {
-        const [loadedEntries, loadedCategories, loadedSettings] = await Promise.all([
+        const [loadedEntries, loadedCategories, loadedSettings, loadedExcludedDays] = await Promise.all([
           timeTrackingRepository.listEntries(userId, {
             startDate: weekRange.startDate,
             endDate: weekRange.endDate,
           }),
           loadTimeCategories(userId),
           loadTimeSettings(userId),
+          timeTrackingRepository.listNonWorkingDays(userId, {
+            endDate: weekRange.endDate,
+            startDate: weekRange.startDate,
+          }),
         ]);
         if (!isMounted) return;
         setEntries(loadedEntries);
         setCategories(loadedCategories);
         setSettings(loadedSettings);
+        setNonWorkingDays(loadedExcludedDays);
       } catch (error) {
         if (!isMounted) return;
         setLoadError(
@@ -79,6 +86,7 @@ export function useWeeklyTimeTracking(userId: string) {
     isCurrentWeek,
     isLoading,
     loadError,
+    nonWorkingDays,
     settings,
     today,
     weekRange,

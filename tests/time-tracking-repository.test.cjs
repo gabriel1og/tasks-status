@@ -7,6 +7,7 @@ const {
   assertOwnedRequests,
   createCategory,
   createEntry,
+  createNonWorkingDay,
   createSettings,
   otherOwnerId,
   ownerId,
@@ -23,7 +24,7 @@ function createRepository(client) {
 
 function createEntryInput(overrides = {}) {
   return {
-    entry_date: "2026-09-19",
+    entry_date: "2026-09-18",
     duration_minutes: 60,
     task: "  Implementação  ",
     category_id: "category-1",
@@ -31,7 +32,7 @@ function createEntryInput(overrides = {}) {
   };
 }
 
-test("reads settings, categories and entries only through the owner", async () => {
+test("reads all time tracking records only through the owner", async () => {
   const client = new FakeTimeTrackingClient({
     time_tracking_settings: [createSettings(), createSettings(otherOwnerId)],
     time_categories: [
@@ -41,6 +42,10 @@ test("reads settings, categories and entries only through the owner", async () =
     time_entries: [
       createEntry("entry-1"),
       createEntry("entry-2", otherOwnerId),
+    ],
+    time_non_working_days: [
+      createNonWorkingDay("excluded-1"),
+      createNonWorkingDay("excluded-2", otherOwnerId),
     ],
   });
   const repository = createRepository(client);
@@ -53,6 +58,30 @@ test("reads settings, categories and entries only through the owner", async () =
     (await repository.listEntries(ownerId)).map((row) => row.id),
     ["entry-1"],
   );
+  assert.deepEqual(
+    (await repository.listNonWorkingDays(ownerId)).map((row) => row.id),
+    ["excluded-1"],
+  );
+  assertOwnedRequests(client);
+});
+
+test("saves, filters and removes non-working days with owner isolation", async () => {
+  const client = new FakeTimeTrackingClient();
+  const repository = createRepository(client);
+  const saved = await repository.saveNonWorkingDays(ownerId, [
+    { non_working_date: "2026-09-17", reason: "vacation", note: "Folga" },
+    { non_working_date: "2026-09-18", reason: "vacation", note: "Folga" },
+  ]);
+  assert.equal(saved.length, 2);
+  assert.deepEqual(
+    (await repository.listNonWorkingDays(ownerId, {
+      startDate: "2026-09-18",
+      endDate: "2026-09-18",
+    })).map((day) => day.non_working_date),
+    ["2026-09-18"],
+  );
+  await repository.deleteNonWorkingDay(ownerId, saved[0].id);
+  assert.equal(client.records.time_non_working_days.length, 1);
   assertOwnedRequests(client);
 });
 
