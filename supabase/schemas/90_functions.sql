@@ -48,17 +48,28 @@ $$;
 
 ALTER FUNCTION "public"."touch_task_environment_status_updated_at"() OWNER TO "postgres";
 
-CREATE OR REPLACE FUNCTION "public"."touch_time_tracking_updated_at"() RETURNS "trigger"
+DROP TRIGGER IF EXISTS "time_tracking_settings_touch_updated_at" ON "public"."time_tracking_settings";
+DROP TRIGGER IF EXISTS "time_categories_touch_updated_at" ON "public"."time_categories";
+DROP TRIGGER IF EXISTS "time_entries_touch_updated_at" ON "public"."time_entries";
+DROP FUNCTION IF EXISTS "public"."touch_time_tracking_updated_at"();
+
+CREATE OR REPLACE FUNCTION "public"."set_time_tracking_timestamps"() RETURNS "trigger"
     LANGUAGE "plpgsql"
     SET "search_path" TO ''
     AS $$
 begin
+  if tg_op = 'INSERT' then
+    new.created_at = now();
+  else
+    new.created_at = old.created_at;
+  end if;
+
   new.updated_at = now();
   return new;
 end;
 $$;
 
-ALTER FUNCTION "public"."touch_time_tracking_updated_at"() OWNER TO "postgres";
+ALTER FUNCTION "public"."set_time_tracking_timestamps"() OWNER TO "postgres";
 
 CREATE OR REPLACE FUNCTION "public"."validate_time_entry"() RETURNS "trigger"
     LANGUAGE "plpgsql"
@@ -110,13 +121,13 @@ CREATE OR REPLACE TRIGGER "task_environment_area_statuses_touch_updated_at" BEFO
 
 CREATE OR REPLACE TRIGGER "task_environment_statuses_touch_updated_at" BEFORE UPDATE ON "public"."task_environment_statuses" FOR EACH ROW EXECUTE FUNCTION "public"."touch_task_environment_status_updated_at"();
 
-CREATE OR REPLACE TRIGGER "time_categories_touch_updated_at" BEFORE UPDATE ON "public"."time_categories" FOR EACH ROW EXECUTE FUNCTION "public"."touch_time_tracking_updated_at"();
+CREATE OR REPLACE TRIGGER "time_categories_set_timestamps" BEFORE INSERT OR UPDATE ON "public"."time_categories" FOR EACH ROW EXECUTE FUNCTION "public"."set_time_tracking_timestamps"();
 
-CREATE OR REPLACE TRIGGER "time_entries_touch_updated_at" BEFORE UPDATE ON "public"."time_entries" FOR EACH ROW EXECUTE FUNCTION "public"."touch_time_tracking_updated_at"();
+CREATE OR REPLACE TRIGGER "time_entries_set_timestamps" BEFORE INSERT OR UPDATE ON "public"."time_entries" FOR EACH ROW EXECUTE FUNCTION "public"."set_time_tracking_timestamps"();
 
 CREATE OR REPLACE TRIGGER "time_entries_validate" BEFORE INSERT OR UPDATE ON "public"."time_entries" FOR EACH ROW EXECUTE FUNCTION "public"."validate_time_entry"();
 
-CREATE OR REPLACE TRIGGER "time_tracking_settings_touch_updated_at" BEFORE UPDATE ON "public"."time_tracking_settings" FOR EACH ROW EXECUTE FUNCTION "public"."touch_time_tracking_updated_at"();
+CREATE OR REPLACE TRIGGER "time_tracking_settings_set_timestamps" BEFORE INSERT OR UPDATE ON "public"."time_tracking_settings" FOR EACH ROW EXECUTE FUNCTION "public"."set_time_tracking_timestamps"();
 
 GRANT ALL ON FUNCTION "public"."move_queries_to_root_before_folder_delete"() TO "anon";
 GRANT ALL ON FUNCTION "public"."move_queries_to_root_before_folder_delete"() TO "authenticated";
@@ -134,9 +145,9 @@ GRANT ALL ON FUNCTION "public"."touch_task_environment_status_updated_at"() TO "
 GRANT ALL ON FUNCTION "public"."touch_task_environment_status_updated_at"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."touch_task_environment_status_updated_at"() TO "service_role";
 
-GRANT ALL ON FUNCTION "public"."touch_time_tracking_updated_at"() TO "anon";
-GRANT ALL ON FUNCTION "public"."touch_time_tracking_updated_at"() TO "authenticated";
-GRANT ALL ON FUNCTION "public"."touch_time_tracking_updated_at"() TO "service_role";
+GRANT ALL ON FUNCTION "public"."set_time_tracking_timestamps"() TO "anon";
+GRANT ALL ON FUNCTION "public"."set_time_tracking_timestamps"() TO "authenticated";
+GRANT ALL ON FUNCTION "public"."set_time_tracking_timestamps"() TO "service_role";
 
 GRANT ALL ON FUNCTION "public"."validate_time_entry"() TO "anon";
 GRANT ALL ON FUNCTION "public"."validate_time_entry"() TO "authenticated";

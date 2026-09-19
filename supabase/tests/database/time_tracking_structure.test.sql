@@ -2,7 +2,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(23);
+select plan(24);
 
 select has_table('public', 'time_tracking_settings', 'A tabela de configuracao de horas deve existir');
 select has_table('public', 'time_categories', 'A tabela de categorias de horas deve existir');
@@ -41,8 +41,8 @@ select has_index(
 );
 
 select has_function(
-  'public', 'touch_time_tracking_updated_at', array[]::name[],
-  'A funcao temporal do dominio de horas deve existir'
+  'public', 'set_time_tracking_timestamps', array[]::name[],
+  'A funcao de integridade temporal do dominio de horas deve existir'
 );
 select has_function(
   'public', 'validate_time_entry', array[]::name[],
@@ -50,16 +50,16 @@ select has_function(
 );
 
 select has_trigger(
-  'public', 'time_tracking_settings', 'time_tracking_settings_touch_updated_at',
-  'A configuracao deve renovar updated_at'
+  'public', 'time_tracking_settings', 'time_tracking_settings_set_timestamps',
+  'A configuracao deve proteger created_at e renovar updated_at'
 );
 select has_trigger(
-  'public', 'time_categories', 'time_categories_touch_updated_at',
-  'A categoria deve renovar updated_at'
+  'public', 'time_categories', 'time_categories_set_timestamps',
+  'A categoria deve proteger created_at e renovar updated_at'
 );
 select has_trigger(
-  'public', 'time_entries', 'time_entries_touch_updated_at',
-  'O apontamento deve renovar updated_at'
+  'public', 'time_entries', 'time_entries_set_timestamps',
+  'O apontamento deve proteger created_at e renovar updated_at'
 );
 select has_trigger(
   'public', 'time_entries', 'time_entries_validate',
@@ -112,6 +112,17 @@ select is(
   ),
   0::bigint,
   'O dominio de horas nao deve referenciar tarefas ou sprints'
+);
+
+select is(
+  (
+    select confdeltype
+    from pg_catalog.pg_constraint
+    where conrelid = 'public.time_entries'::regclass
+      and conname = 'time_entries_category_owner_fkey'
+  ),
+  'r'::"char",
+  'A categoria referenciada deve usar exclusao restrita explicita'
 );
 
 select * from finish();
