@@ -20,7 +20,7 @@ const themeScript = `
 
 export const metadata: Metadata = {
   title: "TaskFlow",
-  description: "Painel colaborativo para acompanhar tarefas e sprints.",
+  description: "Hub pessoal para gerenciar tarefas e apontamentos de horas.",
 };
 
 export default function RootLayout({

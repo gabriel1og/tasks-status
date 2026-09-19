@@ -4,15 +4,17 @@ Guia para agentes trabalhando neste projeto. Leia este arquivo antes de editar c
 
 ## Contexto do projeto
 
-Este projeto e uma central interna de uma equipe de desenvolvimento para acompanhar o andamento de tasks. Ele foi criado como uma aplicacao simples em Next.js, React, TypeScript, Tailwind/shadcn-ui e Supabase.
+Este projeto é um hub pessoal para gerenciar tarefas e apontamentos de horas. Ele foi criado como uma aplicacao simples em Next.js, React, TypeScript, Tailwind/shadcn-ui e Supabase.
 
 O fluxo principal fica em:
 
 - `/login`: login e cadastro por e-mail/senha ou Google via Supabase Auth (no momento pausada).
+- `/dashboard`: entrada do hub, com acesso aos dominios de tarefas e apontamento de horas.
 - `/status`: cadastro, listagem, edicao e remocao de tarefas.
 - `/environments`: matriz editavel de disponibilidade, analise entre ambientes e comparacao opcional entre Frontend e Backend.
 - `/queries`: queries salvas por conta, favoritos e pastas; `/queries/new` cria e `/queries/[id]` exibe resultados e edita criterios.
 - `/settings`: cadastro, edicao e remocao das tags usadas nas colunas de Status e Ambiente.
+- `/time-tracking`: entrada do dominio de apontamento de horas; durante a fase estrutural, suas subrotas de apontamentos, categorias e configuracoes sao placeholders autenticados.
 
 As tarefas possuem as colunas principais:
 
@@ -38,10 +40,13 @@ As tarefas possuem as colunas principais:
 
 ## Estrutura importante
 
+- `app/dashboard/page.tsx`: entrada autenticada do hub e acesso aos dois dominios.
 - `app/status/page.tsx`: dashboard de tarefas, formulario de nova tarefa, tabela e edicao inline.
+- `app/time-tracking/*`: rotas estruturais do dominio de apontamento de horas.
 - `app/settings/page.tsx`: gerenciamento das tags de Status e Ambiente.
 - `app/login/page.tsx`: login, cadastro e acesso com Google via Supabase Auth (no momento pausada).
 - `components/app-shell.tsx`: layout autenticado, menu lateral, header e logout.
+- `lib/app-navigation.ts`: fonte unica dos grupos e itens de navegacao do hub.
 - `components/auth-guard.tsx`: protecao client-side baseada na sessao do Supabase.
 - `components/theme-mode-menu.tsx`: menu de tema Claro, Escuro e Sistema.
 - `components/ui/*`: componentes base no estilo shadcn-ui.
