@@ -154,6 +154,39 @@ export function TimeCategoriesPanel({ userId }: { userId: string }) {
     if (succeeded) setPendingDeleteId(null);
   }
 
+  async function requestCategoryDeletion(category: TimeCategoryRow) {
+    setBusyAction(`usage:${category.id}`);
+    setPendingDeleteId(null);
+    setFeedback(null);
+    try {
+      const hasEntries = await timeTrackingRepository.categoryHasEntries(
+        userId,
+        category.id,
+      );
+      if (hasEntries) {
+        setFeedback({
+          type: "error",
+          message: category.archived_at
+            ? "Esta categoria possui apontamentos e deve permanecer arquivada para preservar o histórico."
+            : "Esta categoria possui apontamentos. Arquive-a para preservar o histórico.",
+        });
+        return;
+      }
+      setPendingDeleteId(category.id);
+    } catch (error) {
+      setFeedback({
+        type: "error",
+        message: getCategoryRequestFeedback(
+          "check_time_category_usage",
+          error,
+          "Não foi possível verificar se a categoria pode ser excluída.",
+        ),
+      });
+    } finally {
+      setBusyAction(null);
+    }
+  }
+
   async function runMutation(options: MutationOptions): Promise<boolean> {
     setBusyAction(options.busyAction);
     setFeedback(null);
@@ -285,8 +318,7 @@ export function TimeCategoriesPanel({ userId }: { userId: string }) {
                 onConfirmDelete={(category) => void deleteCategory(category)}
                 onDeleteRequest={(category) => {
                   setEditingCategoryId(null);
-                  setPendingDeleteId(category.id);
-                  setFeedback(null);
+                  void requestCategoryDeletion(category);
                 }}
                 onDraftChange={setEditingDraft}
                 onEdit={startEditing}
@@ -306,7 +338,9 @@ export function TimeCategoriesPanel({ userId }: { userId: string }) {
                 onCancelDelete={() => setPendingDeleteId(null)}
                 onCancelEditing={() => setEditingCategoryId(null)}
                 onConfirmDelete={(category) => void deleteCategory(category)}
-                onDeleteRequest={(category) => setPendingDeleteId(category.id)}
+                onDeleteRequest={(category) =>
+                  void requestCategoryDeletion(category)
+                }
                 onDraftChange={setEditingDraft}
                 onEdit={startEditing}
                 onRestore={(category) => void restoreCategory(category)}
@@ -333,10 +367,12 @@ function getCategoryRequestFeedback(
 ): string {
   const requestError = normalizeRequestError(error);
   const userMessage =
-    requestError.code === "23505"
-      ? "Já existe uma categoria com esse nome."
-      : requestError.code === "23503"
-        ? "Esta categoria possui apontamentos. Arquive-a para preservar o histórico."
-        : fallbackMessage;
+    requestError.code === "TIME_CATEGORY_IN_USE"
+      ? "Esta categoria possui apontamentos. Arquive-a para preservar o histórico."
+      : requestError.code === "23505"
+        ? "Já existe uma categoria com esse nome."
+        : requestError.code === "23503"
+          ? "Esta categoria possui apontamentos. Arquive-a para preservar o histórico."
+          : fallbackMessage;
   return getRequestErrorFeedback(operation, requestError, userMessage);
 }

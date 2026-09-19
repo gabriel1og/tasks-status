@@ -104,6 +104,45 @@ test("runs the complete category lifecycle", async () => {
   assertOwnedRequests(client);
 });
 
+test("checks category usage without crossing the owner boundary", async () => {
+  const client = new FakeTimeTrackingClient({
+    time_entries: [
+      createEntry("entry-1", ownerId, { category_id: "category-used" }),
+      createEntry("entry-2", otherOwnerId, { category_id: "category-private" }),
+    ],
+  });
+  const repository = createRepository(client);
+  assert.equal(
+    await repository.categoryHasEntries(ownerId, "category-used"),
+    true,
+  );
+  assert.equal(
+    await repository.categoryHasEntries(ownerId, "category-unused"),
+    false,
+  );
+  assert.equal(
+    await repository.categoryHasEntries(ownerId, "category-private"),
+    false,
+  );
+  assertOwnedRequests(client);
+});
+
+test("preserves used categories even when deletion bypasses the interface", async () => {
+  const usedCategory = createCategory("category-used");
+  const client = new FakeTimeTrackingClient({
+    time_categories: [usedCategory],
+    time_entries: [
+      createEntry("entry-1", ownerId, { category_id: usedCategory.id }),
+    ],
+  });
+  await assert.rejects(
+    () => createRepository(client).deleteCategory(ownerId, usedCategory.id),
+    { code: "TIME_CATEGORY_IN_USE" },
+  );
+  assert.deepEqual(client.records.time_categories, [usedCategory]);
+  assertOwnedRequests(client);
+});
+
 test("runs the complete entry lifecycle and applies date filters", async () => {
   const client = new FakeTimeTrackingClient({
     time_categories: [createCategory("category-1")],
@@ -195,6 +234,10 @@ test("cannot mutate records owned by another account", async () => {
   );
   await assert.rejects(
     () => repository.deleteEntry(ownerId, foreignEntry.id),
+    { code: "PGRST116" },
+  );
+  await assert.rejects(
+    () => repository.deleteCategory(ownerId, foreignCategory.id),
     { code: "PGRST116" },
   );
   assert.deepEqual(client.records.time_categories, [foreignCategory]);
