@@ -9,5 +9,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # supabase
+supabase/backup
 supabase/.branches
 supabase/.temp

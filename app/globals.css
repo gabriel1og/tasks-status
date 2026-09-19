@@ -76,6 +76,59 @@
 }
 
 @layer utilities {
+  .scrollbar-clean {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-clean::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  .scrollbar-clean::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-clean::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.32);
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    background-clip: padding-box;
+  }
+
+  .scrollbar-clean::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.55);
+  }
+
+  @keyframes edit-focus {
+
+    0%,
+    100% {
+      border-color: hsl(var(--border));
+      background-color: hsl(var(--card));
+      box-shadow: 0 1px 2px hsl(0 0% 0% / 0.2);
+    }
+
+    12%,
+    72% {
+      border-color: hsl(var(--primary));
+      background-color: hsl(var(--primary) / 0.06);
+      box-shadow:
+        0 0 0 4px hsl(var(--primary) / 0.24),
+        0 12px 28px hsl(var(--primary) / 0.12);
+    }
+  }
+
+  .animate-edit-focus {
+    animation: edit-focus 2400ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-edit-focus {
+      animation-duration: 1200ms;
+    }
+  }
+
   /* Mantém o scroll funcional sem competir visualmente com a navegação. */
   .scrollbar-hidden {
     -ms-overflow-style: none;

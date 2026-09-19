@@ -20,8 +20,6 @@ const weekDayLabels = [
   { label: "Quarta-feira", shortLabel: "Qua" },
   { label: "Quinta-feira", shortLabel: "Qui" },
   { label: "Sexta-feira", shortLabel: "Sex" },
-  { label: "Sábado", shortLabel: "Sáb" },
-  { label: "Domingo", shortLabel: "Dom" },
 ] as const;
 
 /** Obtém o dia civil em São Paulo sem converter a escolha do usuário por UTC. */
@@ -54,7 +52,7 @@ export function shiftWeekReference(referenceDate: string, weeks: number): string
   return shiftDays(referenceDate, weeks * 7);
 }
 
-/** Resume os sete dias de uma semana a partir dos apontamentos carregados. */
+/** Resume os cinco dias úteis de uma semana a partir dos apontamentos carregados. */
 export function summarizeWeek(
   entries: TimeEntryRow[],
   weekStartDate: string,

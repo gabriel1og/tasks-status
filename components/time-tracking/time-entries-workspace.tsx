@@ -23,6 +23,7 @@ import {
 import { formatDuration, parseDurationToMinutes } from "@/lib/time-tracking/duration";
 import { timeTrackingRepository } from "@/lib/time-tracking/time-tracking-repository";
 import { buildTimeEntryChanges } from "@/lib/time-tracking/time-tracking-rules";
+import { cn } from "@/lib/utils";
 import type { TimeEntryInput, TimeEntryRow } from "@/types/time-tracking";
 
 type EntryMutationOptions = {
@@ -48,6 +49,7 @@ export function TimeEntriesWorkspace({ userId }: { userId: string }) {
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<TimeTrackingFeedbackValue | null>(null);
   const [historyRefreshVersion, setHistoryRefreshVersion] = useState(0);
+  const [isEditTransitionActive, setIsEditTransitionActive] = useState(false);
 
   useEffect(() => {
     if (draft.categoryId || activeCategories.length === 0) return;
@@ -98,6 +100,7 @@ export function TimeEntriesWorkspace({ userId }: { userId: string }) {
       task: entry.task,
     });
     setFeedback(null);
+    restartEditTransition(setIsEditTransitionActive);
     focusEntryForm();
   }
 
@@ -200,7 +203,14 @@ export function TimeEntriesWorkspace({ userId }: { userId: string }) {
         onPreviousWeek={() => navigateWeek(weeklyData.goToPreviousWeek)}
       />
 
-      <Card>
+      <Card
+        id="time-entry-form-card"
+        className={cn(
+          "scroll-mt-24",
+          isEditTransitionActive && "animate-edit-focus",
+        )}
+        onAnimationEnd={() => setIsEditTransitionActive(false)}
+      >
         <CardHeader className="space-y-2">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-md bg-primary/10 text-primary">
@@ -315,9 +325,18 @@ function buildEntryInput(
 
 function focusEntryForm(): void {
   window.requestAnimationFrame(() => {
-    document.getElementById("time-entry-form")?.scrollIntoView({
+    document.getElementById("time-entry-form-card")?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
+  });
+}
+
+function restartEditTransition(
+  setIsActive: (isActive: boolean) => void,
+): void {
+  setIsActive(false);
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => setIsActive(true));
   });
 }

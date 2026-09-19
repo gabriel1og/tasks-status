@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 
+import { TaskFlowLogo } from "@/components/taskflow-logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -118,14 +118,7 @@ export default function LoginPage() {
     <main className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
       <Card className="w-full max-w-md border-border/80 shadow-2xl shadow-black/10">
         <CardHeader className="space-y-3 pb-6">
-          <Image
-            src="/logo-name.png"
-            alt="TaskFlow"
-            width={2103}
-            height={748}
-            priority
-            className="h-auto w-40"
-          />
+          <TaskFlowLogo priority className="w-28" />
           <div>
             <h1 className="text-2xl font-semibold text-foreground">
               {authMode === "login" ? "Entre na sua conta" : "Crie sua conta"}

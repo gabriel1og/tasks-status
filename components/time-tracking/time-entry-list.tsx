@@ -3,6 +3,7 @@
 import { Copy, LoaderCircle, Pencil, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Tooltip } from "@/components/ui/tooltip";
 import { formatDate } from "@/lib/format";
 import { formatDuration } from "@/lib/time-tracking/duration";
 import type { TimeCategoryRow, TimeEntryRow } from "@/types/time-tracking";
@@ -108,6 +109,7 @@ function TimeEntryListItem({
           ) : null}
           <EntryAction
             label={`Editar apontamento ${entry.task}`}
+            tooltip="Editar apontamento"
             disabled={isBusy}
             onClick={onEdit}
           >
@@ -115,6 +117,7 @@ function TimeEntryListItem({
           </EntryAction>
           <EntryAction
             label={`Duplicar apontamento ${entry.task}`}
+            tooltip="Duplicar apontamento"
             disabled={isBusy}
             onClick={onDuplicate}
           >
@@ -122,6 +125,7 @@ function TimeEntryListItem({
           </EntryAction>
           <EntryAction
             label={`Excluir apontamento ${entry.task}`}
+            tooltip="Excluir apontamento"
             disabled={isBusy}
             onClick={onDeleteRequest}
             destructive
@@ -185,22 +189,25 @@ function EntryAction({
   children,
   destructive = false,
   label,
+  tooltip,
   ...buttonProps
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   destructive?: boolean;
   label: string;
+  tooltip: string;
 }) {
   return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon"
-      className={destructive ? "text-destructive hover:text-destructive" : undefined}
-      aria-label={label}
-      title={label}
-      {...buttonProps}
-    >
-      {children}
-    </Button>
+    <Tooltip content={tooltip}>
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className={destructive ? "text-destructive hover:text-destructive" : undefined}
+        aria-label={label}
+        {...buttonProps}
+      >
+        {children}
+      </Button>
+    </Tooltip>
   );
 }

@@ -65,7 +65,7 @@ export function WeeklyOverview({ userId }: { userId: string }) {
         <SummaryCard
           icon={ListChecks}
           label="Dias com lançamento"
-          value={`${daysWithEntries} de 7`}
+          value={`${daysWithEntries} de 5`}
         />
       </div>
 
@@ -79,7 +79,7 @@ export function WeeklyOverview({ userId }: { userId: string }) {
               Carregando resumo semanal...
             </p>
           ) : (
-            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
               {days.map((day) => (
                 <WeeklyDayCard
                   key={day.date}

@@ -33,14 +33,15 @@ test("uses Sao Paulo civil time", () => {
   );
 });
 
-test("summarizes entries for each day without stored totals", () => {
+test("summarizes weekdays without stored totals or weekend cards", () => {
   const entries = [
     { entry_date: "2026-09-14", duration_minutes: 60 },
     { entry_date: "2026-09-14", duration_minutes: 30 },
     { entry_date: "2026-09-16", duration_minutes: 120 },
+    { entry_date: "2026-09-19", duration_minutes: 45 },
   ];
   const days = summarizeWeek(entries, "2026-09-14");
-  assert.equal(days.length, 7);
+  assert.equal(days.length, 5);
   assert.deepEqual(
     days.map(({ date, entryCount, totalMinutes }) => ({
       date,
@@ -53,8 +54,6 @@ test("summarizes entries for each day without stored totals", () => {
       { date: "2026-09-16", entryCount: 1, totalMinutes: 120 },
       { date: "2026-09-17", entryCount: 0, totalMinutes: 0 },
       { date: "2026-09-18", entryCount: 0, totalMinutes: 0 },
-      { date: "2026-09-19", entryCount: 0, totalMinutes: 0 },
-      { date: "2026-09-20", entryCount: 0, totalMinutes: 0 },
     ],
   );
 });

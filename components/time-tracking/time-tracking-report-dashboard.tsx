@@ -1,6 +1,12 @@
 "use client";
 
-import { CalendarX2, Gauge, Target, Timer, type LucideIcon } from "lucide-react";
+import {
+  CalendarX2,
+  Gauge,
+  Target,
+  Timer,
+  type LucideIcon,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 import { TimeReportFiltersForm } from "@/components/time-tracking/time-report-filters";
@@ -35,7 +41,10 @@ export function TimeTrackingReportDashboard({
   today: string;
   userId: string;
 }) {
-  const defaults = useMemo(() => createDefaultTimeReportFilters(today), [today]);
+  const defaults = useMemo(
+    () => createDefaultTimeReportFilters(today),
+    [today],
+  );
   const [draftFilters, setDraftFilters] = useState(defaults);
   const [appliedFilters, setAppliedFilters] = useState(defaults);
   const [categories, setCategories] = useState<TimeCategoryRow[]>([]);
@@ -92,7 +101,9 @@ export function TimeTrackingReportDashboard({
       setAppliedFilters(normalizeTimeReportFilters(draftFilters, today));
       setErrorMessage(null);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Revise os filtros.");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Revise os filtros.",
+      );
     }
   }
 
@@ -106,11 +117,15 @@ export function TimeTrackingReportDashboard({
     <section className="space-y-6" aria-labelledby="historical-dashboard-title">
       <Card>
         <CardHeader className="space-y-2">
-          <CardTitle id="historical-dashboard-title" className="text-left text-lg">
+          <CardTitle
+            id="historical-dashboard-title"
+            className="text-left text-lg"
+          >
             Dashboard histórico
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Os totais abaixo são calculados diretamente a partir dos apontamentos.
+            Os totais abaixo são calculados diretamente a partir dos
+            apontamentos.
           </p>
         </CardHeader>
         <CardContent>
@@ -128,7 +143,9 @@ export function TimeTrackingReportDashboard({
       </Card>
 
       {errorMessage ? (
-        <TimeTrackingFeedback feedback={{ type: "error", message: errorMessage }} />
+        <TimeTrackingFeedback
+          feedback={{ type: "error", message: errorMessage }}
+        />
       ) : null}
       {isLoading ? (
         <Card>
@@ -150,27 +167,49 @@ function ReportContent({ report }: { report: TimeTrackingReport }) {
   return (
     <>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <ReportSummaryCard icon={Timer} label="Realizado" value={formatDuration(report.actualMinutes)} />
-        <ReportSummaryCard icon={Target} label="Meta do período" value={formatDuration(report.goalMinutes)} />
+        <ReportSummaryCard
+          icon={Timer}
+          label="Realizado"
+          value={formatDuration(report.actualMinutes)}
+        />
+        <ReportSummaryCard
+          icon={Target}
+          label="Meta do período"
+          value={formatDuration(report.goalMinutes)}
+        />
         <ReportSummaryCard
           icon={Gauge}
           label="Saldo"
           value={formatSignedDuration(report.balanceMinutes)}
-          valueClassName={report.balanceMinutes < 0 ? "text-destructive" : "text-primary"}
+          valueClassName={
+            report.balanceMinutes < 0 ? "text-destructive" : "text-primary"
+          }
         />
-        <ReportSummaryCard icon={CalendarX2} label="Dias sem lançamento" value={String(report.missingDays)} />
+        <ReportSummaryCard
+          icon={CalendarX2}
+          label="Dias sem lançamento"
+          value={String(report.missingDays)}
+        />
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-left text-lg">Meta versus realizado</CardTitle>
+          <CardTitle className="text-left text-lg">
+            Meta versus realizado
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           <div className="h-2 overflow-hidden rounded-full bg-muted">
-            <div className="h-full rounded-full bg-primary" style={{ width: `${progress}%` }} />
+            <div
+              className="h-full rounded-full bg-primary"
+              style={{ width: `${progress}%` }}
+            />
           </div>
           <div className="flex flex-wrap justify-between gap-2 text-sm text-muted-foreground">
-            <span>{formatDuration(report.actualMinutes)} de {formatDuration(report.goalMinutes)}</span>
+            <span>
+              {formatDuration(report.actualMinutes)} de{" "}
+              {formatDuration(report.goalMinutes)}
+            </span>
             <span>{report.daysWithEntries} dias com lançamento</span>
           </div>
         </CardContent>
@@ -178,23 +217,39 @@ function ReportContent({ report }: { report: TimeTrackingReport }) {
 
       {report.actualMinutes === 0 ? (
         <div className="rounded-md border border-dashed px-4 py-10 text-center">
-          <p className="text-sm font-medium">Nenhum apontamento no período filtrado.</p>
-          <p className="mt-1 text-sm text-muted-foreground">Ajuste os filtros ou registre um novo lançamento.</p>
+          <p className="text-sm font-medium">
+            Nenhum apontamento no período filtrado.
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Ajuste os filtros ou registre um novo lançamento.
+          </p>
         </div>
       ) : null}
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <ReportBreakdown title="Total por dia" totals={report.dailyTotals} formatLabel={(total) => formatDate(total.key)} />
+        <ReportBreakdown
+          title="Total por dia"
+          totals={report.dailyTotals}
+          formatLabel={(total) => formatDate(total.key)}
+        />
         <ReportBreakdown
           title="Total por semana"
           totals={report.weeklyTotals}
           formatLabel={(total) => {
-            const week = report.weeklyTotals.find((item) => item.key === total.key);
-            return week ? `${formatDate(week.startDate)} a ${formatDate(week.endDate)}` : total.label;
+            const week = report.weeklyTotals.find(
+              (item) => item.key === total.key,
+            );
+            return week
+              ? `${formatDate(week.startDate)} a ${formatDate(week.endDate)}`
+              : total.label;
           }}
         />
         <ReportBreakdown title="Total por tarefa" totals={report.taskTotals} />
-        <ReportBreakdown title="Total por categoria" totals={report.categoryTotals} showColor />
+        <ReportBreakdown
+          title="Total por categoria"
+          totals={report.categoryTotals}
+          showColor
+        />
       </div>
     </>
   );
@@ -218,7 +273,9 @@ function ReportSummaryCard({
           <Icon className="h-5 w-5" />
         </div>
         <div>
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {label}
+          </p>
           <p className={cn("text-xl font-semibold", valueClassName)}>{value}</p>
         </div>
       </CardContent>
@@ -245,9 +302,11 @@ function ReportBreakdown({
       </CardHeader>
       <CardContent>
         {totals.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">Sem dados para este agrupamento.</p>
+          <p className="py-8 text-center text-sm text-muted-foreground">
+            Sem dados para este agrupamento.
+          </p>
         ) : (
-          <div className="max-h-80 space-y-4 overflow-y-auto pr-2">
+          <div className="scrollbar-clean max-h-80 space-y-4 overflow-y-auto pr-2">
             {totals.map((total) => (
               <div key={total.key} className="space-y-1.5">
                 <div className="flex items-center justify-between gap-4 text-sm">
@@ -261,10 +320,17 @@ function ReportBreakdown({
                     ) : null}
                     <span className="truncate">{formatLabel(total)}</span>
                   </span>
-                  <strong className="whitespace-nowrap">{formatDuration(total.totalMinutes)}</strong>
+                  <strong className="whitespace-nowrap">
+                    {formatDuration(total.totalMinutes)}
+                  </strong>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-muted">
-                  <div className="h-full rounded-full bg-primary/80" style={{ width: `${(total.totalMinutes / maximum) * 100}%` }} />
+                  <div
+                    className="h-full rounded-full bg-primary/80"
+                    style={{
+                      width: `${(total.totalMinutes / maximum) * 100}%`,
+                    }}
+                  />
                 </div>
               </div>
             ))}

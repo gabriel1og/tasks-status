@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   Boxes,
   CalendarRange,
@@ -26,6 +26,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Popover } from "@/components/ui/popover";
+import { TaskFlowLogo } from "@/components/taskflow-logo";
 import { ThemeModeMenu } from "@/components/theme-mode-menu";
 import {
   isNavigationItemActive,
@@ -57,18 +58,25 @@ const navigationIcons: Record<NavigationIconName, LucideIcon> = {
 };
 
 const sidebarStorageKey = "gerenciamento-status:sidebar-collapsed";
+let cachedSidebarCollapsed = false;
+let hasReadSidebarPreference = false;
 
 export function AppShell({ children, title }: AppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(
+    cachedSidebarCollapsed,
+  );
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [signOutError, setSignOutError] = useState("");
 
   useEffect(() => {
-    setIsSidebarCollapsed(
-      window.localStorage.getItem(sidebarStorageKey) === "true",
-    );
+    if (hasReadSidebarPreference) return;
+
+    cachedSidebarCollapsed =
+      window.localStorage.getItem(sidebarStorageKey) === "true";
+    hasReadSidebarPreference = true;
+    setIsSidebarCollapsed(cachedSidebarCollapsed);
   }, []);
 
   async function signOut() {
@@ -99,6 +107,7 @@ export function AppShell({ children, title }: AppShellProps) {
     setIsSidebarCollapsed((currentValue) => {
       const nextValue = !currentValue;
 
+      cachedSidebarCollapsed = nextValue;
       window.localStorage.setItem(sidebarStorageKey, String(nextValue));
       return nextValue;
     });
@@ -334,23 +343,23 @@ function SidebarHeader({
         isCollapsed ? "flex-col items-center" : "items-center justify-between",
       )}
     >
-      <div className={cn("overflow-hidden", isCollapsed ? "w-10" : "w-44")}>
-        <Image
-          src={isCollapsed ? "/logo.png" : "/logo-name.png"}
-          alt="TaskFlow"
-          width={isCollapsed ? 1280 : 2103}
-          height={isCollapsed ? 1280 : 748}
-          priority
-          className={cn("h-auto", isCollapsed ? "w-10" : "w-32")}
-        />
+      <div
+        className={cn(
+          "flex overflow-hidden",
+          isCollapsed ? "w-12 justify-center" : "w-12 justify-start",
+        )}
+      >
+        <TaskFlowLogo priority className={isCollapsed ? "w-12" : "w-12"} />
       </div>
       <Button
+        className="group relative"
         variant="ghost"
         size="icon"
         onClick={onToggle}
         aria-label={isCollapsed ? "Expandir menu" : "Reduzir menu"}
       >
         <ToggleIcon className="h-4 w-4" />
+        {isCollapsed ? <SidebarTooltip label="Expandir menu" /> : null}
       </Button>
     </div>
   );
@@ -369,23 +378,57 @@ function SidebarNavItem({
   isCollapsed: boolean;
   label: string;
 }) {
+  const linkRef = useRef<HTMLAnchorElement>(null);
+  const [tooltipPosition, setTooltipPosition] = useState<{
+    left: number;
+    top: number;
+  } | null>(null);
+
+  function showTooltip() {
+    if (!isCollapsed || !linkRef.current) return;
+
+    const bounds = linkRef.current.getBoundingClientRect();
+    setTooltipPosition({
+      left: bounds.right + 12,
+      top: bounds.top + bounds.height / 2,
+    });
+  }
+
   return (
-    <Link
-      href={href}
-      aria-current={isActive ? "page" : undefined}
-      title={isCollapsed ? label : undefined}
-      className={cn(
-        "group relative flex h-10 items-center rounded-md text-sm font-medium",
-        isCollapsed ? "justify-center px-0" : "gap-3 px-3",
-        isActive
-          ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground",
-      )}
-      aria-label={label}
-    >
-      <Icon className="h-4 w-4 shrink-0" />
-      {isCollapsed ? null : <span>{label}</span>}
-    </Link>
+    <>
+      <Link
+        ref={linkRef}
+        href={href}
+        aria-current={isActive ? "page" : undefined}
+        className={cn(
+          "group relative flex h-10 items-center rounded-md text-sm font-medium",
+          isCollapsed ? "justify-center px-0" : "gap-3 px-3",
+          isActive
+            ? "bg-primary text-primary-foreground"
+            : "text-muted-foreground hover:bg-muted hover:text-foreground",
+        )}
+        aria-label={label}
+        onBlur={() => setTooltipPosition(null)}
+        onFocus={showTooltip}
+        onMouseEnter={showTooltip}
+        onMouseLeave={() => setTooltipPosition(null)}
+      >
+        <Icon className="h-4 w-4 shrink-0" />
+        {isCollapsed ? null : <span>{label}</span>}
+      </Link>
+      {tooltipPosition
+        ? createPortal(
+            <span
+              className="pointer-events-none fixed z-50 -translate-y-1/2 whitespace-nowrap rounded-md border bg-popover/95 px-2.5 py-1.5 text-xs font-medium text-popover-foreground shadow-md backdrop-blur-sm"
+              style={tooltipPosition}
+              role="tooltip"
+            >
+              {label}
+            </span>,
+            document.body,
+          )
+        : null}
+    </>
   );
 }
 
