@@ -21,7 +21,7 @@ import { timeTrackingRepository } from "@/lib/time-tracking/time-tracking-reposi
 import { cn } from "@/lib/utils";
 import type { TimeCategoryRow, TimeEntryPage } from "@/types/time-tracking";
 
-const HISTORY_PAGE_SIZE = 10;
+const HISTORY_PAGE_SIZE = 5;
 const emptyPage: TimeEntryPage = {
   entries: [],
   page: 1,
@@ -42,7 +42,10 @@ export function TimeEntryHistory({
   today: string;
   userId: string;
 }) {
-  const defaults = useMemo(() => createDefaultTimeReportFilters(today), [today]);
+  const defaults = useMemo(
+    () => createDefaultTimeReportFilters(today),
+    [today],
+  );
   const [draftFilters, setDraftFilters] = useState(defaults);
   const [appliedFilters, setAppliedFilters] = useState(defaults);
   const [currentPage, setCurrentPage] = useState(1);
@@ -97,7 +100,9 @@ export function TimeEntryHistory({
       setCurrentPage(1);
       setErrorMessage(null);
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Revise os filtros.");
+      setErrorMessage(
+        error instanceof Error ? error.message : "Revise os filtros.",
+      );
     }
   }
 
@@ -135,7 +140,9 @@ export function TimeEntryHistory({
           onSubmit={applyFilters}
         />
         {errorMessage ? (
-          <TimeTrackingFeedback feedback={{ type: "error", message: errorMessage }} />
+          <TimeTrackingFeedback
+            feedback={{ type: "error", message: errorMessage }}
+          />
         ) : (
           <HistoryResults
             categories={categories}
@@ -172,11 +179,15 @@ function HistoryResults({
     return (
       <div className="rounded-md border border-dashed px-4 py-10 text-center">
         <p className="text-sm font-medium">Nenhum apontamento encontrado.</p>
-        <p className="mt-1 text-sm text-muted-foreground">Ajuste os filtros ou registre um novo lançamento.</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Ajuste os filtros ou registre um novo lançamento.
+        </p>
       </div>
     );
   }
-  const categoriesById = new Map(categories.map((category) => [category.id, category]));
+  const categoriesById = new Map(
+    categories.map((category) => [category.id, category]),
+  );
   return (
     <div
       className={cn(
@@ -195,21 +206,30 @@ function HistoryResults({
         {historyPage.entries.map((entry) => {
           const category = categoriesById.get(entry.category_id);
           return (
-            <article key={entry.id} className="flex flex-wrap items-center justify-between gap-4 p-4">
+            <article
+              key={entry.id}
+              className="flex flex-wrap items-center justify-between gap-4 p-4"
+            >
               <div className="min-w-0 space-y-1">
                 <p className="break-words text-sm font-medium">{entry.task}</p>
                 <p className="text-xs text-muted-foreground">
-                  {formatDate(entry.entry_date)} · {category?.name ?? "Categoria removida"}
+                  {formatDate(entry.entry_date)} ·{" "}
+                  {category?.name ?? "Categoria removida"}
                   {category?.archived_at ? " (arquivada)" : ""}
                 </p>
               </div>
-              <strong className="whitespace-nowrap text-sm">{formatDuration(entry.duration_minutes)}</strong>
+              <strong className="whitespace-nowrap text-sm">
+                {formatDuration(entry.duration_minutes)}
+              </strong>
             </article>
           );
         })}
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
-        <span>{historyPage.totalCount} {historyPage.totalCount === 1 ? "resultado" : "resultados"}</span>
+        <span>
+          {historyPage.totalCount}{" "}
+          {historyPage.totalCount === 1 ? "resultado" : "resultados"}
+        </span>
         <div className="flex items-center gap-2">
           <Button
             type="button"
@@ -221,7 +241,9 @@ function HistoryResults({
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <span>Página {historyPage.page} de {historyPage.totalPages}</span>
+          <span>
+            Página {historyPage.page} de {historyPage.totalPages}
+          </span>
           <Button
             type="button"
             size="icon"

@@ -232,6 +232,12 @@ function ReportContent({ report }: { report: TimeTrackingReport }) {
       ) : null}
 
       <div className="grid gap-6 xl:grid-cols-2">
+        <ReportBreakdown title="Total por tarefa" totals={report.taskTotals} />
+        <ReportBreakdown
+          title="Total por categoria"
+          totals={report.categoryTotals}
+          showColor
+        />
         <ReportBreakdown
           title="Total por dia"
           totals={report.dailyTotals}
@@ -248,12 +254,6 @@ function ReportContent({ report }: { report: TimeTrackingReport }) {
               ? `${formatDate(week.startDate)} a ${formatDate(week.endDate)}`
               : total.label;
           }}
-        />
-        <ReportBreakdown title="Total por tarefa" totals={report.taskTotals} />
-        <ReportBreakdown
-          title="Total por categoria"
-          totals={report.categoryTotals}
-          showColor
         />
       </div>
     </>
