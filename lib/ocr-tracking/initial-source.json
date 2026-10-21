@@ -1,0 +1,3605 @@
+{
+  "version": "modular-2026-10-21-v1",
+  "documents": [
+    {
+      "original": {
+        "ID layout": "ceb3cb4d-3ded-4442-9cea-4abb40176586",
+        "Nome do arquivo": "78112959282 -LinkedIn Ireland Unlimited.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "",
+        "Campos Obrigatorios": "",
+        "Status": "",
+        "Fatura Internacional": ""
+      },
+      "anchor": null,
+      "supplier": "LINKEDIN IRELAND UNLIMITED",
+      "fields": [],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "f7222bdb-6091-41e7-9166-f277e68aacff",
+        "Nome do arquivo": "BOL 3696101 - Empresa Brasileira de Correios e Telégrafo.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "BOLETO - Verificar Linha Digitável e NÃO tem Descrição (Texto Breve)",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "correios",
+      "supplier": "EMPRESA BRASILEIRA DE CORREIOS E TELÉGRAFO",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "\\d{2}\\/\\d{2}\\/\\d{4}\\s+(\\d+)\\s+DM\\s+N",
+          "expected": "3696101"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "(\\d{2}\\/\\d{2}\\/\\d{4})\\s+\\d+\\s+DM\\s+N",
+          "expected": "30/09/2025"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "MODULAR\\s+DATA\\s+CENTERS\\s+CPF\\/CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "17\\s+R\\$\\s+0\\.00\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "169,72"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "17\\s+R\\$\\s+0\\.00\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "169,72"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Data\\s+vencimento\\s+original:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "21/10/2025"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Empresa\\s+Brasileira\\s+de\\s+Correios\\s+e\\s+Telégra\\s+CPF\\/CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "34.028.316/0001-03"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Não",
+          "regex": "",
+          "expected": ""
+        },
+        {
+          "key": "extra_40b346b5ec83",
+          "label": "Linha digitável",
+          "required": false,
+          "availability": "Sim; regex pendente",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": true
+    },
+    {
+      "original": {
+        "ID layout": "5b683aa6-4590-414a-944f-106d6a685a1f",
+        "Nome do arquivo": "E1 - FAT 4429 3BW.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "",
+        "Campos Obrigatorios": "",
+        "Status": "?",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "3bw",
+      "supplier": "3BW EQUIPAMENTOS ELETRICOS LTDA.",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "FATURA\\s*N[º°o.]?\\s*VALOR\\s*R\\$\\s*VENCIMENTO\\s+PAGAMENTO\\s+VIA\\s+(\\d+)",
+          "expected": "4429"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Data\\s+de\\s+emissão\\s*:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "15/06/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DESTINAT[ÁA]RIO[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Valor\\s+Total\\s+da\\s+Nota\\s*(?:R\\$\\s*)+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "12.816,00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Locação\\s+de\\s+equipamentos\\s+conforme\\s+contrato\\s+nr\\.\\s*\\S+\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "12.816,00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Unitário\\.\\s*\\d+\\s+([\\s\\S]*?\\S)\\s+(?=(?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "Locação de equipamentos conforme contrato nr. 26000234v2"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "VENCIMENTO\\s+PAGAMENTO\\s+VIA\\s+\\d+\\s+[\\d.,]+\\s+(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "15/07/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "C\\.N\\.P\\.J\\.?\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})\\s+Inscr\\.\\s*Municipal",
+          "expected": "07.944.609/0001-68"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?[Pp][Ee][Dd](?:[Ii][Dd][Oo])?\\.?(?:\\s+(?:[Dd][Ee]\\s+)?[Cc][Oo][Mm][Pp][Rr][Aa])?\\s*[:\\-]?\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?[Pp][Ee][Dd](?:[Ii][Dd][Oo])?\\.?(?:\\s+(?:[Dd][Ee]\\s+)?[Cc][Oo][Mm][Pp][Rr][Aa])?\\s*[:\\-]?\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "20161"
+        },
+        {
+          "key": "extra_b48ac88f45a2",
+          "label": "Tributos aproximados federais",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Trib\\s+aprox\\s+R\\$:\\s*([\\d.]+,\\d{2})\\s+Federal",
+          "expected": "1.723,75"
+        },
+        {
+          "key": "extra_3d72b6d013cd",
+          "label": "Tributos aproximados municipais",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Federal,\\s*([\\d.]+,\\d{2})\\s+Municipal",
+          "expected": "443,43"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "24d4fbe6-d58d-4527-86c7-f5534d0f00e2",
+        "Nome do arquivo": "E1 - INVOICE 145047 PRIETO.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Ver SUB-CATEGORIA (não identificada) ",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "SIM"
+      },
+      "anchor": "prieto",
+      "supplier": "PRIETO",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Ref:\\s*(\\d+?)\\d{5}\\s*-\\s*\\d{3}\\s*Brasil",
+          "expected": "145047"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Invoice\\s+date:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "23/06/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total\\s+Due\\s*\\$\\s*(\\d+(?:\\.\\d{3})*[.,]\\d{2})",
+          "expected": "1.600,00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total\\s+Price\\s*\\$\\s*(\\d+(?:\\.\\d{3})*[.,]\\d{2})",
+          "expected": "1.600.00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Invoice\\s+Item\\s+Description\\s*\\d+x\\s*([\\s\\S]*?\\S)\\s+We\\s+would",
+          "expected": "Prestación de servicios legales de tramitación de PET ante SERMIG. Grupo 22"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Invoice\\s+due\\s+date:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "23/07/2026"
+        },
+        {
+          "key": "extra_4885a17383f9",
+          "label": "VAT",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Total\\s+VAT\\s*\\$\\s*(\\d+(?:[.,]\\d{2})?)",
+          "expected": "0.00"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "4f2802e0-e6c2-4f9a-be29-535664712378",
+        "Nome do arquivo": "E1 - INVOICE 2026052 THE BRIDGE SOCIAL SPA.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Código de parceiro emissor: 1000112; CNPJ do Destinatário: 08061365000138 - MATRIZ ---- OLHAR QUESTAO DO PEDIDO DE COMPRA",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "SIM"
+      },
+      "anchor": "bridge",
+      "supplier": "THE BRIDGE SOCIAL SPA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Invoice\\s+No\\.\\s*[A-Z]+(\\d+)",
+          "expected": "2026052"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Date:\\s*([A-Za-z]+\\s+\\d{1,2}\\s*(?:st|nd|rd|th)?\\s*,\\s*\\d{4})",
+          "expected": "June 05 th, 2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Tax\\s+ID:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total\\s+USD\\s*((?:\\d{1,3}(?:,\\d{3})+|\\d+)\\.\\d{2})",
+          "expected": "6,351.00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total\\s+USD\\s*((?:\\d{1,3}(?:,\\d{3})+|\\d+)\\.\\d{2})",
+          "expected": "6,351.00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Description\\s+of\\s+Services\\/Deliverables:\\s*(?:⮚\\s*)?([\\s\\S]*?\\S)\\s*Total\\s+USD",
+          "expected": "Ingeniero en Prevención de Riesgos April"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Invoice\\s+Due\\s+([A-Za-z]+\\s+\\d{1,2}\\s*(?:st|nd|rd|th)?\\s*,\\s*\\d{4})",
+          "expected": "July 05 th, 2026"
+        },
+        {
+          "key": "extra_61dd76fe18de",
+          "label": "RUT do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Tax\\s+ID:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}-\\s*\\d)",
+          "expected": "76.712.052- 4"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?(?:[Pp][Cc]|[Pp][Ee][Dd](?:[Ii][Dd][Oo])?\\.?(?:\\s+(?:[Dd][Ee]\\s+)?[Cc][Oo][Mm][Pp][Rr][Aa])?)\\s*[:\\-]?\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?(?:[Pp][Cc]|[Pp][Ee][Dd](?:[Ii][Dd][Oo])?\\.?(?:\\s+(?:[Dd][Ee]\\s+)?[Cc][Oo][Mm][Pp][Rr][Aa])?)\\s*[:\\-]?\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "20070"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "33ac238a-3d0d-44be-a315-bfe7f067a917",
+        "Nome do arquivo": "E1- FATURA 9590 ALTBIT.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Ver PEDIDO DE COMPRA",
+        "Campos Obrigatorios": "",
+        "Status": "?",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "altbit",
+      "supplier": "ALTBIT NET INFORMÁTICA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Fatura\\s+Valor\\s+Vencimento\\s*(\\d+)",
+          "expected": "9590"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Data\\s+Emissão[\\s\\S]*?(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "09/06/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Destinatário\\s*\\/\\s*Remetente[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total:\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "1.920,00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Codigo\\s+Descrição\\s+Valor\\s*\\d+\\s+[\\s\\S]*?\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "1.920,00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Codigo\\s+Descrição\\s+Valor\\s*\\d+\\s+([\\s\\S]*?\\S)\\s+(?=(?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "LOCAÇÃO DE EQUIPAMENTOS"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Fatura\\s+Valor\\s+Vencimento\\s*\\d+\\s+[\\d.,]+\\s+(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "28/06/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "03.042.402/0001-47"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?Pedido\\s+de\\s+Compra:\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?Pedido\\s+de\\s+Compra:\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "18698"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "452e4896-1e9e-419d-ac80-574e04632c79",
+        "Nome do arquivo": "E1- FATURA 17641 R10.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "DATA DE EMISSÃO: comunicar que o boleto veio sem o dia na data de emissão e portanto o sistema não é capaz de formatar datas da maneira que vem, por isso ele pega a data atual (dia de hoje)",
+        "Campos Obrigatorios": "",
+        "Status": "?",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "r10",
+      "supplier": "R10 LASER COM.",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "FATURA\\s*N[º°o.]?\\s*(\\d+)",
+          "expected": "17641"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Parcial: mês/ano",
+          "regex": "FATURA\\s*N[º°o.]?\\s*\\d+\\s*((?:janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)\\s*,?\\s*\\d{4})",
+          "expected": "abril, 2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DESTINAT[ÁA]RIO[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Vencimento\\s*Valor\\s+\\d+\\s+\\d{2}\\/\\d{2}\\/\\d{2,4}\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "30.586,77"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "LOCA[ÇC][ÃA]O\\s+DE\\s+\\d+\\s+EQUIPAMENTOS\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "29.370,00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "MODELO\\s*\\/\\s*SERIAL\\s*\\/\\s*SETOR\\s+VALOR\\s*([\\s\\S]*?\\S)\\s+(?=(?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "LOCAÇÃO DE 35 EQUIPAMENTOS"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Vencimento\\s*Valor\\s+\\d+\\s+(\\d{2}\\/\\d{2}\\/\\d{2,4})",
+          "expected": "18/05/26"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ\\s*:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.300.660/0001-08"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "62e74789-6e20-4d04-b119-37043a201091",
+        "Nome do arquivo": "E1- FATURA 52026 - BTG Cobranca_202605MODULAR_DATA_CENTERS_INDUSTRIA_COMERCIO_E_SERVICOS_SA.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Ver SUB-CATEGORIA (não identificada) e NÚMERO DO DOCUMENTO (não tem - pegar primeiros 8 digitos do cnpj e data de emissão concatenados) e DATA DE EMISSÃO (veio por extenso)",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "btg",
+      "supplier": "BTG PACTUAL",
+      "fields": [
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "São\\s+Paulo,\\s*(\\d{1,2}\\s+de\\s+[A-Za-zÀ-ÿ]+\\s+de\\s+\\d{4})",
+          "expected": "21 de Maio de 2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Contrato\\s+de\\s+Locação[\\s\\S]*?CNPJ\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Ref\\.:\\s*Carta\\s+de\\s+Cobrança\\s*-\\s*\\d{2}\\/\\d{4}\\s*-\\s*R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "568.361,65"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "aluguel\\s+no\\s+valor\\s+de\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "568.361,65"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "(Contrato\\s+de\\s+Locação\\s+de\\s+[\\s\\S]*?\\S),\\s*CNPJ",
+          "expected": "Contrato de Locação de MODULAR DATA CENTERS INDUSTRIA COMERCIO E SERVICOS SA"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Informamos\\s+que\\s+em\\s+(\\d{2}\\/\\d{2}\\/\\d{4})\\s+vencerá",
+          "expected": "05/06/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Favorecido:[\\s\\S]*?CNPJ\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "11.839.593/0001-09"
+        },
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Não",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "3465244d-9cba-45cf-b432-1366b04820aa",
+        "Nome do arquivo": "E1- INVOICE 306443 - AQUILES.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Ver SUB-CATEGORIA (não identificada), NÃO tem CFP/CNPJ do Destinatário, tem impostos",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "SIM"
+      },
+      "anchor": "aquiles",
+      "supplier": "AGENCIA DE ADUANA AQUILES PEREZ GONZALEZ",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Ref\\.\\s*:\\s*WEB-(\\d+)",
+          "expected": "3939"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "SANTIAGO;\\s*\\S+\\s+(\\d{1,2}\\s+[A-Za-z]+\\s+\\d{4})",
+          "expected": "12 marzo 2026"
+        },
+        {
+          "key": "extra_25d8c588f31b",
+          "label": "RUT do destinatário",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Atención\\s+a:[\\s\\S]*?(\\d{1,2}\\.\\d{3}\\.\\d{3}-[\\dKk])\\s*Presente",
+          "expected": "18.048.297-0"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total\\s+Prov\\.Fdos\\s*(\\d+(?:\\.\\d{3})*)",
+          "expected": "1.408.194"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "HONORARIOS\\s+AGENCIA\\s*(\\d+(?:\\.\\d{3})*)",
+          "expected": "159.990"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "(HONORARIOS\\s+AGENCIA)",
+          "expected": "HONORARIOS AGENCIA"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Fecha\\s+Vencimiento\\s+G\\.C\\.P\\.:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "27/03/2026"
+        },
+        {
+          "key": "extra_33f666d3e2dd",
+          "label": "RUT do agente",
+          "required": false,
+          "availability": "Sim",
+          "regex": "RUT\\s*(\\d{1,2}\\.\\d{3}\\.\\d{3}-[\\dKk])",
+          "expected": "8.353.241-6"
+        },
+        {
+          "key": "extra_324eeef08e0c",
+          "label": "IVA aduaneiro",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Iva\\s+Aduanero\\s*(\\d+(?:\\.\\d{3})*)",
+          "expected": "1.016.198"
+        },
+        {
+          "key": "extra_ae9eb97041ab",
+          "label": "IVA serviços",
+          "required": false,
+          "availability": "Sim",
+          "regex": "IVA\\s+SERVICIOS\\s*(\\d+(?:\\.\\d{3})*)",
+          "expected": "62.051"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Não",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "dc62fe70-5974-4ae5-8d30-a5dca8d859c4",
+        "Nome do arquivo": "E1- MR Invoice - 147268 - MIT SLOAN.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Ver SUB-CATEGORIA (não identificada) e NÃO tem CFP/CNPJ do Destinatário",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "SIM"
+      },
+      "anchor": "mit",
+      "supplier": "MIT SLOAN EXECUTIVE EDUCATION",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Invoice\\s*#\\s*[A-Z]+-\\d{4}-(\\d+)",
+          "expected": "147268"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Invoice\\s+date\\s*(\\d{2}\\s+[A-Za-z]+\\s+\\d{4})",
+          "expected": "09 Apr 2026"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total\\s+Due\\s*\\$\\s*((?:\\d{1,3}(?:,\\d{3})+|\\d+)\\.\\d{2})",
+          "expected": "24,500.00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "\\d{2}\\s+[A-Za-z]+\\s+\\d{4}\\s*-\\s*\\d{2}\\s+[A-Za-z]+\\s+\\d{4}\\s*\\$\\s*((?:\\d{1,3}(?:,\\d{3})+|\\d+)\\.\\d{2})",
+          "expected": "24,500.00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total\\s+Tuition\\s+([\\s\\S]*?\\S)\\s*Marco\\s+Rosa\\s+\\d{2}\\s+[A-Za-z]+\\s+\\d{4}",
+          "expected": "Applied AI Executive Academy"
+        },
+        {
+          "key": "extra_65eb12596d94",
+          "label": "Número fiscal informado em W-9",
+          "required": false,
+          "availability": "Sim",
+          "regex": "W-9\\s+number:\\s*(\\d{9})",
+          "expected": "042103594"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Não",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "8786d968-e8fd-4bf1-81a3-3dd605f7b8ba",
+        "Nome do arquivo": "E1FAT-662-Tempmaster Refrigeração Industrial Ltda..pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "",
+        "Campos Obrigatorios": "",
+        "Status": "?",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "tempmaster",
+      "supplier": "TEMPMASTER REFRIGERAÇÃO INDUSTRIAL",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "FATURA\\s+DE\\s+LOCAÇÃO\\s+DE\\s+BENS\\s+MÓVEIS\\s*N[º°o.]?\\s*(\\d+)",
+          "expected": "662"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DATA\\s+DA\\s+EMISSÃO[\\s\\S]*?(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "14/07/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "NOME\\s*\\/\\s*RAZÃO\\s+SOCIAL[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "VALOR\\s+TOTAL\\s+DA\\s+FATURA:\\s*R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "3.014,00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DESCRIÇÃO\\s+DO\\s+PRODUTO\\s+QUANT\\s+UNIT\\.\\s+TOTAL[\\s\\S]*?R\\$\\s*[\\d.,]+\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "3.014,00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DESCRIÇÃO\\s+DO\\s+PRODUTO\\s+QUANT\\s+UNIT\\.\\s+TOTAL\\s*([\\s\\S]*?\\S)\\s+\\d+\\s+R\\$",
+          "expected": "LIFT MODELO 2412"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ\\s*\\/\\s*CPF[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "00.140.190/0001-42"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?(?:[Pp][Cc]|[Pp][Ee][Dd](?:[Ii][Dd][Oo])?\\.?(?:\\s+(?:[Dd][Ee]\\s+)?[Cc][Oo][Mm][Pp][Rr][Aa])?)\\s*[:\\-]?\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?(?:[Pp][Cc]|[Pp][Ee][Dd](?:[Ii][Dd][Oo])?\\.?(?:\\s+(?:[Dd][Ee]\\s+)?[Cc][Oo][Mm][Pp][Rr][Aa])?)\\s*[:\\-]?\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "20132"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "cacfb896-7030-4421-a04c-307130c95793",
+        "Nome do arquivo": "E1-FAT-005423-LOCSAN CONTEINERES_ND.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "BOLETO - Verificar Linha Digitável",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "locsan",
+      "supplier": "LOCSAN CONTEINERES LTDA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Nº\\s+ND-(\\d+)",
+          "expected": "005423"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DATA\\s+DE\\s+EMISSÃO[\\s\\S]*?Fatura\\s+de\\s+Locação\\s+de\\s+bens\\s+móveis\\s+(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "20/07/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "TOMADOR\\s*-\\s*RAZÃO\\s+SOCIAL[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "VALOR\\s+TOTAL\\s+Vencimento\\s+\\d{2}\\/\\d{2}\\/\\d{4}\\s+R\\$\\s*[\\d.,]+\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "6.280,78"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "VALOR\\s+TOTAL\\s+Vencimento\\s+\\d{2}\\/\\d{2}\\/\\d{4}\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "6.280,78"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Quantidade\\s+Unidade\\s+Discriminação\\s+Valor\\s+Unitário\\s+Valor\\s+Total\\s*([\\s\\S]*?\\S)\\s*Observações",
+          "expected": "Bloco de 416 caracteres; ver recorte e observações"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Vencimento\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "19/08/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ\\s*\\(MF\\):\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "05.547.568/0001-40"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?Pedido\\s+de\\s+Compra\\s*->\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?Pedido\\s+de\\s+Compra\\s*->\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "16840"
+        },
+        {
+          "key": "extra_40b346b5ec83",
+          "label": "Linha digitável",
+          "required": false,
+          "availability": "Sim; regex pendente",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": true
+    },
+    {
+      "original": {
+        "ID layout": "e4fc8d56-77a5-4166-b8e0-ba353aadf5f1",
+        "Nome do arquivo": "E1-FAT-48593-AGL CARGO.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Ver SUB-CATEGORIA (não identificada)",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "agl",
+      "supplier": "AGL CARGO",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "FATURA\\s+(\\d+)\\/\\d{2}",
+          "expected": "048593"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DATA\\s*:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "15/05/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "PARA:[\\s\\S]*?CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total:\\s*R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "8.751,91"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total:\\s*R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "8.751,91"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "REFERENTE\\s+AO\\s+(EMBARQUE\\s+INTERNACIONAL)",
+          "expected": "EMBARQUE INTERNACIONAL"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "válidos\\s+para\\s+pagamento\\s+em\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "14/06/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Dados\\s+Cadastrais:[\\s\\S]*?CNPJ\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "09.412.398/0001-48"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "cbb11733-cf97-4bfb-b1ff-2811df4003da",
+        "Nome do arquivo": "E1-RECIBO 062026 - AN57 DE PAGAMENTO DE TAXA ASSOCIATIVA.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Verificar categoria por ser um recibo de BOLETO; NÃO tem NÚMERO DO DOCUMENTO",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "an57",
+      "supplier": "ASSOCIAÇÃO DOS GESTORES DO EMPREENDIMENTO AN57",
+      "fields": [
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "São\\s+Roque,\\s*(\\d{1,2}\\s+de\\s+[A-Za-zÀ-ÿ]+\\s+de\\s+\\d{4})",
+          "expected": "21 de maio de 2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "recebido\\s+de[\\s\\S]*?sob\\s+CNPJ\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "importância\\s+de\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "15.531,64"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "importância\\s+de\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "15.531,64"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "referente\\s+a\\s+([\\s\\S]*?\\S),\\s*sito",
+          "expected": "taxa Associativa Ref.: 04/2026 do Galpão 01"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "vencimento\\s+se\\s+dará\\s+em\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "03/06/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Pelo\\s+presente[\\s\\S]*?sob\\s+CNPJ\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "54.638.407/0001-78"
+        },
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Não",
+          "regex": "",
+          "expected": ""
+        },
+        {
+          "key": "extra_40b346b5ec83",
+          "label": "Linha digitável",
+          "required": false,
+          "availability": "Não: boleto não fornecido",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "5280034a-103e-4560-86ca-8a1adc8ad329",
+        "Nome do arquivo": "E3- Fatura 201.26 - MEDICAR.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Não existe opção de E3 em Categoria NF por Layout",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "medicar",
+      "supplier": "MEDICAR EMERGÊNCIAS MÉDICAS",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Filial:[\\s\\S]*?\\s+(\\d+)\\/\\d{2}",
+          "expected": "000000201"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Emissão:[\\s\\S]*?(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "17/06/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Nome\\/Razão\\s+Social:[\\s\\S]*?CNPJ:\\s*(\\d{14})",
+          "expected": "08061365000308"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "VL\\.TOTAL\\s*R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "7.496,00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "VALOR\\s+TOTAL[\\s\\S]*?R\\$\\s*[\\d.,]+\\s*R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "7.496,00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DESCRIÇÃO\\s+DOS\\s+SERVIÇOS\\s+QUANTIDADE\\s+VALOR\\s+UNITÁRIO\\s+VALOR\\s+TOTAL\\s*([\\s\\S]*?\\S)\\s+\\d+\\s+R\\$",
+          "expected": "LOCACAO DE VEICULO - PRIVADO"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "VENCIMENTO\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "31/07/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ\\s*:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "03.563.718/0001-84"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?(?:[Oo][Cc]|[Pp][Cc]|[Pp][Ee][Dd](?:[Ii][Dd][Oo])?\\.?(?:\\s+(?:[Dd][Ee]\\s+)?[Cc][Oo][Mm][Pp][Rr][Aa])?)\\s*[:\\-]?\\s*(45\\d{8}|\\d{3}(?![\\s\\S]*?(?:[Oo][Cc]|[Pp][Cc]|[Pp][Ee][Dd](?:[Ii][Dd][Oo])?\\.?(?:\\s+(?:[Dd][Ee]\\s+)?[Cc][Oo][Mm][Pp][Rr][Aa])?)\\s*[:\\-]?\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "806"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "90dee2d8-6e46-41ad-a2a8-756bfb694ccf",
+        "Nome do arquivo": "E3 -FATURA 12670 - EUTOX.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "eutox",
+      "supplier": "EUTOX FERRAMENTAS",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "I\\.E\\s*:\\s*[\\d.]+\\s+(\\d+)\\s+Natureza",
+          "expected": "000012670"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Data\\s+de\\s+emissão:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "19/05/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "C\\.N\\.P\\.J\\.:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0003-08"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "VALOR\\s+TOTAL\\s+DESTE\\s+DOCUMENTO:\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "1.920,00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Discriminação\\s+dos\\s+Serviços\\s+Valor\\s+Unit\\.\\s+Total[\\s\\S]*?\\d[\\d.]*,\\d{2}\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "1.920,00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Discriminação\\s+dos\\s+Serviços\\s+Valor\\s+Unit\\.\\s+Total\\s*\\d+\\s+\\S+\\s+([\\s\\S]*?\\S)\\s+\\d[\\d.]*,\\d{2}",
+          "expected": "LOCACAO DE CILINDRO ALTA PRESSAO"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Cond\\.\\s*Pgto:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "18/06/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "05.430.642/0001-44"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?NUMERO\\s+PEDIDO\\s+COMPRA:\\s*(45\\d{8}|17\\.741(?![\\s\\S]*?NUMERO\\s+PEDIDO\\s+COMPRA:\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "17.741"
+        },
+        {
+          "key": "extra_52824a75e358",
+          "label": "Tributos aproximados",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Valor\\s+aproximado\\s+dos\\s+tributos\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "217,34"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "c3556883-77ef-4c13-8439-1a6a50b14972",
+        "Nome do arquivo": "E3-RECIBO-305-W&S SAURA LTDA.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "\"&\" não é aceito no título do layout",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "saura",
+      "supplier": "W&S SAURA LTDA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "N[º°]\\s*(\\d+)\\/LOC",
+          "expected": "305"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DATA\\s+DA\\s+EMISSÃO[\\s\\S]*?(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "10/08/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DESTINATÁRIO[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0003-08"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Valor\\s+dos\\s+Serviços\\s*(?:R\\$\\s*)+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "3.750,00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "VALOR\\s+TOTAL[\\s\\S]*?R\\$\\s*[\\d.,]+\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "3.750,00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DESCRIÇÃO\\s+DOS\\s+SERVIÇOS\\s+PRESTADOS\\s+UNID\\s+QUANTIDADE\\s+VALOR\\s+UNITARIO\\s+VALOR\\s+TOTAL\\s*\\d+\\s*-\\s*([\\s\\S]*?\\S)\\s+UN\\s+\\d",
+          "expected": "Locaçao de equipamento sem operador"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Documentos\\s*-\\s*Valor\\s+R\\$\\s+Vencimento\\s*\\S+\\s+[\\d.,]+\\s+(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "07/09/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "C\\.N\\.P\\.J\\.\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "01.238.801/0001-52"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?[Pp]edido\\s+de\\s+[Cc]ompras?\\s*[:\\-]?\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?[Pp]edido\\s+de\\s+[Cc]ompras?\\s*[:\\-]?\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "20125"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "08c6dc81-98b7-452f-a6cd-f1722b982625",
+        "Nome do arquivo": "E4-FAT-4765-FRONTAL SERVICE COM.E SERV. DE EMPILHADEIRAS LTDA - ME.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "frontal",
+      "supplier": "FRONTAL SERVICE COM.",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "FA(\\d+)-\\d+\\/\\d+",
+          "expected": "4765"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Emissão:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "22/07/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "TOMADOR\\s+DA\\s+LOCAÇÃO[\\s\\S]*?CNPJ\\/CPF[\\s\\S]*?(\\d{14})",
+          "expected": "08061365000480"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "VALOR\\s+TOTAL\\s+FATURA\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "8.629,57"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "V\\.TOTAL[\\s\\S]*?\\d[\\d.]*,\\d{2}\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "8.629,57"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "V\\.TOTAL\\s+\\d+\\s+\\S+\\s+([\\s\\S]*?\\S)\\s+\\d+\\.\\d{2}\\s+\\d[\\d.]*,\\d{2}",
+          "expected": "EMPILHADEIRA ELETRICA FMX 20 G115 8825 TR - SERIE 341834F05455"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "FA\\d+-\\d+\\/\\d+\\s*-\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "18/08/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ:\\s*(\\d{14})",
+          "expected": "11820260000120"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?ORDEM\\s+DE\\s+COMPRA\\s*[:\\-]?\\s*(45\\d{8}|36(?![\\s\\S]*?ORDEM\\s+DE\\s+COMPRA\\s*[:\\-]?\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "36"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "a6b7f635-9e2b-4835-9e5b-0d1dcc2014a5",
+        "Nome do arquivo": "E4-REC-508807-ALUGASOLDA ALUGUEL DE SOLDA LTDA.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "alugasolda",
+      "supplier": "ALUGA SOLDA LTDA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "RECIBO\\s+DE\\s+LOCAÇÃO\\s*(\\d+)",
+          "expected": "508807"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "EMISSÃO\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "30/06/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "CNPJ\\s*\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2}\\s+CNPJ\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0004-80"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Valor\\s+Total\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "475,80"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Sub\\s+Total\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "475,80"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Unitário\\s+Total\\s*([\\s\\S]*?\\S)\\s+Sub\\s+Total",
+          "expected": "Bloco de 475 caracteres; ver recorte e observações"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Vencimento\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "15/07/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "61.284.618/0001-15"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?Pedido\\/Obra\\s*[:\\-]?\\s*(45\\d{8}|\\d{8}(?![\\s\\S]*?Pedido\\/Obra\\s*[:\\-]?\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "00015620"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "d3f7901f-3091-47fa-ad29-c3ec478bd6ae",
+        "Nome do arquivo": "E5-FAT-7202601-3MN ADMINISTRAÇÔES E PARTICIPAÇÕES LTDA.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "3nm",
+      "supplier": "3NM NUNES GROUP",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "FATURA\\s+Nº\\s+EMISSÃO:\\s*\\d{2}\\/\\d{2}\\/\\d{4}\\s+(\\d+)",
+          "expected": "07202601"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "EMISSÃO:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "16/07/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "RAZÃO\\s+SOCIAL:[\\s\\S]*?CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0002-19"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Desconto\\s+R\\$\\s*-\\s*CC\\s+[\\d-]+\\s+Total\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "174.653,55"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Sub\\s+Total\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "174.653,55"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Número\\s+Descrição\\s+Valor\\s+\\S+\\s+([\\s\\S]*?\\S)\\s+R\\$",
+          "expected": "Locação comercial Galpão 1 - Centro Logístico Km57 Estrada Turística Morro do Saboó nº 10400 - Mombaça - São Roque - SP Julho/2026 - G1"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "VENCTO:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "01/08/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ\\s+(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "39.669.606/0001-50"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "6d1a6c31-424d-4da7-90a3-fc8f491af40b",
+        "Nome do arquivo": "E5-INV-65-SERVICIOS ENERGETICOS CSENERGY SPA.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Não tem número de documento nem código de parceiro emissor; verificar se sub-categoria é Energia Elétrica mesmo",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "SIM"
+      },
+      "anchor": "csenergy",
+      "supplier": "SERVICIOS ENERGETICOS CSENERGY SPA",
+      "fields": [
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "SANTIAGO,\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "24/04/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "R\\.U\\.T\\.:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0002-19"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "TOTAL:\\s*((?:\\d{1,3}(?:,\\d{3})+|\\d+)\\.\\d{2})",
+          "expected": "103,593.70"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "VALOR\\s+UNIT\\.\\s+DESC\\.\\s+TOTAL[\\s\\S]*?\\d[\\d,]*\\.\\d{2}\\s+((?:\\d{1,3}(?:,\\d{3})+|\\d+)\\.\\d{2})",
+          "expected": "103,593.70"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DESCRIPCION:\\s*([\\s\\S]*?\\S)\\s+VCTO\\.",
+          "expected": "EXECUCAO POR ADMINISTRACAO"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "VCTO\\.:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "24/05/2026"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?Orden\\s+de\\s+Compra\\s*[:\\-]?\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?Orden\\s+de\\s+Compra\\s*[:\\-]?\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "18521"
+        },
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Não",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "5d8a3c70-f300-493f-9acf-5adcd6dff1d2",
+        "Nome do arquivo": "FAT 32840 - LMA LOCAÇÕES.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "lma",
+      "supplier": "LMA LOCAÇÕES DE EQUIPAMENTOS S.A.",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Nº\\s+ND-(\\d+)",
+          "expected": "032840"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DATA\\s+DE\\s+EMISSÃO[\\s\\S]*?FATURA\\s+DE\\s+LOCAÇÃO\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "02/04/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "TOMADOR\\s*-\\s*RAZÃO\\s+SOCIAL[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0003-08"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "VALOR\\s+TOTAL\\s*Vencimento\\s+\\d{2}\\/\\d{2}\\/\\d{4}\\s+R\\$\\s*[\\d.,]+\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "39.563,52"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total\\s+Locação:\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "39.563,52"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "QTDE\\s+Equipamento\\s+Período\\s+Tempo\\s+Subs\\.\\s+VL\\s+Base\\s+Valor\\s+Total\\s*([\\s\\S]*?\\S)\\s+Total\\s+Locação:",
+          "expected": "Bloco de 605 caracteres; ver recorte e observações"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Vencimento\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "22/04/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ\\s*\\(MF\\):\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "22.261.840/0001-40"
+        },
+        {
+          "key": "extra_40b346b5ec83",
+          "label": "Linha digitável",
+          "required": false,
+          "availability": "Sim; regex pendente",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": true
+    },
+    {
+      "original": {
+        "ID layout": "a7ef55d9-a4c6-46c2-af80-83c0a61df2de",
+        "Nome do arquivo": "FAT 34698 - NEWBE BENEFÍCIOS LTDA.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Ver SUB-CATEGORIA (não identificada)",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "newbe",
+      "supplier": "NEWBE BENEFICIOS LTDA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Dados\\s+da\\s+Prestação\\s+de\\s+Serviços:\\s*N[°º]\\s*(\\d+)",
+          "expected": "34698"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Emitido\\s+em:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "19/12/2025"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "ADQUIRENTE\\s*\\/\\s*CONTRATANTE[\\s\\S]*?CNPJ\\/CPF:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "TOTAL\\s+NOTA\\s+DÉBITO:\\s*R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "15.243,94"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "SERVIÇOS\\s+NEWBE\\s*\\(NFSe\\):\\s*R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "824,56"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Atividade\\s+Newbe:\\s*([\\s\\S]*?\\S)\\s+PEDIDO\\(S\\)",
+          "expected": "Emissão de vales-alimentação, vales-transporte e similares. Atividades de intermediação e agenciamento de serviços e negócios em geral, exceto imobiliários"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "INTERMEDIADOR\\s*\\/\\s*CONTRATADO[\\s\\S]*?CNPJ\\/CPF:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "23.039.089/0001-03"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?PEDIDO\\(S\\)\\s+N[°º]\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?PEDIDO\\(S\\)\\s+N[°º]\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "34698"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "0c18c5f4-b90a-42f5-9eac-ba9f1616d554",
+        "Nome do arquivo": "FAT 79278 - UBER.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Regex do número pequeno, não tem numero de documento, ver sub-categoria, verificar valor total que não está claro, tem impostos",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "uber",
+      "supplier": "UBER",
+      "fields": [
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Emitido\\s+em\\s*#\\s*(\\d{1,2}\\s+de\\s+[A-Za-zÀ-ÿ]+\\.?\\s+de\\s+\\d{4})",
+          "expected": "2 de abr. de 2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Identificação\\s+fiscal:\\s*(\\d{14})",
+          "expected": "08061365000138"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total\\s+do\\s+faturamento\\s+do\\s+mês\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "29.654,56"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Cobranças\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "30.457,29"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Este\\s+relatório\\s+é\\s+um\\s+resumo\\s+das\\s+([\\s\\S]*?\\S)\\.\\s+Pagamentos",
+          "expected": "cobranças do período, incluindo periódicas e de viagens individuais"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Data\\s+Do\\s+Pagamento\\s*(\\d{1,2}\\s+de\\s+[A-Za-zÀ-ÿ]+\\.?\\s+de\\s+\\d{4})",
+          "expected": "1 de mai. de 2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CPF\\/CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "17.895.646/0001-87"
+        },
+        {
+          "key": "extra_34cbc50ac733",
+          "label": "Impostos",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Impostos\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "19,94"
+        },
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim, alfanumérico; captura numérica indefinida",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "5af30c40-85b2-491c-97c4-ff7b5c228713",
+        "Nome do arquivo": "FAT 113603 - ORLEANS VIAGENS.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "BOLETO - Verificar Linha Digitável",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "orleans",
+      "supplier": "ORLEANS VIAGENS E TURISMO LTDA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "FT(\\d+)\\s+\\d[\\d.]*,\\d{2}\\s+\\d{2}\\/\\d{2}\\/\\d{4}",
+          "expected": "00113603"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "FT\\d+\\s+\\d[\\d.]*,\\d{2}\\s+(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "08/12/2025"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Pagador:[\\s\\S]*?CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "FT\\d+\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "47.506,89"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "FT\\d+\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "47.506,89"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DUPLICATA\\s+DE\\s+(SERVIÇOS\\s+TURÍSTICOS)",
+          "expected": "SERVIÇOS TURÍSTICOS"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "FT\\d+\\s+\\d[\\d.]*,\\d{2}\\s+\\d{2}\\/\\d{2}\\/\\d{4}\\s+(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "07/01/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "21.331.404/0001-38"
+        },
+        {
+          "key": "extra_40b346b5ec83",
+          "label": "Linha digitável",
+          "required": false,
+          "availability": "Sim; regex pendente",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": true
+    },
+    {
+      "original": {
+        "ID layout": "012bf09a-8aae-40a6-90f1-ee50e6ac0c71",
+        "Nome do arquivo": "FAT 370346 - AIR LIQUIDE BRASIL LTDA.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "BOLETO - Verificar Linha Digitável",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "airliquide",
+      "supplier": "AIR LIQUIDE BRASIL LTDA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Nota\\s+Fiscal:\\s*(\\d+)",
+          "expected": "0370346"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Data\\s+Emissão\\s*[\\d.]+\\s+\\d+\\s+\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2}\\s+(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "06/04/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Locatário[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0003-08"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Valor\\s+do\\s+Documento\\s+180\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "2.345,01"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Dados\\s+Adicionais\\s*(\\d[\\d.]*,\\d{2})",
+          "expected": "2345,01"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Dados\\s+dos\\s+Produtos\\s+Qtde\\.\\s+Referência\\s+Descrição\\s+Vl\\.\\s+Unitário\\s+Vl\\.\\s+Total\\s*([\\s\\S]*?\\S)\\s*Dados\\s+Adicionais",
+          "expected": "Bloco de 525 caracteres; ver recorte e observações"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Nosso\\s+Número\\s+Vencimento\\s*\\(=\\)\\s*Valor\\s+do\\s+Documento\\s*[\\d/]+\\s+\\d+\\s+(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "04/05/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Identificação\\s+do\\s+emitente[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "00.331.788/0023-24"
+        },
+        {
+          "key": "extra_40b346b5ec83",
+          "label": "Linha digitável",
+          "required": false,
+          "availability": "Sim; regex pendente",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": true
+    },
+    {
+      "original": {
+        "ID layout": "f2e4b40e-fb1b-44b0-a587-608673482f65",
+        "Nome do arquivo": "FAT 7773831 - Movida Participações S.A..pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "BOLETO - Verificar Linha Digitável e ver se Número do Pedido está correto",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "movida",
+      "supplier": "MOVIDA PARTICIPAÇÕES S.A.",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Fatura:\\s*(\\d+)",
+          "expected": "07773831"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Data\\s+de\\s+Emissão:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "04/01/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "CNPJ\\(MF\\)\\/CPF:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}[-.]\\d{2})",
+          "expected": "08.061.365/0003.08"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Valor\\s+Total\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "130,16"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Valor\\s+Total\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "130,16"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DESCRIÇÃO\\s+Valor\\s+R\\$\\s*[\\d.,]+\\s*([\\s\\S]*?\\S)\\s+Valor\\s+Total",
+          "expected": "COMPLEMENTO MULTA E/OU INFR.TRÂNSITO"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Data\\s+de\\s+Vencimento:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "25/01/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Cnpj:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "21.314.559/0001-66"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?Pedido:\\s*(45\\d{8}|\\d{8}\\/\\d{2}\\/\\d{3}(?![\\s\\S]*?Pedido:\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "28108203/00/101"
+        },
+        {
+          "key": "extra_40b346b5ec83",
+          "label": "Linha digitável",
+          "required": false,
+          "availability": "Sim; regex pendente",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": true
+    },
+    {
+      "original": {
+        "ID layout": "f9554628-7392-426d-9a1d-ba1535c0abef",
+        "Nome do arquivo": "FATURA 50 - SULAMERICA.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Ver SUB-CATEGORIA (não identificada) e tem imposto IOF",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "sulamerica",
+      "supplier": "SULAMÉRICA SEGUROS DE PESSOAS E PREVIDÊNCIA SA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "FATURA\\s+(\\d+)",
+          "expected": "50"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Data\\s+de\\s+Emissão\\s*:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "10/06/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "CNPJ\\s*:\\s*0?(\\d{14})(?!\\d)",
+          "expected": "08061365000138"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "TOTAL\\s+0,00\\s+0,00\\s+[\\d.,]+\\s+[\\d.,]+\\s+\\d+\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "20.831,40"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "TOTAL\\s+0,00\\s+0,00\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "20.752,54"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "PERCENTUAL\\s+POR\\s+COBERTURA\\s+([\\s\\S]*?\\S)\\s+0001",
+          "expected": "MORTE IFPD CESTA FUNF CESTA IPA"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Vencimento\\s*:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "30/06/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ\\s+(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "01.704.513/0001-46"
+        },
+        {
+          "key": "extra_8cb24597cb86",
+          "label": "IOF",
+          "required": false,
+          "availability": "Sim",
+          "regex": "TOTAL\\s+0,00\\s+0,00\\s+[\\d.,]+\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "78,86"
+        },
+        {
+          "key": "extra_17d62a446cd3",
+          "label": "Imposto retido",
+          "required": false,
+          "availability": "Sim",
+          "regex": "TOTAL\\s+0,00\\s+0,00\\s+[\\d.,]+\\s+[\\d.,]+\\s+\\d+\\s+[\\d.,]+\\s+[\\d.,]+\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "0,00"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "9c5acbdf-e455-4e0e-b3ca-1e0b8aaef2de",
+        "Nome do arquivo": "Fatura 1561 -ATTO.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "atto",
+      "supplier": "ATTO SERVIÇOS E LOCAÇÕES DO VALE",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Nº:\\s*(\\d+)",
+          "expected": "001561"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Emissão\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "29/06/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "CNPJ\\s*\\/\\s*CPF:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Valor\\s+Total\\s+da\\s+Fatura:\\s*R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "2.200,00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DADOS\\s+DA\\s+LOCAÇÃO[\\s\\S]*?R\\$\\s*[\\d.,]+\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "2.200,00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "OBSERVAÇÃO:\\s*([\\s\\S]*?\\S)\\s+DADOS\\s+DA\\s+LOCAÇÃO",
+          "expected": "Locação de equipamentos conforme contrato de Locação 2024-0081 e NF de remessa de locaçao 448. Periodo de medição 29/05 - 28/06/2026. Medidor Digital de Relação de Espirras AEMC DTR 8510 N/S:130256LJDV"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "VENCIMENTO\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "23/07/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "32.212.667/0001-44"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?[Oo][Cc]\\s*[:\\-]?\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?[Oo][Cc]\\s*[:\\-]?\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "20128"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "13b40651-098d-4f46-81c9-72f269733524",
+        "Nome do arquivo": "FATURA 17025 -RLC.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "rlc",
+      "supplier": "RLC LOCACOES DE MAQUINAS E EQUIPAMENTOS LTDA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Fatura\\s+N[º°]\\.?\\s*(\\d+)",
+          "expected": "17025"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Data\\s+da\\s+emissão[\\s\\S]*?(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "25/05/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Destinatário\\s*\\/\\s*Remetente[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Vl\\.NF\\s+[\\d.,]+\\s+[\\d.,]+\\s+[\\d.,]+\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "5.540,00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Vl\\.Total[\\s\\S]*?\\s+UN\\s+[\\d.,]+\\s+[\\d.,]+\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "5.540,00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Vl\\.Total\\s+\\d+\\s+([\\s\\S]*?\\S)\\s+\\d+\\s+UN",
+          "expected": "COBRANÇA - COBRANÇA DE PEÇAS"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "\\d+-\\d+\\/\\d+\\s+[\\d.,]+\\s+(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "09/06/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "44.121.162/0001-53"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?PEDIDO\\s+DE\\s+COMPRAS\\s*[:\\-]?\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?PEDIDO\\s+DE\\s+COMPRAS\\s*[:\\-]?\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "19603"
+        },
+        {
+          "key": "extra_52824a75e358",
+          "label": "Tributos aproximados",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Valor\\s+aproximado\\s+dos\\s+tributos[\\s\\S]*?R\\$\\s*:\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "0,00"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "6cfed330-9678-4468-8f03-d7aa2402d571",
+        "Nome do arquivo": "FATURA 26485 - ALBONET.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "albonett",
+      "supplier": "ALBONETT LOCAÇÕES TRANSPORTES E SERVIÇOS LTDA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "FATURA\\s+N[º°]\\s*(\\d+)",
+          "expected": "26485"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Data\\s+emissão:\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "03/03/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "CONTRATANTE\\s+Nome:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0002-19"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "VALOR\\s+TOTAL\\s*R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "3.600,00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "SUB\\s+TOTAL[\\s\\S]*?R\\$\\s*[\\d.,]+\\s+R\\$\\s*[\\d.,]+\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "3.600,00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "SUB\\s+TOTAL\\s*([\\s\\S]*?\\S)\\s+\\d+,\\d{2}\\s+UN",
+          "expected": "LOCACAO DE GERADOR 100 KVA"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "DADOS\\s+DE\\s+PAGAMENTO\\s+VENCIMENTO\\s+VALOR\\s+MEIO\\s+PAGTO\\s+OBS\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "17/04/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CONTRATADA\\s+CNPJ\\.:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "03.993.189/0001-59"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?PEDIDO\\s+DE\\s+COMPRA\\s*[:\\-]?\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?PEDIDO\\s+DE\\s+COMPRA\\s*[:\\-]?\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "13522"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "91be0dcb-93c5-4051-93f6-ab484ed2ce32",
+        "Nome do arquivo": "FATURA 2400997 - EXAL  20260807_12.13.38.MODULAR DTC 0314160.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Ver SUB-CATEGORIA (não identificada)",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "exal",
+      "supplier": "EXAL ADMINISTRAÇÃO DE RESTAURANTES EMPRESARIAS LTDA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "NDB:\\s*(\\d+)",
+          "expected": "2400997"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Data\\s+de\\s+Vencimento\\s+Data\\s+de\\s+Emissão\\s+\\d{2}\\/\\d{2}\\/\\d{4}\\s+(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "07/08/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "EMPRESA\\s+MODULAR[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0003-08"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "TOTAL:\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "27.130,85"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "DESCRIÇÃO\\s*\\/HISTÓRICO\\s+VALOR\\s*-\\s*R\\$[\\s\\S]*?((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})\\s+TOTAL:",
+          "expected": "27.130,85"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "MODULAR\\s+DTC\\s+([\\s\\S]*?\\S)\\s+\\d[\\d.]*,\\d{2}\\s+TOTAL:",
+          "expected": "REEMB. INVESTIMENTOS EM EQUIPAMENTOS - PC: 36 - PO 15773"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Data\\s+de\\s+Vencimento\\s+Data\\s+de\\s+Emissão\\s+(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "17/08/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^\\s*EXAL[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "75.584.110/0082-02"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?ORDEM\\s+DE\\s+COMPRA:\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?ORDEM\\s+DE\\s+COMPRA:\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "15773"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "0e80e478-726c-4143-a1b3-a143be0360ea",
+        "Nome do arquivo": "FATURA 2634120985 - SEM PARAR.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Ver SUB-CATEGORIA (não identificada) e IMPOSTOS (ISS e PIS/COFINS)",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "semparar",
+      "supplier": "SEM PARAR INSTITUIÇÃO DE PAGAMENTO LTDA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Nº\\s+DA\\s+FATURA:\\s*(\\d+)",
+          "expected": "2634120985"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Data\\s+de\\s+Emissão:\\s*(\\d{2}\\/\\d{2}\\/\\d{2,4})",
+          "expected": "03/02/26"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Nome:\\s*Modular[\\s\\S]*?CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0003-08"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total\\s+da\\s+Nota\\s+Fiscal\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "290,84"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "TOTAL\\s+PLANO\\s+CONTRATADO\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "40,80"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Descritivo:\\s*\\S+\\s*-\\s*Plano:\\s*([\\s\\S]*?\\S)\\s+Detalhamento",
+          "expected": "EMPRESARIAL PROMOCIONAL SPE"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Data\\s+de\\s+Vencimento:\\s*(\\d{2}\\/\\d{2}\\/\\d{2,4})",
+          "expected": "10/02/26"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ\\/MF:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "04.088.208/0001-65"
+        },
+        {
+          "key": "extra_ace427999234",
+          "label": "Impostos retidos",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Impostos\\s+Retidos\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "0,00"
+        },
+        {
+          "key": "extra_9bbb4fa4fd8e",
+          "label": "Tributos aproximados pedágio (percentual)",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Valor\\s+aproximado\\s+dos\\s+tributos[\\s\\S]*?é\\s+de\\s+(\\d+,\\d{2}%)",
+          "expected": "18,45%"
+        },
+        {
+          "key": "extra_01326edf8b7b",
+          "label": "ISS sistema de pagamento (alíquota)",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Sistema\\s+de\\s+pagamento\\s+Sem\\s+Parar[\\s\\S]*?ISS:\\s*(\\d+,\\d{2}%)",
+          "expected": "2,00%"
+        },
+        {
+          "key": "extra_f183b258d99b",
+          "label": "PIS/COFINS sistema de pagamento (alíquota)",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Sistema\\s+de\\s+pagamento\\s+Sem\\s+Parar[\\s\\S]*?PIS\\/COFINS:\\s*(\\d+,\\d{2}%)",
+          "expected": "3,65%"
+        },
+        {
+          "key": "extra_d5b6f2320efa",
+          "label": "ISS aplicativo/site (alíquota)",
+          "required": false,
+          "availability": "Sim",
+          "regex": "APP\\/Site\\s+Sem\\s+Parar[\\s\\S]*?ISS:\\s*(\\d+,\\d{2}%)",
+          "expected": "2,90%"
+        },
+        {
+          "key": "extra_97e049347167",
+          "label": "PIS/COFINS audiobooks (alíquota)",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Skeelo\\s+Audiobooks\\s+PIS\\/COFINS:\\s*(\\d+,\\d{2}%)",
+          "expected": "0,00%"
+        },
+        {
+          "key": "extra_40b346b5ec83",
+          "label": "Linha digitável",
+          "required": false,
+          "availability": "Sim; regex pendente",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": true
+    },
+    {
+      "original": {
+        "ID layout": "f5ee6fd5-c5e8-40e2-870b-80eca3809e6a",
+        "Nome do arquivo": "INVOICE  2488 RET MATERIAL - COMERCIALIZADORA JAURICIO SPA.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Ver Categoria e Sub-Categoria (não entendi qual dos 2 é o documento), NÃO tem CPF/CNPJ do destinatário, tem impostos e não tem código do parceiro emissor",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "SIM"
+      },
+      "anchor": "jauricio",
+      "supplier": "COMERCIALIZADORA JAURICIO SPA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "N[º°]\\s*(\\d+)",
+          "expected": "2488"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Fecha\\s+Emision:\\s*(\\d{1,2}\\s+de\\s+[A-Za-zÀ-ÿ]+\\s+del\\s+\\d{4})",
+          "expected": "04 de Julio del 2026"
+        },
+        {
+          "key": "extra_d784f270f378",
+          "label": "RUT genérico do destinatário",
+          "required": false,
+          "availability": "Sim",
+          "regex": "SEÑOR\\(ES\\):[\\s\\S]*?R\\.U\\.T\\.:\\s*(\\d{1,2}\\.\\d{3}\\.\\d{3}-\\s*[\\dKk])",
+          "expected": "55.555.555- 5"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "TOTAL\\s*\\$\\s*(\\d+(?:\\.\\d{3})*)",
+          "expected": "684.250"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "MONTO\\s+NETO\\s*\\$\\s*(\\d+(?:\\.\\d{3})*)",
+          "expected": "575.000"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "(SERVICIO\\s+DE\\s+TRASLADO)",
+          "expected": "SERVICIO DE TRASLADO"
+        },
+        {
+          "key": "extra_a90f072dc1a6",
+          "label": "RUT emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "R\\.U\\.T\\.:\\s*(\\d{1,2}\\.\\d{3}\\.\\d{3}-\\s*[\\dKk])",
+          "expected": "76.938.992- K"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?Orden\\s+Compra\\s+N[º°]\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?Orden\\s+Compra\\s+N[º°]\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "20420"
+        },
+        {
+          "key": "extra_ba6da46c5e1c",
+          "label": "IVA",
+          "required": false,
+          "availability": "Sim",
+          "regex": "I\\.V\\.A\\.\\s*\\d+(?:,\\d+)?%\\s*\\$\\s*(\\d+(?:\\.\\d{3})*)",
+          "expected": "109.250"
+        },
+        {
+          "key": "extra_eac56b8d6517",
+          "label": "Alíquota IVA",
+          "required": false,
+          "availability": "Sim",
+          "regex": "I\\.V\\.A\\.\\s*(\\d+(?:,\\d+)?%)",
+          "expected": "19%"
+        },
+        {
+          "key": "extra_d385f26b6ae8",
+          "label": "Imposto adicional",
+          "required": false,
+          "availability": "Sim",
+          "regex": "IMPUESTO\\s+ADICIONAL\\s*\\$\\s*(\\d+(?:\\.\\d{3})*)",
+          "expected": "0"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Não",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "f78e5efd-5afd-44cd-9940-ff5d2193dafa",
+        "Nome do arquivo": "INVOICE 8 RB.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Código de parceiro emissor: 1000201; CNPJ do Destinatário: 08061365000138 - MATRIZ, Ver sub-categoria",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "SIM"
+      },
+      "anchor": "rbelectric",
+      "supplier": "RB ELETRIC SPA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "CL(\\d+)\\s+\\d{1,2}[A-Za-z]+\\d{4}",
+          "expected": "0008"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "CL\\d+\\s+(\\d{1,2}[A-Za-z]+\\d{4})",
+          "expected": "30jun2026"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "GRAND\\s+TOTAL\\s+AMOUNT\\s+IN\\s+USD\\s*(\\d+(?:\\.\\d{3})*[.,]\\d{2})",
+          "expected": "3.776.00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "USD\\s+(\\d+(?:\\.\\d{3})*[.,]\\d{2})\\s+\\d+\\.\\d+",
+          "expected": "3.776.00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "USD\\s+AMOUNT\\s*\\d+\\s+([\\s\\S]*?\\S)\\s+\\d[\\d.]*\\s+USD",
+          "expected": "cabo 2x16awg"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "DUE\\s+DATE[\\s\\S]*?(\\d{1,2}[A-Za-z]+\\d{4})",
+          "expected": "30Jul2026"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Não informado",
+          "regex": "",
+          "expected": ""
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Não",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "d88b4d6a-85fc-479c-a78d-37ac13e95d44",
+        "Nome do arquivo": "INVOICE 34 - BARRETO TRANSFER VIP SPA.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Ver Sub-Categoria, NÃO tem CPF/CNPJ do destinatário e não tem código do parceiro emissor",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "SIM"
+      },
+      "anchor": "barreto",
+      "supplier": "BARRETO TRANSFER VIP SPA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "N[º°]\\s*(\\d+)",
+          "expected": "34"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Fecha\\s+Emision:\\s*(\\d{1,2}\\s+de\\s+[A-Za-zÀ-ÿ]+\\s+del\\s+\\d{4})",
+          "expected": "26 de Enero del 2026"
+        },
+        {
+          "key": "extra_7e3b8202ed9b",
+          "label": "RUT genérico destinatário",
+          "required": false,
+          "availability": "Sim",
+          "regex": "SEÑOR\\(ES\\):[\\s\\S]*?R\\.U\\.T\\.:\\s*(\\d{1,2}\\.\\d{3}\\.\\d{3}-\\s*[\\dKk])",
+          "expected": "55.555.555- 5"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "TOTAL\\s*\\$\\s*(\\d+(?:\\.\\d{3})*)",
+          "expected": "9.340.000"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "EXENTO\\s*\\$\\s*(\\d+(?:\\.\\d{3})*)",
+          "expected": "9.340.000"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Giro:\\s*([\\s\\S]*?\\S)\\s+FACTURA",
+          "expected": "TRANSPORTE PRIVADO DE PASAJEROS"
+        },
+        {
+          "key": "extra_a90f072dc1a6",
+          "label": "RUT emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "R\\.U\\.T\\.:\\s*(\\d{1,2}\\.\\d{3}\\.\\d{3}-\\s*[\\dKk])",
+          "expected": "78.225.124- 4"
+        },
+        {
+          "key": "extra_d385f26b6ae8",
+          "label": "Imposto adicional",
+          "required": false,
+          "availability": "Sim",
+          "regex": "IMPUESTO\\s+ADICIONAL\\s*\\$\\s*(\\d+(?:\\.\\d{3})*)",
+          "expected": "0"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Não",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "343658ed-1f4c-4505-a733-c9cbe9ce41e4",
+        "Nome do arquivo": "INVOICE 6635 - VFV CONNECTION SOLUTIONS VCS04060764AFBB      6635.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Código de parceiro emissor: 1000031; CNPJ do Destinatário: 08061365000138 - MATRIZ, Ver sub-categoria e tem impostos",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "SIM"
+      },
+      "anchor": "vfv",
+      "supplier": "VFV CONNECTION SOLUTIONS",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Folio:\\s*(\\d+)",
+          "expected": "6635"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Fecha\\s+y\\s+hora:\\s*(\\d{4}-\\d{2}-\\d{2})T",
+          "expected": "2026-06-15"
+        },
+        {
+          "key": "extra_940b1ee3d816",
+          "label": "RFC genérico destinatário",
+          "required": false,
+          "availability": "Sim",
+          "regex": "RFC:\\s*([A-ZÑ&]{3,4}\\d{6}[A-Z0-9]{3})",
+          "expected": "XEXX010101000"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total\\s+((?:\\d{1,3}(?:,\\d{3})+|\\d+)\\.\\d{2})",
+          "expected": "30,912.48"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Subtotal\\s+((?:\\d{1,3}(?:,\\d{3})+|\\d+)\\.\\d{2})",
+          "expected": "26,648.69"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Descripción\\s+P\\/U\\s+Importe\\s+\\d+\\.\\d+\\s+\\S+\\s+\\d+\\s+([\\s\\S]*?\\S)\\s+\\d[\\d,]*\\.\\d{4}",
+          "expected": "LIM PEZA M ANUTENCAO E CONSERVACAO DE VIAS"
+        },
+        {
+          "key": "extra_8acf29b74db6",
+          "label": "RFC emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Versión:\\s*[\\d.]+\\s+([A-ZÑ&]{3,4}\\d{6}[A-Z0-9]{3})",
+          "expected": "VCS04060764A"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?P[ée]dido\\s+No\\.\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?P[ée]dido\\s+No\\.\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "20314"
+        },
+        {
+          "key": "extra_ba6da46c5e1c",
+          "label": "IVA",
+          "required": false,
+          "availability": "Sim",
+          "regex": "IVA\\s+((?:\\d{1,3}(?:,\\d{3})+|\\d+)\\.\\d{2})",
+          "expected": "4,263.79"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Não",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "0b40a5b4-8a5a-4aa9-8158-fdc051b0c58f",
+        "Nome do arquivo": "Invoice 811010325 -Data Centre Dynamics Spain S.L..pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Ver Sub-Categoria e não tem código do parceiro emissor",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "SIM"
+      },
+      "anchor": "dcd",
+      "supplier": "DATA CENTRE DYNAMICS SPAIN S.L.",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Invoice\\s+No\\.:\\s*(\\d+)",
+          "expected": "811010325"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Date:\\s*(\\d{2}\\.\\d{2}\\.\\d{2,4})",
+          "expected": "21.07.26"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "VAT\\s+Reg\\s+No:\\s*BR\\s*(\\d{14})",
+          "expected": "08061365000138"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total\\s+USD\\s*((?:\\d{1,3}(?:,\\d{3})+|\\d+)\\.\\d{2})",
+          "expected": "21,620.00"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Net\\s+Amount\\s+USD\\s*((?:\\d{1,3}(?:,\\d{3})+|\\d+)\\.\\d{2})",
+          "expected": "21,620.00"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Description\\s+Net\\s+VAT\\s*%\\s+VAT\\s*([\\s\\S]*?\\S)\\s+USD",
+          "expected": "FEIRAS. EXPOSICOES. CONGRESSOS E CONGENERES Connect Mexico 22 & 23 sept. 2026"
+        },
+        {
+          "key": "extra_c747c332c31a",
+          "label": "CIF emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CIF:\\s*([A-Z]\\d{8})",
+          "expected": "B85733038"
+        },
+        {
+          "key": "extra_4885a17383f9",
+          "label": "VAT",
+          "required": false,
+          "availability": "Sim",
+          "regex": "VAT\\s+USD\\s*((?:\\d{1,3}(?:,\\d{3})+|\\d+)\\.\\d{2})",
+          "expected": "0.00"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "23810641-d116-4039-b01b-52bb3387d3e6",
+        "Nome do arquivo": "NF_BM_RECIBO N  2138 - INSTRUMENT.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "instrumen",
+      "supplier": "INSTRUMEN INSTRUMENTOS DE MEDIÇÃO LTDA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "NF\\s+n[º°]\\s*(\\d+)",
+          "expected": "0000002138"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Emissão:\\s*São\\s+Paulo\\s*\\(SP\\),\\s*(\\d{1,2}\\s+de\\s+[A-Za-zÀ-ÿ]+\\s+de\\s+\\d{4})",
+          "expected": "13 de Março de 2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Cliente:[\\s\\S]*?CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Total\\s+Bruto\\s+Descontos\\s+Total\\s+Líquido\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "820,80"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Descrição\\s+Valor\\s+Total\\s+LOCAÇÃO\\s+DE\\s+EQUIPAMENTO\\s+((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "820,80"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "Objeto\\s+da\\s+Locação:\\s*Descrição\\s+Valor\\s+Total\\s*([\\s\\S]*?\\S)\\s+\\d[\\d.]*,\\d{2}",
+          "expected": "LOCAÇÃO DE EQUIPAMENTO"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "Vencimento:\\s*dia\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "13/03/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "27.938.287/0001-51"
+        }
+      ],
+      "boleto": false
+    },
+    {
+      "original": {
+        "ID layout": "7ecc6662-5e87-43f5-a877-8b26489f1c6f",
+        "Nome do arquivo": "RECIBO DE ALUGUEL 26525 - ARACO.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "Verificar o Pedido de Compra",
+        "Campos Obrigatorios": "",
+        "Status": "??",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": "araco",
+      "supplier": "ARACO PROPERTIES LTDA",
+      "fields": [
+        {
+          "key": "document_number",
+          "label": "Número do documento",
+          "required": true,
+          "availability": "Sim",
+          "regex": "\\d{2}\\/\\d{2}\\/\\d{4}\\s+(\\d+)\\s+RC\\s+N",
+          "expected": "000000000026525"
+        },
+        {
+          "key": "issue_date",
+          "label": "Data de emissão",
+          "required": true,
+          "availability": "Sim",
+          "regex": "(\\d{2}\\/\\d{2}\\/\\d{4})\\s+\\d+\\s+RC\\s+N",
+          "expected": "05/06/2026"
+        },
+        {
+          "key": "recipient_tax_id",
+          "label": "CPF/CNPJ do destinatário",
+          "required": true,
+          "availability": "Sim",
+          "regex": "PAGADOR[\\s\\S]*?(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "08.061.365/0001-38"
+        },
+        {
+          "key": "gross_value",
+          "label": "Valor bruto",
+          "required": true,
+          "availability": "Sim",
+          "regex": "ECR\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "681.349,72"
+        },
+        {
+          "key": "service_value",
+          "label": "Valor do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "ECR\\s+R\\$\\s*((?:\\d{1,3}(?:\\.\\d{3})+|\\d+),\\d{2})",
+          "expected": "681.349,72"
+        },
+        {
+          "key": "description",
+          "label": "Descrição do serviço",
+          "required": true,
+          "availability": "Sim",
+          "regex": "(ALUGUEL\\s*-\\s*[A-ZÇ]+\\/\\d{4})",
+          "expected": "ALUGUEL - JUNHO/2026"
+        },
+        {
+          "key": "extra_3c4a37356749",
+          "label": "Data de vencimento",
+          "required": false,
+          "availability": "Sim",
+          "regex": "PAGÁVEL\\s+EM\\s+QUALQUER\\s+BANCO\\.\\s*(\\d{2}\\/\\d{2}\\/\\d{4})",
+          "expected": "05/07/2026"
+        },
+        {
+          "key": "extra_c90a3953bbad",
+          "label": "CPF/CNPJ do emissor",
+          "required": false,
+          "availability": "Sim",
+          "regex": "ARACO\\s+PROPERTIES\\s+LTDA\\s+CNPJ:\\s*(\\d{2}\\.\\d{3}\\.\\d{3}\\/\\d{4}-\\d{2})",
+          "expected": "49.472.954/0001-96"
+        },
+        {
+          "key": "extra_e73b4ad7329e",
+          "label": "Pedido de compra",
+          "required": false,
+          "availability": "Sim",
+          "regex": "^[\\s\\S]*?PEDIDO\\s+DE\\s+COMPRAS\\s*(45\\d{8}|\\d{5}(?![\\s\\S]*?PEDIDO\\s+DE\\s+COMPRAS\\s*45\\d{8}(?!\\d)))(?!\\d)",
+          "expected": "14077"
+        },
+        {
+          "key": "extra_40b346b5ec83",
+          "label": "Linha digitável",
+          "required": false,
+          "availability": "Sim; regex pendente",
+          "regex": "",
+          "expected": ""
+        }
+      ],
+      "boleto": true
+    },
+    {
+      "original": {
+        "ID layout": "ceb3cb4d-3ded-4442-9cea-4abb40176586",
+        "Nome do arquivo": "Recibo_59934 - CLUB COWORKING.pdf",
+        "Categoria de Nota Fiscal (MIRO)": "E1",
+        "Descrição da Categoria": "Nota Fiscal Entrada",
+        "ID da categoria": "a7dda86a-ebd3-5f3f-825b-14c513011df6",
+        "Campos não mapeados inicialmente": "",
+        "Campos Obrigatorios": "",
+        "Status": "?",
+        "Fatura Internacional": "NÃO"
+      },
+      "anchor": null,
+      "supplier": "CLUB COWORKING",
+      "fields": [],
+      "boleto": false
+    }
+  ]
+}
