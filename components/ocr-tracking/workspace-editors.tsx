@@ -9,7 +9,14 @@ import { OcrEditor, type OcrFormValues } from "./editor";
 import { checklistEditorFields, fieldEditorFields, issueEditorFields, itemEditorFields } from "./editor-definitions";
 import type { useOcrWorkspace } from "./use-ocr-workspace";
 
-export type OcrEditorTarget = { kind: "item" | "newItem"; row: OcrItem } | { kind: "checklist"; row: OcrChecklist } | { kind: "field" | "newField"; row: OcrField } | { kind: "issue" | "newIssue"; row: OcrIssue };
+export type OcrEditorTarget =
+  | { kind: "item"; row: OcrItem }
+  | { kind: "newItem"; row: OcrItem }
+  | { kind: "checklist"; row: OcrChecklist }
+  | { kind: "field"; row: OcrField }
+  | { kind: "newField"; row: OcrField }
+  | { kind: "issue"; row: OcrIssue }
+  | { kind: "newIssue"; row: OcrIssue };
 type OcrController = ReturnType<typeof useOcrWorkspace>;
 
 /** Conecta formulários ao domínio mantendo validação local legível. Ex.: <OcrWorkspaceEditor ... />. */
@@ -24,7 +31,8 @@ function editorFields(target: OcrEditorTarget, controller: OcrController) {
   if (target.kind === "item" || target.kind === "newItem") return itemEditorFields;
   if (target.kind === "checklist") return checklistEditorFields.map((field) => field.key === "status" && !target.row.conditional ? { ...field, options: Object.fromEntries(Object.entries(field.options ?? {}).filter(([key]) => key !== "not_applicable")) } : field);
   if (target.kind === "field" || target.kind === "newField") return fieldEditorFields;
-  return [...issueEditorFields, { key: "field_id", label: "Campo relacionado", options: { "": "Sem vínculo", ...Object.fromEntries(controller.workspace.fields.filter((field) => field.item_id === target.row.item_id).map((field) => [field.id, field.label])) } }];
+  const itemId = target.row.item_id;
+  return [...issueEditorFields, { key: "field_id", label: "Campo relacionado", options: { "": "Sem vínculo", ...Object.fromEntries(controller.workspace.fields.filter((field) => field.item_id === itemId).map((field) => [field.id, field.label])) } }];
 }
 
 function mergedValues(target: OcrEditorTarget, values: OcrFormValues) {
