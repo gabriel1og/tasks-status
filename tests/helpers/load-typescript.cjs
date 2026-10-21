@@ -21,10 +21,13 @@ function loadTypeScript(relativePath) {
   loadedModules.set(filePath, loadedModule);
   loadedModule.filename = filePath;
   loadedModule.paths = Module._nodeModulePaths(path.dirname(filePath));
-  loadedModule.require = (specifier) =>
-    specifier.startsWith("@/")
-      ? loadTypeScript(`${specifier.slice(2)}.ts`)
-      : require(specifier);
+  loadedModule.require = (specifier) => {
+    if (specifier.startsWith("@/")) return loadTypeScript(`${specifier.slice(2)}.ts`);
+    if (!specifier.startsWith(".")) return require(specifier);
+    const resolved = path.resolve(path.dirname(filePath), specifier);
+    if (resolved.endsWith(".json")) return require(resolved);
+    return loadTypeScript(path.relative(projectRoot, `${resolved}.ts`));
+  };
   loadedModule._compile(compiled.outputText, filePath);
   return loadedModule.exports;
 }

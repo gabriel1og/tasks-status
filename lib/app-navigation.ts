@@ -5,6 +5,7 @@ export type NavigationIconName =
   | "sprints"
   | "futureTasks"
   | "queries"
+  | "ocrTracking"
   | "taskSettings"
   | "timeOverview"
   | "timeEntries"
@@ -64,6 +65,12 @@ export const navigationGroups: NavigationGroup[] = [
         href: "/queries",
         label: "Queries",
         icon: "queries",
+        match: "nested",
+      },
+      {
+        href: "/ocr-tracking",
+        label: "Acompanhamento OCR",
+        icon: "ocrTracking",
         match: "nested",
       },
       {
