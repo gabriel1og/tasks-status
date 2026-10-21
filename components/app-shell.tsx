@@ -50,6 +50,7 @@ const navigationIcons: Record<NavigationIconName, LucideIcon> = {
   sprints: CalendarRange,
   futureTasks: ListTodo,
   queries: ListFilter,
+  ocrTracking: ListChecks,
   taskSettings: Settings,
   timeOverview: ChartNoAxesCombined,
   timeEntries: Clock3,

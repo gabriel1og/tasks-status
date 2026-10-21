@@ -34,6 +34,7 @@ test("preserves every existing task management URL", () => {
       "/sprints",
       "/future-tasks",
       "/queries",
+      "/ocr-tracking",
       "/settings",
     ],
   );
