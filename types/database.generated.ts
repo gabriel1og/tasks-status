@@ -7,8 +7,343 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.17"
+  }
   public: {
     Tables: {
+      ocr_tracking_checklist: {
+        Row: {
+          conditional: boolean
+          confirmed_by: string
+          confirmed_on: string | null
+          created_at: string
+          evidence: string
+          id: string
+          item_id: string
+          key: string
+          label: string
+          stage: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          conditional?: boolean
+          confirmed_by?: string
+          confirmed_on?: string | null
+          created_at?: string
+          evidence?: string
+          id?: string
+          item_id: string
+          key: string
+          label: string
+          stage: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          conditional?: boolean
+          confirmed_by?: string
+          confirmed_on?: string | null
+          created_at?: string
+          evidence?: string
+          id?: string
+          item_id?: string
+          key?: string
+          label?: string
+          stage?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ocr_tracking_checklist_item_id_user_id_fkey"
+            columns: ["item_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "ocr_tracking_items"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
+      ocr_tracking_events: {
+        Row: {
+          created_at: string
+          entity: string
+          id: string
+          item_id: string
+          new_record: Json | null
+          old_record: Json | null
+          operation: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          entity: string
+          id?: string
+          item_id: string
+          new_record?: Json | null
+          old_record?: Json | null
+          operation: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          entity?: string
+          id?: string
+          item_id?: string
+          new_record?: Json | null
+          old_record?: Json | null
+          operation?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ocr_tracking_events_item_id_user_id_fkey"
+            columns: ["item_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "ocr_tracking_items"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
+      ocr_tracking_fields: {
+        Row: {
+          applicability: string
+          availability: string
+          configuration: string
+          created_at: string
+          evidence: string
+          expected_value: string
+          id: string
+          item_id: string
+          key: string
+          label: string
+          magnifier_status: string
+          magnifier_value: string
+          notes: string
+          regex: string
+          required: boolean
+          triage_status: string
+          triage_value: string
+          updated_at: string
+          user_id: string
+          waiver_by: string
+          waiver_on: string | null
+          waiver_reason: string
+        }
+        Insert: {
+          applicability?: string
+          availability?: string
+          configuration?: string
+          created_at?: string
+          evidence?: string
+          expected_value?: string
+          id?: string
+          item_id: string
+          key: string
+          label: string
+          magnifier_status?: string
+          magnifier_value?: string
+          notes?: string
+          regex?: string
+          required?: boolean
+          triage_status?: string
+          triage_value?: string
+          updated_at?: string
+          user_id: string
+          waiver_by?: string
+          waiver_on?: string | null
+          waiver_reason?: string
+        }
+        Update: {
+          applicability?: string
+          availability?: string
+          configuration?: string
+          created_at?: string
+          evidence?: string
+          expected_value?: string
+          id?: string
+          item_id?: string
+          key?: string
+          label?: string
+          magnifier_status?: string
+          magnifier_value?: string
+          notes?: string
+          regex?: string
+          required?: boolean
+          triage_status?: string
+          triage_value?: string
+          updated_at?: string
+          user_id?: string
+          waiver_by?: string
+          waiver_on?: string | null
+          waiver_reason?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ocr_tracking_fields_item_id_user_id_fkey"
+            columns: ["item_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "ocr_tracking_items"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
+      ocr_tracking_issues: {
+        Row: {
+          assignee: string
+          authorized_by: string
+          authorized_on: string | null
+          created_at: string
+          description: string
+          field_id: string | null
+          id: string
+          item_id: string
+          kind: string
+          next_action: string
+          resolution: string
+          stage: number
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assignee?: string
+          authorized_by?: string
+          authorized_on?: string | null
+          created_at?: string
+          description: string
+          field_id?: string | null
+          id?: string
+          item_id: string
+          kind: string
+          next_action?: string
+          resolution?: string
+          stage: number
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assignee?: string
+          authorized_by?: string
+          authorized_on?: string | null
+          created_at?: string
+          description?: string
+          field_id?: string | null
+          id?: string
+          item_id?: string
+          kind?: string
+          next_action?: string
+          resolution?: string
+          stage?: number
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ocr_tracking_issues_field_id_item_id_user_id_fkey"
+            columns: ["field_id", "item_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "ocr_tracking_fields"
+            referencedColumns: ["id", "item_id", "user_id"]
+          },
+          {
+            foreignKeyName: "ocr_tracking_issues_item_id_user_id_fkey"
+            columns: ["item_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "ocr_tracking_items"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
+      ocr_tracking_items: {
+        Row: {
+          archived_at: string | null
+          assignee: string
+          boleto: string
+          category: string
+          category_description: string
+          category_id: string
+          created_at: string
+          environment: string
+          filename: string
+          id: string
+          international: string
+          layout_id: string
+          next_action: string
+          notes: string
+          source_key: string
+          source_match: string
+          source_notes: string
+          source_record: Json
+          sub_layout_id: string
+          subcategory: string
+          supplier: string
+          tenant: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          archived_at?: string | null
+          assignee?: string
+          boleto?: string
+          category?: string
+          category_description?: string
+          category_id?: string
+          created_at?: string
+          environment?: string
+          filename: string
+          id?: string
+          international?: string
+          layout_id?: string
+          next_action?: string
+          notes?: string
+          source_key: string
+          source_match?: string
+          source_notes?: string
+          source_record?: Json
+          sub_layout_id?: string
+          subcategory?: string
+          supplier: string
+          tenant?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          archived_at?: string | null
+          assignee?: string
+          boleto?: string
+          category?: string
+          category_description?: string
+          category_id?: string
+          created_at?: string
+          environment?: string
+          filename?: string
+          id?: string
+          international?: string
+          layout_id?: string
+          next_action?: string
+          notes?: string
+          source_key?: string
+          source_match?: string
+          source_notes?: string
+          source_record?: Json
+          sub_layout_id?: string
+          subcategory?: string
+          supplier?: string
+          tenant?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       query_folders: {
         Row: {
           created_at: string
@@ -443,7 +778,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      import_ocr_tracking: {
+        Args: { p_documents: Json; p_user_id: string }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
@@ -576,4 +914,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-
